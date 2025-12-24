@@ -1,37 +1,38 @@
 function showSetupGuide() {
     document.getElementById('setupModal').style.display = 'block';
+    const savedUrl = localStorage.getItem('teacherScriptUrl');
+    if (savedUrl) displayStudentUrl(savedUrl);
 }
 
 function closeSetupGuide() {
     document.getElementById('setupModal').style.display = 'none';
 }
 
-// 提示されたコードをコピーする機能
 function copyGsCode() {
     const code = document.getElementById('gsCodeSource').value;
-    navigator.clipboard.writeText(code).then(() => {
-        alert('Apps Script用のコードをコピーしました！\nスプレッドシートの「Apps Script」に貼り付けてください。');
-    }).catch(err => {
-        // バックアップ用のコピー処理
-        const textArea = document.getElementById('gsCodeSource');
-        textArea.style.display = 'block';
-        textArea.select();
-        document.execCommand('copy');
-        textArea.style.display = 'none';
-        alert('コードをコピーしました。');
-    });
+    navigator.clipboard.writeText(code).then(() => alert('コードをコピーしました！'));
 }
 
-// URLをブラウザに保存する機能
 function saveGasUrl() {
     const url = document.getElementById('gasUrlInput').value.trim();
     if (url.startsWith('https://script.google.com')) {
-        // app.js側で読み込んでいる変数名 'teacherScriptUrl' に合わせて保存
         localStorage.setItem('teacherScriptUrl', url);
-        alert('URLを登録しました。これで「先生に送信」ボタンが使えるようになります。');
-        closeSetupGuide();
-        location.reload(); // 設定を反映させるためにリロード
+        displayStudentUrl(url);
+        alert('URLを保存しました。配布用URLを生徒に伝えてください。');
     } else {
-        alert('正しいウェブアプリURLを入力してください。');
+        alert('正しいURLを入力してください。');
     }
+}
+
+function displayStudentUrl(teacherUrl) {
+    const encodedUrl = btoa(teacherUrl);
+    const baseUrl = window.location.origin + window.location.pathname;
+    const studentUrl = baseUrl + '?t=' + encodedUrl;
+    document.getElementById('studentUrlArea').style.display = 'block';
+    document.getElementById('studentDistUrl').innerText = studentUrl;
+}
+
+function copyStudentUrl() {
+    const url = document.getElementById('studentDistUrl').innerText;
+    navigator.clipboard.writeText(url).then(() => alert('生徒配布用URLをコピーしました！'));
 }
