@@ -25,13 +25,24 @@ function saveGasUrl() {
 }
 
 function displayStudentUrl(teacherUrl) {
-    const encodedUrl = btoa(teacherUrl);
-    const baseUrl = window.location.origin + window.location.pathname;
-    const studentUrl = baseUrl + '?t=' + encodedUrl;
-    document.getElementById('studentUrlArea').style.display = 'block';
-    document.getElementById('studentDistUrl').innerText = studentUrl;
+    try {
+        // URLを安全に変換（Base64）
+        const encodedUrl = btoa(teacherUrl);
+        
+        // 現在のURL（?以降を除いたもの）を取得
+        const baseUrl = window.location.href.split('?')[0].split('#')[0];
+        
+        // 末尾が / で終わっていない場合は補完する
+        const finalBaseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+        
+        const studentUrl = finalBaseUrl + '?t=' + encodedUrl;
+        
+        document.getElementById('studentUrlArea').style.display = 'block';
+        document.getElementById('studentDistUrl').innerText = studentUrl;
+    } catch (e) {
+        console.error('URL生成失敗', e);
+    }
 }
-
 function copyStudentUrl() {
     const url = document.getElementById('studentDistUrl').innerText;
     navigator.clipboard.writeText(url).then(() => alert('生徒配布用URLをコピーしました！'));
