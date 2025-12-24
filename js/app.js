@@ -1,3 +1,16 @@
+(function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const t = urlParams.get('t');
+    if (t) {
+        try {
+            const decodedUrl = atob(t);
+            if (decodedUrl.startsWith('https://script.google.com')) {
+                localStorage.setItem('teacherScriptUrl', decodedUrl);
+            }
+        } catch (e) {}
+    }
+})();
+
 // グローバル変数
 let radarVisible = [true, true, true, true, true];
 let SCRIPT_URL = '';
