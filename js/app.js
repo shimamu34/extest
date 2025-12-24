@@ -294,3 +294,56 @@ function sendToTeacher() {
         }
     });
 }
+// --- データ管理機能（バックアップ・復元・クリア） ---
+
+// 1. バックアップ：現在の記録をファイル（JSON形式）として保存
+function backupData() {
+    const g = document.getElementById("gender").value;
+    const data = localStorage.getItem("m-" + g);
+    if (!data) {
+        alert("保存するデータがありません。");
+        return;
+    }
+    const blob = new Blob([data], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `体力テスト_バックアップ_${g === 'male' ? '男子' : '女子'}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    N("ファイルをダウンロードしました", "success");
+}
+
+// 2. 復元：保存したファイルを選択して読み込む
+function restoreData() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = e => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = event => {
+            const g = document.getElementById("gender").value;
+            localStorage.setItem("m-" + g, event.target.result);
+            LI(); // 画面にデータを再読み込み
+            N("データを復元しました", "success");
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+}
+
+// 3. クリア：入力した記録をすべて消去する
+function clearData() {
+    if (confirm("現在の性別の記録をすべて消去します。よろしいですか？")) {
+        const g = document.getElementById("gender").value;
+        localStorage.removeItem("m-" + g);
+        // 入力欄をすべて空にする
+        for (let i = 0; i < 9; i++) {
+            const el = document.getElementById(`i${i}`);
+            if (el) el.value = "";
+        }
+        U(); // 計算と表示をリセット
+        N("データを消去しました", "info");
+    }
+}
