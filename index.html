@@ -198,14 +198,11 @@
                 <button onclick="closeSetupGuide()" style="background:none;border:none;font-size:30px;cursor:pointer;color:#666">✕</button>
             </div>
             <div id="setupContent">
-    <h2 style="color: #2b6cb0; text-align: center; margin-bottom: 25px; font-size: 24px;">🏫 先生向け送信設定ガイド</h2>
-    <p style="margin-bottom: 20px; font-size: 14px; color: #d32f2f; background: #fff5f5; padding: 10px; border-radius: 8px; border: 1px solid #ffcdd2;">
-        <strong>※重要：</strong>この設定は、データを集計する「管理者（先生）」のみが行ってください。
-    </p>
-
-    <div style="background: #f0f7ff; padding: 20px; border-radius: 12px; border-left: 6px solid #2b6cb0; margin-bottom: 20px;">
-        <p style="font-weight: bold; color: #2b6cb0; margin-bottom: 10px;">1. プログラムのコピー</p>
-        <button onclick="copyGsCode()" style="background: #2b6cb0; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">📋 コードをコピーする</button>
+    <h2 style="color: #2b6cb0; text-align: center;">🏫 先生向け設定</h2>
+    
+    <div style="background: #f0f7ff; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+        <p><strong>1. プログラムのコピー</strong></p>
+        <button onclick="copyGsCode()" style="width:100%; padding:10px; background:#2b6cb0; color:white; border:none; border-radius:5px;">📋 コードをコピーする</button>
         <textarea id="gsCodeSource" style="display:none;">
 function doPost(e) {
   try {
@@ -225,25 +222,20 @@ function doPost(e) {
         </textarea>
     </div>
 
-    <div style="background: #f2faf0; padding: 20px; border-radius: 12px; border-left: 6px solid #4CAF50; margin-bottom: 20px;">
-        <p style="font-weight: bold; color: #388e3c; margin-bottom: 10px;">2. スプレッドシートに設置と認証</p>
-        <ol style="margin-left: 15px; font-size: 13px; line-height: 1.8;">
-            <li><a href="https://sheets.new" target="_blank" style="font-weight: bold; color: #388e3c;">新しいスプレッドシート</a>を作成し、「拡張機能」→「Apps Script」へ。</li>
-            <li>コードを貼り付け保存し、「デプロイ」→「新しいデプロイ」をクリック。</li>
-            <li>種類を「ウェブアプリ」、アクセス権を<strong>「全員」</strong>にして実行。</li>
-            <li><strong>⚠️警告が出た場合：</strong>「詳細（Advanced）」→「Go to (プロジェクト名) (unsafe)」→「許可（Allow）」を選択。</li>
-        </ol>
+    <div style="background: #f2faf0; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+        <p><strong>2. GASに貼り付けてデプロイ</strong></p>
+        <p style="font-size: 12px;">デプロイ時、アクセス権を「全員」にしてください。</p>
     </div>
 
-    <div style="background: #fff5f0; padding: 20px; border-radius: 12px; border: 2px solid #FF5722; text-align: center;">
-        <p style="font-weight: bold; color: #FF5722; margin-bottom: 15px;">3. URLの登録と配布</p>
-        <input type="text" id="gasUrlInput" placeholder="ウェブアプリURLを貼り付け" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; margin-bottom: 15px;">
-        <button class="btn" style="background: #FF5722; width: 100%; color: white;" onclick="saveGasUrl()">設定を保存して配布URLを作る</button>
+    <div style="background: #fff5f0; padding: 15px; border-radius: 10px; border: 2px solid #FF5722;">
+        <p><strong>3. URLの登録と配布</strong></p>
+        <input type="text" id="gasUrlInput" placeholder="ウェブアプリURLをここに貼る" style="width:100%; padding:10px; margin-bottom:10px;">
+        <button onclick="saveGasUrl()" style="width:100%; padding:10px; background:#FF5722; color:white; border:none; border-radius:5px;">保存して配布URLを作る</button>
         
-        <div id="studentUrlArea" style="display:none; margin-top: 20px; padding: 15px; background: #fff; border: 1px dashed #FF5722; border-radius: 8px;">
-            <p style="font-size: 13px; font-weight: bold; color: #333; margin-bottom: 10px;">📲 生徒配布用URL</p>
-            <div id="studentDistUrl" style="word-break: break-all; font-size: 11px; color: #666; background: #f9f9f9; padding: 10px; border-radius: 4px; margin-bottom: 10px;"></div>
-            <button onclick="copyStudentUrl()" style="background: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px;">📋 配布用URLをコピー</button>
+        <div id="studentUrlArea" style="display:none; margin-top: 15px;">
+            <p style="font-size: 12px; font-weight: bold;">📲 生徒用配布URL</p>
+            <input type="text" id="studentDistUrlInput" readonly style="width:100%; padding:8px; font-size:10px; margin-bottom:5px;">
+            <button onclick="copyStudentUrl()" style="width:100%; padding:8px; background:#4CAF50; color:white; border:none; border-radius:5px;">📋 配布用URLをコピー</button>
         </div>
     </div>
 </div>
