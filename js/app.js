@@ -11,8 +11,7 @@
                 localStorage.setItem('teacherScriptUrl', decodedUrl);
                 console.log("送信先URLを更新しました: " + decodedUrl);
                 
-                // URLからパラメータを消してスッキリさせる（任意）
-                // window.history.replaceState({}, document.title, window.location.pathname);
+              
             }
         } catch (e) {
             console.error("URLデコードエラー:", e);
