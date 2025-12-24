@@ -1,30 +1,34 @@
+/**
+ * js/charts.js 
+ * 全てのグラフ表示をコントロールするファイル
+ */
+
+// 1. レーダーチャートを表示・更新する関数
 function updateRadarChart() {
     const canvas = document.getElementById('rc');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const g = document.getElementById("gender").value;
     
-    // 1. 保存されている履歴（中1〜中3）を読み込む
+    // 保存されている履歴（中1〜中3）を読み込む
     const history = JSON.parse(localStorage.getItem("history-" + g) || "{}");
-    
     const datasets = [];
 
-    // --- A. 帯広市平均（点線：data.jsから引用する想定の仮値） ---
-    // ※後ほどdata.jsの平均値と完全に連動させる修正も可能です
+    // --- 【基準】帯広市平均（点線） ---
     datasets.push({
         label: '帯広市平均',
-        data: [6, 6, 6, 6, 6, 6, 6, 6], 
+        data: [6, 6, 6, 6, 6, 6, 6, 6], // ※後でdata.jsの平均値と連動可能
         borderColor: 'rgba(0, 0, 0, 0.4)',
         borderDash: [5, 5],
         fill: false,
         borderWidth: 2
     });
 
-    // --- B. 学年ごとの自分のデータを追加 ---
+    // --- 【個人】学年ごとのデータ（履歴があれば追加） ---
     const colors = {
-        "1": "rgba(76, 175, 80, 0.3)",   // 中1: 緑
-        "2": "rgba(33, 150, 243, 0.3)",  // 中2: 青
-        "3": "rgba(255, 152, 0, 0.3)"    // 中3: オレンジ
+        "1": "rgba(76, 175, 80, 0.3)",  // 中1: 緑
+        "2": "rgba(33, 150, 243, 0.3)", // 中2: 青
+        "3": "rgba(255, 152, 0, 0.3)"  // 中3: オレンジ
     };
 
     ["1", "2", "3"].forEach(grade => {
@@ -40,7 +44,7 @@ function updateRadarChart() {
         }
     });
 
-    // 3. グラフを描画（既存のグラフがあれば破棄して作り直す）
+    // グラフを実際に描画する（Chart.jsを使用）
     if (window.myRadar) window.myRadar.destroy();
     window.myRadar = new Chart(ctx, {
         type: 'radar',
@@ -53,8 +57,7 @@ function updateRadarChart() {
                 r: {
                     min: 0,
                     max: 10,
-                    ticks: { stepSize: 2, display: false },
-                    grid: { color: "#ddd" }
+                    ticks: { stepSize: 2, display: false }
                 }
             },
             plugins: {
@@ -64,14 +67,27 @@ function updateRadarChart() {
     });
 }
 
-// 画面表示を切り替える関数（これも上書きに含めます）
+// 2. ボタンを押した時の「表示・非表示」を切り替える関数群
 function toggleRadar() {
     const r = document.getElementById('radar');
     r.style.display = (r.style.display === 'none') ? 'block' : 'none';
     if (r.style.display === 'block') updateRadarChart();
 }
 
-// 経年変化は使わないので、もし呼ばれてもエラーにならないよう空の関数にしておきます
 function toggleGrowth() {
-    alert("経年変化はレーダーチャートに統合されました。");
+    alert("経年変化は『レーダーチャート』に統合されました。中1〜中3の比較が1枚で見られます。");
+}
+
+function toggleAnalysis() {
+    const c = document.getElementById('correlation');
+    c.style.display = (c.style.display === 'none') ? 'block' : 'none';
+    // updateAnalysis関数が他で定義されている場合に実行
+    if (c.style.display === 'block' && typeof updateAnalysis === 'function') updateAnalysis();
+}
+
+function toggleTracking() {
+    const t = document.getElementById('tracking');
+    t.style.display = (t.style.display === 'none') ? 'block' : 'none';
+    // updateTrackingView関数が他で定義されている場合に実行
+    if (t.style.display === 'block' && typeof updateTrackingView === 'function') updateTrackingView();
 }
