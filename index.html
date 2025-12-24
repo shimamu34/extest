@@ -16,7 +16,7 @@
         <button class="btn" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2)" onclick="window.print()">🖨️ 印刷</button>
         <button class="btn" style="background:linear-gradient(135deg,#4CAF50,#388E3C)" onclick="saveYearData()">📅 今年を記録</button>
         <button class="btn" style="background:linear-gradient(135deg,#e91e63,#c2185b)" onclick="sendToTeacher()">📤 先生に送信</button>
-        <button class="btn" style="background:linear-gradient(135deg,#FF5722,#FF7043)" onclick="showSetupGuide()">⚙️ 初回設定</button>
+        <button class="btn" style="background:linear-gradient(135deg,#FF5722,#FF7043)" onclick="checkPasscode()">⚙️ 初回設定</button>
     </div>
     
     <div class="card no-print" style="text-align:center">
@@ -285,15 +285,33 @@ function doPost(e) {
     <script src="js/setup.js"></script>
 
     <script>
-    function showSetupGuide() {
-        // ガイドを開く時に中身を強制リセット
-        document.getElementById('gasUrlInput').value = ""; 
-        document.getElementById('studentDistUrlInput').value = "";
-        document.getElementById('studentUrlArea').style.display = "none";
-        
-        // モーダルを表示
-        document.getElementById('setupModal').style.display = "block";
+    // 1. パスコードをチェックする関数
+function checkPasscode() {
+    const code = prompt("管理者用パスコードを入力してください（4桁）");
+
+    if (code === "9076") {
+        // 合っていたら設定画面を表示
+        showSetupGuide();
+    } else if (code !== null) {
+        // 間違っていたら警告
+        alert("パスコードが違います。");
     }
-    </script>
+}
+
+// 2. 設定画面を実際に開く関数
+function showSetupGuide() {
+    // 入力欄をリセット
+    const gasInput = document.getElementById('gasUrlInput');
+    const distInput = document.getElementById('studentDistUrlInput');
+    const urlArea = document.getElementById('studentUrlArea');
+
+    if (gasInput) gasInput.value = ""; 
+    if (distInput) distInput.value = "";
+    if (urlArea) urlArea.style.display = "none";
+    
+    // モーダルを表示
+    document.getElementById('setupModal').style.display = "block";
+}
+</script>
 </body>
 </html>
