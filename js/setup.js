@@ -26,19 +26,16 @@ function saveGasUrl() {
 
 function displayStudentUrl(teacherUrl) {
     try {
-        // URLを安全に変換（Base64）
         const encodedUrl = btoa(teacherUrl);
-        
-        // 現在のURL（?以降を除いたもの）を取得
-        const baseUrl = window.location.href.split('?')[0].split('#')[0];
-        
-        // 末尾が / で終わっていない場合は補完する
-        const finalBaseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
-        
-        const studentUrl = finalBaseUrl + '?t=' + encodedUrl;
+        // location.origin + pathname を使い、末尾に必ずスラッシュを入れる
+        let baseUrl = window.location.origin + window.location.pathname;
+        if (!baseUrl.endsWith('/')) {
+            baseUrl += '/';
+        }
+        const studentUrl = baseUrl + '?t=' + encodedUrl;
         
         document.getElementById('studentUrlArea').style.display = 'block';
-        document.getElementById('studentDistUrl').innerText = studentUrl;
+        document.getElementById('studentDistUrlInput').value = studentUrl;
     } catch (e) {
         console.error('URL生成失敗', e);
     }
