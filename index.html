@@ -198,17 +198,52 @@
                 <button onclick="closeSetupGuide()" style="background:none;border:none;font-size:30px;cursor:pointer;color:#666">✕</button>
             </div>
             <div id="setupContent">
-    <h2 style="color: #2b6cb0; text-align: center; margin-bottom: 25px; font-size: 28px;">🚀 送信機能のセットアップ</h2>
+    <h2 style="color: #2b6cb0; text-align: center; margin-bottom: 25px;">🏫 先生向け送信設定ガイド</h2>
     
+    <p style="margin-bottom: 20px; font-size: 14px; color: #666;">※この設定は、データを集計する「管理者（先生）」のみが行ってください。</p>
+
     <div style="background: #f0f7ff; padding: 20px; border-radius: 12px; border-left: 6px solid #2b6cb0; margin-bottom: 20px;">
-        <p style="font-weight: bold; font-size: 18px; color: #2b6cb0; margin-bottom: 10px;">Step 1: スクリプトの準備</p>
-        <ol style="margin-left: 20px; line-height: 1.8;">
-            <li>リポジトリ内の <code>google-apps-script.gs</code> を開き、中身をすべてコピーします。</li>
-            <li>Googleスプレッドシートのメニュー「拡張機能」→「Apps Script」を開きます。</li>
-            <li>もともとあるコードを消して、コピーした内容を貼り付け「保存」します。</li>
+        <p style="font-weight: bold; color: #2b6cb0; margin-bottom: 10px;">Step 1: スクリプトをコピーする</p>
+        <p style="font-size: 14px; margin-bottom: 10px;">下のボタンを押して、スプレッドシートに貼り付けるプログラムをコピーしてください。</p>
+        <button onclick="copyGsCode()" style="background: #2b6cb0; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">📋 スクリプトをコピー</button>
+        <textarea id="gsCodeSource" style="display:none;">
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName('体力テスト記録');
+    if (!sheet) {
+      sheet = ss.insertSheet('体力テスト記録');
+      sheet.appendRow(['出席番号', '氏名', '性別', '学年', '組', '測定回', '握力', '上体起こし', '長座体前屈', '反復横とび', '持久走', 'シャトルラン', '50m走', '立ち幅跳び', 'ハンドボール投げ', 'タイムスタンプ']);
+    }
+    sheet.appendRow([data.studentId, data.name, data.gender, data.grade, data.class, data.session, data.grip, data.situp, data.forward, data.sidestep, data.endurance, data.shuttle, data.sprint50, data.jump, data.throw, new Date()]);
+    return ContentService.createTextOutput(JSON.stringify({result: 'success'})).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({result: 'error', message: error.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+        </textarea>
+    </div>
+
+    <div style="background: #f2faf0; padding: 20px; border-radius: 12px; border-left: 6px solid #4CAF50; margin-bottom: 20px;">
+        <p style="font-weight: bold; color: #388e3c; margin-bottom: 10px;">Step 2: Googleスプレッドシートに設置</p>
+        <ol style="margin-left: 20px; font-size: 14px; line-height: 1.6;">
+            <li>スプレッドシートの「拡張機能」→「Apps Script」を開きます。</li>
+            <li>先ほどコピーしたコードを貼り付けて保存します。</li>
+            <li>右上の<strong>「デプロイ」</strong>→<strong>「新しいデプロイ」</strong>をクリック。</li>
+            <li>種類を<strong>「ウェブアプリ」</strong>にし、アクセス権を<strong>「全員」</strong>に設定して公開します。</li>
         </ol>
     </div>
 
+    
+
+    <div style="background: #fff5f0; padding: 25px; border-radius: 12px; border: 2px solid #FF5722; text-align: center;">
+        <p style="font-weight: bold; color: #FF5722; margin-bottom: 15px;">Step 3: ウェブアプリURLを貼り付け</p>
+        <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/..." 
+               style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; margin-bottom: 15px;">
+        <button class="btn" style="background: #FF5722; width: 100%; color:white" onclick="saveGasUrl()">設定を保存してはじめる</button>
+    </div>
+</div>
     <div style="background: #f2faf0; padding: 20px; border-radius: 12px; border-left: 6px solid #4CAF50; margin-bottom: 20px;">
         <p style="font-weight: bold; font-size: 18px; color: #388e3c; margin-bottom: 10px;">Step 2: Webアプリとして公開（重要！）</p>
         <ol style="margin-left: 20px; line-height: 1.8;">
