@@ -11,9 +11,6 @@
             if (decodedUrl.includes('https://script.google.com')) {
                 localStorage.setItem('teacherScriptUrl', decodedUrl);
                 console.log("送信先URLを自動設定しました: " + decodedUrl);
-                
-                // 【重要】ここでURLを書き換えない（replaceStateを絶対に書かない）
-                // URLが長いまま残ることで、GitHubの自動リダイレクトによる消失を防ぎます
             }
         } catch (e) {
             console.error("URL解析失敗", e);
@@ -23,7 +20,6 @@
 
 // グローバル変数
 let radarVisible = [true, true, true, true, true];
-let SCRIPT_URL = localStorage.getItem('teacherScriptUrl') || ''; // 初期値として保存済みURLを読み込む
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', function() {
@@ -51,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // 通知表示
 function N(m, t = 'success') {
     const n = document.getElementById('notif');
+    if (!n) return;
     n.textContent = m;
     n.className = `notification ${t}`;
     n.style.display = 'block';
@@ -113,7 +110,6 @@ function CS(v, h, g) {
                 }
             }
         }
-        
         if (m) return r.p;
     }
     return 0;
@@ -188,7 +184,6 @@ function U() {
     const h = D[g].h;
     let tot = 0;
     
-    // ハイライトクリア
     c.forEach((r, ri) => h.slice(0, -1).forEach((x, ci) => {
         const el = document.getElementById(`s${ri}-${ci}`);
         if (el) el.style.background = '';
@@ -199,7 +194,6 @@ function U() {
         if (el) el.classList.remove("highlight");
     }));
     
-    // スコア計算
     let scores = [];
     h.slice(0, -1).forEach((x, i) => {
         const v = parseFloat(document.getElementById(`i${i}`).value);
@@ -207,15 +201,12 @@ function U() {
             scores.push(null);
             return;
         }
-        
         const k = K(x);
         let rv = k === "50m" || k === "持" ? Math.ceil(v * 100) / 100 : Math.floor(v);
-        
         for (let j = 0; j < c.length; j++) {
             const r = c[j];
             const t = r[k];
             let m = false;
-            
             if (t.includes("以上")) {
                 const th = k === "持" ? TS(t) : parseFloat(t);
                 if (rv >= th) m = true;
@@ -226,20 +217,14 @@ function U() {
                 const p = t.split("～");
                 let min, max;
                 if (k === "持") {
-                    min = TS(p[0]);
-                    max = TS(p[1]);
+                    min = TS(p[0]); max = TS(p[1]);
                     if (rv >= min && rv <= max + 0.99) m = true;
                 } else {
-                    min = parseFloat(p[0]);
-                    max = parseFloat(p[1]);
-                    if (k === "50m") {
-                        if (rv >= min && rv <= max + 0.09) m = true;
-                    } else {
-                        if (rv >= min && rv <= max) m = true;
-                    }
+                    min = parseFloat(p[0]); max = parseFloat(p[1]);
+                    if (k === "50m") { if (rv >= min && rv <= max + 0.09) m = true; }
+                    else { if (rv >= min && rv <= max) m = true; }
                 }
             }
-            
             if (m) {
                 scores.push(r.p);
                 const el = document.getElementById(`s${j}-${i}`);
@@ -249,51 +234,30 @@ function U() {
         }
     });
     
-    // 持久走とシャトルランの処理
     const enduranceScore = scores[4] || 0;
     const shuttleScore = scores[5] || 0;
-    
     if (enduranceScore > 0 && shuttleScore > 0) {
         tot = (scores[0]||0) + (scores[1]||0) + (scores[2]||0) + (scores[3]||0) + Math.max(enduranceScore, shuttleScore) + (scores[6]||0) + (scores[7]||0) + (scores[8]||0);
     } else {
-        scores.forEach((sc) => {
-            if (sc !== null) tot += sc;
-        });
+        scores.forEach((sc) => { if (sc !== null) tot += sc; });
     }
     
-    // 評価判定
     const sc = document.getElementById("i9");
     let lv = "E";
-    
     for (let i = 0; i < E.length; i++) {
         const r = E[i];
         const rg = r[`c${gr}`];
         let min, max;
-        
-        if (rg.includes("以上")) {
-            min = parseFloat(rg);
-            max = Infinity;
-        } else if (rg.includes("以下")) {
-            min = -Infinity;
-            max = parseFloat(rg);
-        } else if (rg.includes("～")) {
-            [min, max] = rg.split("～").map(Number);
-        } else {
-            min = max = parseFloat(rg);
-        }
-        
-        if (tot >= min && tot <= max) {
-            lv = r.s;
-            break;
-        }
+        if (rg.includes("以上")) { min = parseFloat(rg); max = Infinity; }
+        else if (rg.includes("以下")) { min = -Infinity; max = parseFloat(rg); }
+        else if (rg.includes("～")) { [min, max] = rg.split("～").map(Number); }
+        else { min = max = parseFloat(rg); }
+        if (tot >= min && tot <= max) { lv = r.s; break; }
     }
-    
     sc.querySelector("div").textContent = tot;
     sc.querySelectorAll("div")[1].textContent = lv;
-    
     const el = document.getElementById(`e${lv}${gr}`);
     if (el) el.classList.add("highlight");
-    
     SI();
 }
 
@@ -302,7 +266,7 @@ function SI() {
     const g = document.getElementById("gender").value;
     let v = [];
     for (let i = 0; i < 9; i++) {
-        v.push(parseFloat(document.getElementById(`i${i}`).value) || "");
+        v.push(document.getElementById(`i${i}`).value || "");
     }
     localStorage.setItem("m-" + g, JSON.stringify(v));
 }
@@ -321,29 +285,29 @@ function LI() {
     }
 }
 
-// 送信処理（修正版）
+// --- 先生に送信処理（最新の改善版） ---
 function sendToTeacher() {
-    // 常に最新のURLをlocalStorageから取得
     const targetUrl = localStorage.getItem('teacherScriptUrl');
     
-    if (!targetUrl) {
-        N('先生のスクリプトURLが設定されていません', 'error');
-        showSetupGuide();
+    if (!targetUrl || targetUrl === "") {
+        N('先生のURLが設定されていません。配布URLから開き直してください。', 'error');
         return;
     }
     
-    const sid = prompt('出席番号を入力してください（例：15）');
-    const name = prompt('氏名を入力してください');
+    const sid = prompt('出席番号を入力（例：12）');
+    if (sid === null) return;
+    const name = prompt('氏名を入力');
+    if (name === null) return;
     
     if (!sid || !name) {
-        N('出席番号と氏名を入力してください', 'error');
+        alert('出席番号と氏名は必須です。');
         return;
     }
     
     let vals = [];
     for (let i = 0; i < 9; i++) {
         const v = parseFloat(document.getElementById(`i${i}`).value);
-        vals.push(isNaN(v) ? null : v);
+        vals.push(isNaN(v) ? "" : v);
     }
     
     const data = {
@@ -353,28 +317,23 @@ function sendToTeacher() {
         grade: document.getElementById('grade').value,
         class: document.getElementById('class').value,
         session: document.getElementById('session').value,
-        grip: vals[0],
-        situp: vals[1],
-        forward: vals[2],
-        sidestep: vals[3],
-        endurance: vals[4],
-        shuttle: vals[5],
-        sprint50: vals[6],
-        jump: vals[7],
-        throw: vals[8]
+        grip: vals[0], situp: vals[1], forward: vals[2], sidestep: vals[3],
+        endurance: vals[4], shuttle: vals[5], sprint50: vals[6], jump: vals[7], throw: vals[8]
     };
-    
+
     N('送信中...', 'info');
-    
+
+    // fetchでGASへ送信
     fetch(targetUrl, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors', 
         body: JSON.stringify(data)
-    }).then(() => {
-        N('先生に送信しました！', 'success');
-    }).catch(err => {
-        N('送信に失敗しました', 'error');
+    })
+    .then(() => {
+        N('先生に送信完了しました！', 'success');
+    })
+    .catch(err => {
+        N('送信失敗しました', 'error');
         console.error(err);
     });
 }
