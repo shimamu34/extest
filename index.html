@@ -185,21 +185,26 @@
                     
                     <textarea id="gsCodeSource" style="display:none;">
 function doPost(e) {
-  // ログ出力（デバッグ用）
+  // ログ出力（デバッグ用：実行数から確認できます）
   console.log("受信データ: " + e.postData.contents);
   
   try {
     var data = JSON.parse(e.postData.contents);
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    // シート名が「体力テスト記録」でない場合を考慮し、1枚目のシートを取得
-    var sheet = ss.getSheetByName('体力テスト記録') || ss.getSheets()[0];
     
-    // ヘッダー（1行目）が空なら作成
-    if (sheet.getLastRow() === 0) {
+    // 【重要】ここでシート名を決定します
+    // 例：学年「2」、組「A」、回「1」なら「2年-A組-1回目」というシート名になります
+    var sheetName = data.grade + "年-" + data.class + "組-" + data.session + "回目";
+    
+    // 指定した名前のシートがあるか探し、なければ新しく作成する
+    var sheet = ss.getSheetByName(sheetName);
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName);
+      // 新しいシートの1行目に項目名（ヘッダー）を入れる
       sheet.appendRow(['出席番号', '氏名', '性別', '学年', '組', '回', '握力', '上体', '長座', '反復', '持久', 'シャトル', '50m', '立ち幅', '投', '日時']);
     }
 
-    // データの書き込み
+    // データの書き込み（最後尾に追加）
     sheet.appendRow([
       data.studentId || "",
       data.name || "",
@@ -222,7 +227,7 @@ function doPost(e) {
     return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
 
   } catch (f) {
-    console.error("エラー: " + f.toString());
+    console.error("エラー内容: " + f.toString());
     return ContentService.createTextOutput("Error: " + f.toString()).setMimeType(ContentService.MimeType.TEXT);
   }
 }
