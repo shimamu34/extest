@@ -1,3 +1,25 @@
+// URLから設定を読み込む（最優先）
+(function() {
+    const search = window.location.search;
+    if (search) {
+        const urlParams = new URLSearchParams(search);
+        const t = urlParams.get('t');
+        if (t) {
+            try {
+                const decodedUrl = atob(t);
+                if (decodedUrl.includes('https://script.google.com')) {
+                    localStorage.setItem('teacherScriptUrl', decodedUrl);
+                    console.log("送信先URLを保存しました");
+                }
+            } catch (e) {
+                console.error("解析エラー", e);
+            }
+        }
+    }
+})();
+
+// 以降、前回の app.js の続き...
+
 // --- 1. 宛先URLの読み込みと保存（最優先実行） ---
 (function() {
     const urlParams = new URLSearchParams(window.location.search);
