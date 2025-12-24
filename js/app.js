@@ -235,21 +235,18 @@ function LI() {
     }
 }
 
-// --- 先生に送信処理（調査アラート付き） ---
+// --- 先生に送信処理（エラー対策強化版） ---
 function sendToTeacher() {
     const targetUrl = localStorage.getItem('teacherScriptUrl');
     
-    if (!targetUrl) {
-        alert('エラー：送信先のURLが保存されていません！\n配布URL（?t=...が付いたURL）から開き直してください。');
+    if (!targetUrl || targetUrl === "null" || targetUrl === "") {
+        alert('【エラー】送信先のURLが見つかりません。\n\n「初回設定」ボタンからウェブアプリURLを保存するか、先生から配られた専用URL（?t=...）から開き直してください。');
         return;
     }
 
-    // URLが正しいか確認用（本番は消してもOK）
-    alert('送信先URLを確認します：\n' + targetUrl);
-    
-    const sid = prompt('出席番号を入力');
+    const sid = prompt('出席番号を入力してください');
     if (!sid) return;
-    const name = prompt('氏名を入力');
+    const name = prompt('氏名を入力してください');
     if (!name) return;
     
     let vals = [];
@@ -271,19 +268,29 @@ function sendToTeacher() {
 
     N('送信中...', 'info');
 
-    setTimeout(() => {
-        fetch(targetUrl, {
-            method: 'POST',
-            mode: 'no-cors', 
-            cache: 'no-cache',
-            body: JSON.stringify(data)
-        })
-        .then(() => {
-            N('先生に送信完了しました！', 'success');
-        })
-        .catch(err => {
-            N('通信エラーが発生しました', 'error');
+    // 通信処理
+    fetch(targetUrl, {
+        method: 'POST',
+        mode: 'no-cors',  // セキュリティ制限を回避
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'text/plain' // GASで受け取るための最も安定した設定
+        },
+        body: JSON.stringify(data)
+    })
+    .then(() => {
+        // no-corsでは成功判定が取れないため、実行されたら成功とみなす
+        N('送信リクエストを完了しました！', 'success');
+        alert('送信完了しました。\nスプレッドシートに反映されているか確認してください。');
+    })
+    .catch(err => {
+        console.error("Fetch error:", err);
+        N('送信エラーが発生しました', 'error');
+        // エラー内容が "Load failed" の場合のアドバイスを表示
+        if(err.message === "Load failed" || err.name === "TypeError") {
+            alert('エラー詳細：' + err + '\n\n【考えられる原因】\n1. GASのデプロイ設定が「全員(Anyone)」になっていない\n2. 広告ブロック等の拡張機能が通信を止めている\n3. iPhoneの「サイト越えトラッキング防止」がオンになっている');
+        } else {
             alert('エラー詳細：' + err);
-        });
-    }, 500);
+        }
+    });
 }
