@@ -356,3 +356,29 @@ function saveYearData() {
     }
     alert("中" + grade + "の記録をグラフに固定しました。");
 }
+// 【保存機能】今の学年の点数を履歴として保存する関数
+function saveYearData() {
+    const g = document.getElementById("gender").value;
+    const grade = document.getElementById("grade").value;
+    const points = [];
+    
+    // 表（table）から今の点数（1〜10点）を8種目分抜き出す
+    for(let i=0; i<8; i++) {
+        // 表の各行の3番目のセル（点数が入っている場所）を取得
+        const row = document.querySelector(`#table tr:nth-child(${i+1})`);
+        const p = row ? parseInt(row.cells[2].innerText) : 0;
+        points.push(isNaN(p) ? 0 : p);
+    }
+    
+    // 過去の全履歴を読み出し、今回の学年分を上書きして保存し直す
+    let history = JSON.parse(localStorage.getItem("history-" + g) || "{}");
+    history[grade] = points;
+    localStorage.setItem("history-" + g, JSON.stringify(history));
+    
+    // グラフが開いている状態なら、その場でグラフを更新する
+    if (document.getElementById('radar').style.display !== 'none') {
+        updateRadarChart();
+    }
+    
+    alert("中" + grade + "年生の記録として保存しました。グラフに反映されます。");
+}
