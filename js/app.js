@@ -1,36 +1,19 @@
-// URLから設定を読み込む（最優先）
-(function() {
-    const search = window.location.search;
-    if (search) {
-        const urlParams = new URLSearchParams(search);
-        const t = urlParams.get('t');
-        if (t) {
-            try {
-                const decodedUrl = atob(t);
-                if (decodedUrl.includes('https://script.google.com')) {
-                    localStorage.setItem('teacherScriptUrl', decodedUrl);
-                    console.log("送信先URLを保存しました");
-                }
-            } catch (e) {
-                console.error("解析エラー", e);
-            }
-        }
-    }
-})();
-
-// 以降、前回の app.js の続き...
-
 // --- 1. 宛先URLの読み込みと保存（最優先実行） ---
 (function() {
     const urlParams = new URLSearchParams(window.location.search);
     const t = urlParams.get('t');
+    
     if (t) {
         try {
-            const decodedUrl = atob(t);
+            // Base64デコード（日本語・特殊文字対応版）
+            const decodedUrl = decodeURIComponent(escape(atob(t)));
+            
             if (decodedUrl.includes('https://script.google.com')) {
                 localStorage.setItem('teacherScriptUrl', decodedUrl);
-                console.log("送信先URLを自動設定しました");
-                // 【修正ポイント】ここにあったURLを消す処理(replaceState)を削除しました
+                console.log("送信先URLを自動設定しました: " + decodedUrl);
+                
+                // 【重要】ここでURLを書き換えない（replaceStateを絶対に書かない）
+                // URLが長いまま残ることで、GitHubの自動リダイレクトによる消失を防ぎます
             }
         } catch (e) {
             console.error("URL解析失敗", e);
