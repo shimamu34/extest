@@ -1,13 +1,22 @@
 (function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const t = urlParams.get('t');
+    // URLの ?t= 以降をチェック
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get('t');
+    
     if (t) {
         try {
             const decodedUrl = atob(t);
-            if (decodedUrl.startsWith('https://script.google.com')) {
+            if (decodedUrl.indexOf('https://script.google.com') !== -1) {
+                // ブラウザの保存領域に上書き保存
                 localStorage.setItem('teacherScriptUrl', decodedUrl);
+                console.log("送信先URLを更新しました: " + decodedUrl);
+                
+                // URLからパラメータを消してスッキリさせる（任意）
+                // window.history.replaceState({}, document.title, window.location.pathname);
             }
-        } catch (e) {}
+        } catch (e) {
+            console.error("URLデコードエラー:", e);
+        }
     }
 })();
 
