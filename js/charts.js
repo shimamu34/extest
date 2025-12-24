@@ -40,7 +40,7 @@ function toggleTracking() {
     }
 }
 
-// レーダーチャート描画（3学年比較版）
+// レーダーチャート描画
 function RR(g) {
     const cv = document.getElementById("rc");
     const ctx = cv.getContext("2d");
@@ -50,8 +50,7 @@ function RR(g) {
         {s: "rgba(54,162,235,1)", f: "rgba(54,162,235,0.2)"},
         {s: "rgba(75,192,192,1)", f: "rgba(75,192,192,0.2)"},
         {s: "rgba(255,206,86,1)", f: "rgba(255,206,86,0.2)"},
-        {s: "rgba(153,102,255,0.5)", f: "rgba(153,102,255,0.1)"},
-        {s: "rgba(0,128,0,0.5)", f: "rgba(0,128,0,0.1)"}
+        {s: "rgba(153,102,255,0.5)", f: "rgba(153,102,255,0.1)"}
     ];
     
     const rs = [];
@@ -59,28 +58,25 @@ function RR(g) {
         rs.push(h.map((x, i) => CS(A[g][rg][i], x, g)));
     });
     
-    // 現在の入力を取得
-    const currentInput = h.map((x, i) => {
+    rs.push(h.map((x, i) => {
         const inp = document.getElementById(`i${i}`);
         if (!inp) return 0;
         const v = parseFloat(inp.value);
         return isNaN(v) ? 0 : CS(v, x, g);
-    });
-    rs.push(currentInput); // 3番目: 自分の現在
-
-    // 過去学年データの比較（中1, 中2, 中3の保存データ）
+    }));
+    
     const gr = document.getElementById("grade").value;
     const k = `y-${g}`;
     const yd = JSON.parse(localStorage.getItem(k) || '{}');
+    const pg = gr === '2' ? '中1' : gr === '3' ? '中2' : null;
+    let ps = null;
     
-    ["1", "2", "3"].forEach(gn => {
-        const pg = "中" + gn;
-        if (gn !== gr && yd[pg]) {
-            rs.push(h.map((x, i) => CS(yd[pg].v[i], x, g)));
-        }
-    });
+    if (pg && yd[pg]) {
+        ps = h.map((x, i) => CS(yd[pg].v[i], x, g));
+    }
     
     ctx.clearRect(0, 0, cv.width, cv.height);
+    
     const cX = cv.width / 2;
     const cY = cv.height / 2;
     const rad = 220;
@@ -109,10 +105,39 @@ function RR(g) {
         ctx.textAlign = "center";
         ctx.fillText(lb, cX + Math.cos(a) * (rad + 40), cY + Math.sin(a) * (rad + 40));
     });
-
+    
+    if (ps && radarVisible[4]) {
+        ctx.fillStyle = cols[4].f;
+        ctx.beginPath();
+        ps.forEach((sc, i) => {
+            const a = as * i - Math.PI / 2;
+            const x = cX + Math.cos(a) * ((rad / 10) * sc);
+            const y = cY + Math.sin(a) * ((rad / 10) * sc);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+        ctx.fill();
+        
+        ctx.strokeStyle = cols[4].s;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ps.forEach((sc, i) => {
+            const a = as * i - Math.PI / 2;
+            const x = cX + Math.cos(a) * ((rad / 10) * sc);
+            const y = cY + Math.sin(a) * ((rad / 10) * sc);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+        ctx.stroke();
+        ctx.setLineDash([]);
+    }
+    
     rs.forEach((scs, ri) => {
-        if (!radarVisible[ri] || !scs) return;
-        const c = cols[ri] || cols[4];
+        if (!radarVisible[ri]) return;
+        const c = cols[ri];
         
         ctx.fillStyle = c.f;
         ctx.beginPath();
@@ -127,7 +152,7 @@ function RR(g) {
         ctx.fill();
         
         ctx.strokeStyle = c.s;
-        ctx.lineWidth = ri >= 3 ? 3 : 2;
+        ctx.lineWidth = 2;
         ctx.beginPath();
         scs.forEach((sc, i) => {
             const a = as * i - Math.PI / 2;
@@ -138,10 +163,48 @@ function RR(g) {
         });
         ctx.closePath();
         ctx.stroke();
+        
+        ctx.fillStyle = c.s;
+        scs.forEach((sc, i) => {
+            const a = as * i - Math.PI / 2;
+            const x = cX + Math.cos(a) * ((rad / 10) * sc);
+            const y = cY + Math.sin(a) * ((rad / 10) * sc);
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
+        });
     });
+    
+    const lY = cv.height - 40;
+    const regs = ["帯広市", "北海道", "全国", "自分"];
+    if (ps) regs.push(`去年(${pg})`);
+    
+    regs.forEach((rg, i) => {
+        const lX = cX - 180 + i * 90;
+        ctx.fillStyle = radarVisible[i] ? cols[i].s : "#ccc";
+        ctx.fillRect(lX - 30, lY, 20, 10);
+        ctx.fillStyle = radarVisible[i] ? "#333" : "#999";
+        ctx.font = "14px Arial";
+        ctx.textAlign = "left";
+        ctx.fillText(rg, lX, lY + 10);
+    });
+    
+    cv.onclick = e => {
+        const rect = cv.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        regs.forEach((rg, i) => {
+            const lX = cX - 180 + i * 90;
+            if (x >= lX - 30 && x <= lX + 60 && y >= lY - 5 && y <= lY + 15) {
+                radarVisible[i] = !radarVisible[i];
+                RR(g);
+            }
+        });
+    };
+    cv.style.cursor = 'pointer';
 }
 
-// 経年変化グラフ（元のRG関数を維持）
+// 経年変化グラフ
 function RG(g) {
     const cv = document.getElementById("gc");
     const ctx = cv.getContext("2d");
@@ -204,11 +267,27 @@ function RG(g) {
             ctx.beginPath();
             ctx.arc(pt.x, pt.y, 5, 0, Math.PI * 2);
             ctx.fill();
+            ctx.fillStyle = '#333';
+            ctx.font = '11px Arial';
+            ctx.fillText(pt.val, pt.x, pt.y - 10);
+            ctx.fillStyle = cl;
         });
+    });
+    
+    const lX = cv.width - p.r + 10;
+    let lY = p.t;
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'left';
+    h.forEach((lb, idx) => {
+        ctx.fillStyle = cols[idx];
+        ctx.fillRect(lX, lY, 15, 10);
+        ctx.fillStyle = '#333';
+        ctx.fillText(lb, lX + 20, lY + 9);
+        lY += 20;
     });
 }
 
-// 体力分析（元のRAnalysis関数を維持）
+// 体力分析
 function RAnalysis(g) {
     const h = D[g].h.slice(0, 9);
     
@@ -269,7 +348,8 @@ function RAnalysis(g) {
                     <div style="background:${type.color};height:100%;width:${progress}%;transition:width 0.5s"></div>
                 </div>
                 <div style="font-size:13px;opacity:0.9">
-                    ${type.avg.toFixed(1)}点 / 10.0点
+                    ${type.avg > 0 ? `${type.avg.toFixed(1)}点 / 10.0点` : 'データなし'}
+                    ${toNext > 0 && toNext < 1 ? ` (次のレベルまであと${toNext.toFixed(1)}点！)` : ''}
                 </div>
             </div>
         `;
@@ -318,9 +398,10 @@ function RAnalysis(g) {
     `;
     
     document.getElementById("totalRank").innerHTML = totalHtml;
+    document.getElementById("goalSimulator").innerHTML = '<div style="text-align:center;color:#666;padding:40px">上のボタンから目標を選んでください</div>';
 }
 
-// 目標設定（元のsetGoal関数を維持）
+// 目標設定
 function setGoal(goalType) {
     const g = document.getElementById("gender").value;
     const h = D[g].h.slice(0, 9);
@@ -341,23 +422,32 @@ function setGoal(goalType) {
     let targetScore = 0;
     let goalTitle = '';
     let goalDesc = '';
+    let targetRank = '';
     
     if (goalType === 'rankA') {
         const aRange = E.find(e => e.s === 'A')[`c${gr}`];
         targetScore = parseInt(aRange.replace('以上', ''));
         goalTitle = '🎯 総合A評価を目指す';
+        goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
+        targetRank = 'A';
     } else if (goalType === 'rankB') {
         const bRange = E.find(e => e.s === 'B')[`c${gr}`];
         targetScore = parseInt(bRange.split('～')[0]);
         goalTitle = '🎯 総合B評価を目指す';
+        goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
+        targetRank = 'B';
     } else if (goalType === 'rankC') {
         const cRange = E.find(e => e.s === 'C')[`c${gr}`];
         targetScore = parseInt(cRange.split('～')[0]);
         goalTitle = '🎯 総合C評価を目指す';
+        goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
+        targetRank = 'C';
     } else if (goalType === 'rankD') {
         const dRange = E.find(e => e.s === 'D')[`c${gr}`];
         targetScore = parseInt(dRange.split('～')[0]);
         goalTitle = '🎯 総合D評価を目指す';
+        goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
+        targetRank = 'D';
     }
     
     const pointsNeeded = Math.max(0, targetScore - totalScore);
@@ -366,6 +456,7 @@ function setGoal(goalType) {
         <div style="background:white;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1)">
             <h5 style="margin:0 0 20px 0;font-size:20px;color:#9c27b0">${goalTitle}</h5>
             <div style="background:#f5f5f5;padding:15px;border-radius:8px;margin-bottom:20px">
+                <div style="font-size:16px;color:#666;margin-bottom:10px">${goalDesc}</div>
                 <div style="font-size:24px;font-weight:bold;color:#9c27b0">必要な得点: +${pointsNeeded}点</div>
             </div>
     `;
@@ -373,138 +464,326 @@ function setGoal(goalType) {
     if (pointsNeeded > 0) {
         html += '<div style="margin-top:20px"><h6 style="color:#9c27b0;margin-bottom:15px;font-size:18px">💡 おすすめの伸ばし方</h6>';
         
+        const hasEndurance = myValues[4] > 0;
+        const hasShuttle = myValues[5] > 0;
+        
         const improvements = [];
         h.forEach((header, i) => {
-            if (myScores[i] < 10) {
-                const difficulty = myScores[i] >= 7 ? '難しい' : myScores[i] >= 5 ? '普通' : '簡単！';
-                const diffColor = myScores[i] >= 7 ? '#f44336' : myScores[i] >= 5 ? '#FF9800' : '#4CAF50';
+            if (i === 4 && !hasEndurance && hasShuttle) return;
+            if (i === 5 && !hasShuttle && hasEndurance) return;
+            
+            if (myScores[i] < 10 && myScores[i] > 0) {
+                const potential = 10 - myScores[i];
+                const difficulty = myScores[i] >= 7 ? '難しい' : myScores[i] >= 5 ? '普通' : myScores[i] >= 3 ? '簡単！' : 'とても簡単！';
+                const diffColor = myScores[i] >= 7 ? '#f44336' : myScores[i] >= 5 ? '#FF9800' : myScores[i] >= 3 ? '#4CAF50' : '#2196F3';
                 improvements.push({
                     name: header,
                     current: myScores[i],
-                    potential: 10 - myScores[i],
+                    potential: potential,
                     difficulty: difficulty,
                     diffColor: diffColor
                 });
             }
         });
         
-        improvements.sort((a, b) => b.potential - a.potential).slice(0, 5).forEach(imp => {
-            html += `
-                <div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;border-left:4px solid ${imp.diffColor}">
-                    <div style="display:flex;justify-content:space-between;align-items:center">
-                        <div>
-                            <span style="font-weight:bold;font-size:16px">${imp.name}</span>
-                            <span style="color:#666;margin-left:10px">現在${imp.current}点 → あと${Math.min(2, imp.potential)}点アップ</span>
-                        </div>
-                        <span style="background:${imp.diffColor};color:white;padding:5px 12px;border-radius:20px;font-size:13px">${imp.difficulty}</span>
-                    </div>
-                </div>
-            `;
+        h.forEach((header, i) => {
+            if (i === 4 && !hasEndurance && hasShuttle) return;
+            if (i === 5 && !hasShuttle && hasEndurance) return;
+            
+            if (myScores[i] === 0) {
+                improvements.push({
+                    name: header,
+                    current: 0,
+                    potential: 10,
+                    difficulty: '未測定',
+                    diffColor: '#9E9E9E'
+                });
+            }
         });
+        
+        improvements.sort((a, b) => {
+            if (a.current === 0 && b.current > 0) return 1;
+            if (a.current > 0 && b.current === 0) return -1;
+            return b.potential - a.potential;
+        });
+        
+        let recommendCount = 0;
+        let totalRecommend = 0;
+        improvements.forEach((imp, idx) => {
+            if (recommendCount < 5 && totalRecommend < pointsNeeded) {
+                const recommend = imp.current === 0 ? 5 : Math.min(2, imp.potential, pointsNeeded - totalRecommend);
+                if (recommend > 0) {
+                    html += `
+                        <div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;border-left:4px solid ${imp.diffColor}">
+                            <div style="display:flex;justify-content:space-between;align-items:center">
+                                <div>
+                                    <span style="font-weight:bold;font-size:16px">${imp.name}</span>
+                                    <span style="color:#666;margin-left:10px">${imp.current === 0 ? '未測定 → 平均5点を目指す' : `現在${imp.current}点 → ${imp.current + recommend}点`}</span>
+                                </div>
+                                <span style="background:${imp.diffColor};color:white;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:bold">${imp.difficulty}</span>
+                            </div>
+                        </div>
+                    `;
+                    recommendCount++;
+                    totalRecommend += recommend;
+                }
+            }
+        });
+        
+        html += `<div style="margin-top:20px;padding:15px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-radius:8px;text-align:center;font-size:16px">
+            ✨ これらを達成すれば目標クリア！頑張りましょう！
+        </div>`;
+        
         html += '</div>';
+    } else {
+        html += '<div style="padding:20px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:white;border-radius:8px;text-align:center;font-size:18px">🎉 すでに目標達成しています！素晴らしい！</div>';
     }
     
-    document.getElementById("goalSimulator").innerHTML = html + '</div>';
+    html += '</div>';
+    
+    document.getElementById("goalSimulator").innerHTML = html;
 }
 
-// トラッキング（元の関数を維持）
+// トラッキング機能
 function addTrackingRecord() {
     const eventIdx = parseInt(document.getElementById("trackingEvent").value);
     const value = parseFloat(document.getElementById("trackingValue").value);
+    const unit = document.getElementById("trackingUnit").value;
     const date = document.getElementById("trackingDate").value;
+    const memo = document.getElementById("trackingMemo").value;
     const g = document.getElementById("gender").value;
+    const h = D[g].h;
     
     if (isNaN(value) || !date) {
         N('測定値と日付を入力してください', 'error');
         return;
     }
     
+    const score = CS(value, h[eventIdx], g);
+    
     const key = `tracking-${g}`;
     let trackingData = JSON.parse(localStorage.getItem(key) || '{}');
-    if (!trackingData[eventIdx]) trackingData[eventIdx] = [];
+    
+    if (!trackingData[eventIdx]) {
+        trackingData[eventIdx] = [];
+    }
     
     trackingData[eventIdx].push({
         date: date,
         value: value,
-        unit: document.getElementById("trackingUnit").value,
-        memo: document.getElementById("trackingMemo").value
+        unit: unit,
+        memo: memo,
+        score: score
     });
     
     trackingData[eventIdx].sort((a, b) => new Date(a.date) - new Date(b.date));
+    
     localStorage.setItem(key, JSON.stringify(trackingData));
+    
+    document.getElementById("trackingValue").value = '';
+    document.getElementById("trackingUnit").value = '';
+    document.getElementById("trackingMemo").value = '';
+    
     N('記録を追加しました！', 'success');
+    
+    document.getElementById("trackingViewEvent").value = eventIdx;
     updateTrackingView();
 }
 
 function updateTrackingView() {
     const eventIdx = parseInt(document.getElementById("trackingViewEvent").value);
     const g = document.getElementById("gender").value;
-    const trackingData = JSON.parse(localStorage.getItem(`tracking-${g}`) || '{}');
+    const h = D[g].h;
+    
+    const key = `tracking-${g}`;
+    const trackingData = JSON.parse(localStorage.getItem(key) || '{}');
     const records = trackingData[eventIdx] || [];
     
     if (records.length === 0) {
-        document.getElementById("trackingGraph").getContext("2d").clearRect(0,0,1000,400);
+        document.getElementById("trackingGraph").getContext("2d").clearRect(0, 0, 1000, 400);
+        const ctx = document.getElementById("trackingGraph").getContext("2d");
+        ctx.fillStyle = '#666';
+        ctx.font = '18px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('記録を追加すると、グラフが表示されます', 500, 200);
+        
+        document.getElementById("trackingStats").innerHTML = '<p style="text-align:center;color:#666">データがありません</p>';
         document.getElementById("trackingList").innerHTML = '<p style="text-align:center;color:#666;padding:20px">データがありません</p>';
         return;
     }
-    drawTrackingGraph(records, D[g].h[eventIdx]);
-    updateTrackingList(records, D[g].h[eventIdx], eventIdx);
+    
+    drawTrackingGraph(records, h[eventIdx]);
+    updateTrackingStats(records, h[eventIdx]);
+    updateTrackingList(records, h[eventIdx], eventIdx);
 }
 
 function drawTrackingGraph(records, eventName) {
     const cv = document.getElementById("trackingGraph");
     const ctx = cv.getContext("2d");
     ctx.clearRect(0, 0, cv.width, cv.height);
+    
     const p = {t: 40, r: 80, b: 80, l: 80};
     const cW = cv.width - p.l - p.r;
     const cH = cv.height - p.t - p.b;
+    
     const values = records.map(r => r.value);
     const maxVal = Math.max(...values);
     const minVal = Math.min(...values);
-    const yMax = maxVal + (maxVal - minVal) * 0.1 || maxVal + 1;
-    const yMin = Math.max(0, minVal - (maxVal - minVal) * 0.1);
+    const range = maxVal - minVal;
+    const padding = range * 0.1;
+    
+    const yMax = maxVal + padding;
+    const yMin = Math.max(0, minVal - padding);
+    const yRange = yMax - yMin;
+    
+    ctx.strokeStyle = '#e0e0e0';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 5; i++) {
+        const y = p.t + (cH / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(p.l, y);
+        ctx.lineTo(p.l + cW, y);
+        ctx.stroke();
+        
+        const val = yMax - (yRange / 5) * i;
+        ctx.fillStyle = '#666';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'right';
+        ctx.fillText(val.toFixed(1), p.l - 10, y + 4);
+    }
+    
+    ctx.fillStyle = '#666';
+    ctx.font = '11px Arial';
+    ctx.textAlign = 'center';
+    records.forEach((r, i) => {
+        const x = p.l + (cW / (records.length - 1)) * i;
+        const date = new Date(r.date);
+        const label = `${i + 1}回目\n${date.getMonth() + 1}/${date.getDate()}`;
+        ctx.fillText(label, x, cv.height - p.b + 30);
+    });
     
     ctx.strokeStyle = '#FF5722';
     ctx.lineWidth = 3;
     ctx.beginPath();
     records.forEach((r, i) => {
-        const x = p.l + (cW / (records.length - 1 || 1)) * i;
-        const y = p.t + cH - ((r.value - yMin) / (yMax - yMin || 1)) * cH;
+        const x = p.l + (cW / (records.length - 1)) * i;
+        const y = p.t + cH - ((r.value - yMin) / yRange) * cH;
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
     });
     ctx.stroke();
     
     records.forEach((r, i) => {
-        const x = p.l + (cW / (records.length - 1 || 1)) * i;
-        const y = p.t + cH - ((r.value - yMin) / (yMax - yMin || 1)) * cH;
+        const x = p.l + (cW / (records.length - 1)) * i;
+        const y = p.t + cH - ((r.value - yMin) / yRange) * cH;
+        
         ctx.fillStyle = '#FF5722';
         ctx.beginPath();
         ctx.arc(x, y, 6, 0, Math.PI * 2);
         ctx.fill();
+        
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
         ctx.fillStyle = '#333';
-        ctx.fillText(r.value, x - 10, y - 10);
+        ctx.font = 'bold 12px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(r.value, x, y - 12);
     });
+    
+    ctx.fillStyle = '#FF5722';
+    ctx.font = 'bold 18px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${eventName} の変容`, cv.width / 2, 25);
+}
+
+function updateTrackingStats(records, eventName) {
+    const first = records[0];
+    const last = records[records.length - 1];
+    const diff = last.value - first.value;
+    const diffPercent = ((diff / first.value) * 100).toFixed(1);
+    const avg = (records.reduce((sum, r) => sum + r.value, 0) / records.length).toFixed(1);
+    const max = Math.max(...records.map(r => r.value));
+    const maxRecord = records.find(r => r.value === max);
+    
+    const diffColor = diff > 0 ? '#4CAF50' : diff < 0 ? '#f44336' : '#666';
+    const diffIcon = diff > 0 ? '📈' : diff < 0 ? '📉' : '➡️';
+    
+    let html = `
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:20px">
+            <div style="background:#f5f5f5;padding:15px;border-radius:8px;text-align:center">
+                <div style="color:#666;font-size:13px;margin-bottom:5px">初回記録</div>
+                <div style="font-size:24px;font-weight:bold;color:#FF5722">${first.value}</div>
+                <div style="color:#999;font-size:12px">${first.date}</div>
+            </div>
+            <div style="background:#f5f5f5;padding:15px;border-radius:8px;text-align:center">
+                <div style="color:#666;font-size:13px;margin-bottom:5px">最新記録</div>
+                <div style="font-size:24px;font-weight:bold;color:#FF5722">${last.value}</div>
+                <div style="color:#999;font-size:12px">${last.date}</div>
+            </div>
+            <div style="background:#f5f5f5;padding:15px;border-radius:8px;text-align:center">
+                <div style="color:#666;font-size:13px;margin-bottom:5px">伸び ${diffIcon}</div>
+                <div style="font-size:24px;font-weight:bold;color:${diffColor}">${diff > 0 ? '+' : ''}${diff.toFixed(1)}</div>
+                <div style="color:${diffColor};font-size:12px;font-weight:bold">${diff > 0 ? '+' : ''}${diffPercent}%</div>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px">
+            <div style="background:#f5f5f5;padding:15px;border-radius:8px">
+                <div style="color:#666;font-size:13px;margin-bottom:8px">📊 統計情報</div>
+                <div style="font-size:14px;line-height:1.8">
+                    • 測定回数: ${records.length}回<br>
+                    • 平均値: ${avg}<br>
+                    • 最高記録: ${max} (${maxRecord.date})
+                </div>
+            </div>
+            <div style="background:#f5f5f5;padding:15px;border-radius:8px">
+                <div style="color:#666;font-size:13px;margin-bottom:8px">💡 分析コメント</div>
+                <div style="font-size:14px;line-height:1.8">
+                    ${diff > 0 ? '順調に成長しています！この調子で頑張りましょう🎉' : diff < 0 ? '一時的に下がっていますが、コンディションを整えて再チャレンジ💪' : '記録が安定しています。次のステップを目指しましょう！'}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById("trackingStats").innerHTML = html;
 }
 
 function updateTrackingList(records, eventName, eventIdx) {
-    let html = '<table style="width:100%;border-collapse:collapse"><tr style="background:#FF5722;color:white"><th style="padding:12px">日付</th><th>値</th><th>メモ</th><th>操作</th></tr>';
+    let html = '<table style="width:100%;border-collapse:collapse">';
+    html += '<tr style="background:#FF5722;color:white"><th style="padding:12px">No</th><th>日付</th><th>測定値</th><th>伸び</th><th>単元</th><th>メモ</th><th>操作</th></tr>';
+    
     records.forEach((r, i) => {
-        html += `<tr style="border-bottom:1px solid #eee">
+        const diff = i > 0 ? (r.value - records[i - 1].value).toFixed(1) : '-';
+        const diffColor = i > 0 ? (r.value > records[i - 1].value ? '#4CAF50' : r.value < records[i - 1].value ? '#f44336' : '#666') : '#666';
+        
+        html += `<tr style="border-bottom:1px solid #f0f0f0">
+            <td style="padding:12px;text-align:center;font-weight:bold">${i + 1}</td>
             <td style="padding:12px;text-align:center">${r.date}</td>
-            <td style="text-align:center;font-weight:bold">${r.value}</td>
-            <td style="text-align:center">${r.memo || '-'}</td>
-            <td style="text-align:center"><button onclick="deleteTrackingRecord(${eventIdx}, ${i})" style="background:#f44336;color:white;border:none;padding:5px 10px;border-radius:4px">削除</button></td>
+            <td style="padding:12px;text-align:center;font-weight:bold;color:#FF5722">${r.value}</td>
+            <td style="padding:12px;text-align:center;font-weight:bold;color:${diffColor}">${diff !== '-' && parseFloat(diff) > 0 ? '+' : ''}${diff}</td>
+            <td style="padding:12px;text-align:center">${r.unit || '-'}</td>
+            <td style="padding:12px;text-align:center">${r.memo || '-'}</td>
+            <td style="padding:12px;text-align:center"><button class="btn" style="background:#f44336;padding:6px 12px;font-size:12px" onclick="deleteTrackingRecord(${eventIdx}, ${i})">削除</button></td>
         </tr>`;
     });
-    document.getElementById("trackingList").innerHTML = html + '</table>';
+    
+    html += '</table>';
+    
+    document.getElementById("trackingList").innerHTML = html;
 }
 
 function deleteTrackingRecord(eventIdx, recordIdx) {
-    if (!confirm('削除しますか？')) return;
+    if (!confirm('この記録を削除しますか？')) return;
+    
     const g = document.getElementById("gender").value;
-    let data = JSON.parse(localStorage.getItem(`tracking-${g}`) || '{}');
-    data[eventIdx].splice(recordIdx, 1);
-    localStorage.setItem(`tracking-${g}`, JSON.stringify(data));
-    updateTrackingView();
+    const key = `tracking-${g}`;
+    let trackingData = JSON.parse(localStorage.getItem(key) || '{}');
+    
+    if (trackingData[eventIdx]) {
+        trackingData[eventIdx].splice(recordIdx, 1);
+        localStorage.setItem(key, JSON.stringify(trackingData));
+        N('記録を削除しました', 'info');
+        updateTrackingView();
+    }
 }
