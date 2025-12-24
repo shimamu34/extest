@@ -198,44 +198,60 @@
                 <button onclick="closeSetupGuide()" style="background:none;border:none;font-size:30px;cursor:pointer;color:#666">✕</button>
             </div>
             <div id="setupContent">
-    <h2 style="color: #2b6cb0; text-align: center;">🏫 先生向け設定</h2>
+    <h2 style="color: #2b6cb0; text-align: center;">🏫 先生向け初期設定ガイド</h2>
     
-    <div style="background: #f0f7ff; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-        <p><strong>1. プログラムのコピー</strong></p>
-        <button onclick="copyGsCode()" style="width:100%; padding:10px; background:#2b6cb0; color:white; border:none; border-radius:5px;">📋 コードをコピーする</button>
+    <div style="background: #f0f7ff; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #2b6cb0;">
+        <p><strong>1. 専用プログラムのコピー</strong></p>
+        <p style="font-size: 13px; color: #555;">まずは、スプレッドシートと連携するためのコードをコピーします。</p>
+        <button onclick="copyGsCode()" style="width:100%; padding:12px; background:#2b6cb0; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">📋 コードをコピーする</button>
         <textarea id="gsCodeSource" style="display:none;">
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents);
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = ss.getSheetByName('体力テスト記録');
-    if (!sheet) {
-      sheet = ss.insertSheet('体力テスト記録');
-      sheet.appendRow(['出席番号', '氏名', '性別', '学年', '組', '測定回', '握力', '上体起こし', '長座体前屈', '反復横とび', '持久走', 'シャトルラン', '50m走', '立ち幅跳び', 'ハンドボール投げ', '送信日時']);
+    var data = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName('体力テスト記録') || ss.getSheets()[0];
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(['出席番号', '氏名', '性別', '学年', '組', '回', '握力', '上体', '長座', '反復', '持久', 'シャトル', '50m', '立ち幅', '投', '日時']);
     }
     sheet.appendRow([data.studentId, data.name, data.gender === 'male' ? '男子' : '女子', data.grade, data.class, data.session, data.grip, data.situp, data.forward, data.sidestep, data.endurance, data.shuttle, data.sprint50, data.jump, data.throw, new Date()]);
-    return ContentService.createTextOutput(JSON.stringify({success: true})).setMimeType(ContentService.MimeType.JSON);
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({success: false, error: error.toString()})).setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput("Success");
+  } catch (f) {
+    return ContentService.createTextOutput("Error");
   }
 }
         </textarea>
     </div>
 
-    <div style="background: #f2faf0; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-        <p><strong>2. GASに貼り付けてデプロイ</strong></p>
-        <p style="font-size: 12px;">デプロイ時、アクセス権を「全員」にしてください。</p>
+    <div style="background: #fdfaea; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #f6ad55;">
+        <p><strong>2. Googleスプレッドシートの設定</strong></p>
+        <ol style="font-size: 13px; color: #333; line-height: 1.6; padding-left: 20px;">
+            <li>新しい<b>スプレッドシート</b>を作成します。</li>
+            <li>メニューの<b>「拡張機能」→「Apps Script」</b>を開きます。</li>
+            <li>もともとあるコードを全て消して、先ほどコピーしたコードを<b>貼り付け</b>ます。</li>
+            <li>右上の<b>「デプロイ」→「新しいデプロイ」</b>をクリックします。</li>
+            <li>種類の選択（歯車アイコン）で<b>「ウェブアプリ」</b>を選びます。</li>
+            <li>設定を以下に変更してデプロイします：
+                <ul style="margin-top:5px; color: #e53e3e; font-weight: bold;">
+                    <li>次のユーザーとして実行：自分</li>
+                    <li>アクセスできるユーザー：全員</li>
+                </ul>
+            </li>
+            <li>発行された<b>「ウェブアプリURL」</b>をコピーして戻ってきてください。</li>
+        </ol>
+        
     </div>
 
     <div style="background: #fff5f0; padding: 15px; border-radius: 10px; border: 2px solid #FF5722;">
         <p><strong>3. URLの登録と配布</strong></p>
-        <input type="text" id="gasUrlInput" placeholder="ウェブアプリURLをここに貼る" style="width:100%; padding:10px; margin-bottom:10px;">
-        <button onclick="saveGasUrl()" style="width:100%; padding:10px; background:#FF5722; color:white; border:none; border-radius:5px;">保存して配布URLを作る</button>
+        <p style="font-size: 13px; margin-bottom: 10px;">取得したURLを下に貼り付けて、「保存」を押してください。</p>
+        <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/..." style="width:100%; padding:10px; margin-bottom:10px; border: 1px solid #ccc; border-radius: 5px;">
+        <button onclick="saveGasUrl()" style="width:100%; padding:12px; background:#FF5722; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">URLを保存して配布用リンクを作る</button>
         
-        <div id="studentUrlArea" style="display:none; margin-top: 15px;">
-            <p style="font-size: 12px; font-weight: bold;">📲 生徒用配布URL</p>
-            <input type="text" id="studentDistUrlInput" readonly style="width:100%; padding:8px; font-size:10px; margin-bottom:5px;">
-            <button onclick="copyStudentUrl()" style="width:100%; padding:8px; background:#4CAF50; color:white; border:none; border-radius:5px;">📋 配布用URLをコピー</button>
+        <div id="studentUrlArea" style="display:none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #FF5722;">
+            <p style="font-size: 13px; font-weight: bold; color: #2d3748;">📲 生徒に配るURLはこちら：</p>
+            <input type="text" id="studentDistUrlInput" readonly style="width:100%; padding:10px; font-size:11px; background: #eee; border: 1px solid #ccc; margin-bottom: 10px;">
+            <button onclick="copyStudentUrl()" style="width:100%; padding:10px; background:#4CAF50; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">📋 配布用URLをコピーする</button>
+            <p style="font-size: 11px; color: #666; margin-top: 5px;">※このURLをQRコードにするなどして生徒に伝えてください。</p>
         </div>
     </div>
 </div>
