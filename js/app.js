@@ -334,16 +334,39 @@ function restoreData() {
 }
 
 // 3. クリア：入力した記録をすべて消去する
+// --- データ管理機能（確実に消去する版） ---
+
 function clearData() {
-    if (confirm("現在の性別の記録をすべて消去します。よろしいですか？")) {
+    // 1. 確認ダイアログを出す
+    if (confirm("入力したすべての記録を消去してもよろしいですか？")) {
+        
+        // 2. データの保存場所（localStorage）を空にする
         const g = document.getElementById("gender").value;
         localStorage.removeItem("m-" + g);
-        // 入力欄をすべて空にする
+        
+        // 3. 入力欄（input）をすべて空文字にする
         for (let i = 0; i < 9; i++) {
-            const el = document.getElementById(`i${i}`);
-            if (el) el.value = "";
+            const inputField = document.getElementById(`i${i}`);
+            if (inputField) {
+                inputField.value = ""; // 文字を消す
+            }
         }
-        U(); // 計算と表示をリセット
-        N("データを消去しました", "info");
+        
+        // 4. 合計点や評価の表示（i9）をリセットする
+        const scoreArea = document.getElementById("i9");
+        if (scoreArea) {
+            scoreArea.innerHTML = "<div>0</div><div>E</div>";
+        }
+
+        // 5. グラフや表のハイライトを更新する
+        if (typeof U === "function") {
+            U(); 
+        }
+
+        // 6. 完了通知
+        N("記録をすべて消去しました", "info");
+        
+        // 念のため画面を再読み込み（これで確実に消えます）
+        // location.reload(); // もしこれを入れるとページ全体がリフレッシュされます
     }
 }
