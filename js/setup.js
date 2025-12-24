@@ -1,7 +1,10 @@
 function showSetupGuide() {
-    document.getElementById('setupModal').style.display = 'block';
-    const savedUrl = localStorage.getItem('teacherScriptUrl');
-    if (savedUrl) displayStudentUrl(savedUrl);
+    // ガイドを開く時に、入力欄と配布エリアを強制的に真っさらにする
+    document.getElementById('gasUrlInput').value = ""; 
+    document.getElementById('studentDistUrlInput').value = "";
+    document.getElementById('studentUrlArea').style.display = "none";
+
+    document.getElementById('setupModal').style.display = "block";
 }
 
 function closeSetupGuide() {
