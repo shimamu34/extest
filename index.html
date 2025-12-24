@@ -185,27 +185,34 @@
                     
                     <textarea id="gsCodeSource" style="display:none;">
 function doPost(e) {
-  // ログ出力（デバッグ用：実行数から確認できます）
-  console.log("受信データ: " + e.postData.contents);
-  
   try {
     var data = JSON.parse(e.postData.contents);
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     
-    // 【重要】ここでシート名を決定します
-    // 例：学年「2」、組「A」、回「1」なら「2年-A組-1回目」というシート名になります
+    // シート名を作成
     var sheetName = data.grade + "年-" + data.class + "組-" + data.session + "回目";
-    
-    // 指定した名前のシートがあるか探し、なければ新しく作成する
     var sheet = ss.getSheetByName(sheetName);
+    
+    // シートがなければ新規作成
     if (!sheet) {
       sheet = ss.insertSheet(sheetName);
-      // 新しいシートの1行目に項目名（ヘッダー）を入れる
       sheet.appendRow(['出席番号', '氏名', '性別', '学年', '組', '回', '握力', '上体', '長座', '反復', '持久', 'シャトル', '50m', '立ち幅', '投', '日時']);
     }
 
-    // データの書き込み（最後尾に追加）
-    sheet.appendRow([
+    // --- 上書き処理の追加 ---
+    var rows = sheet.getDataRange().getValues();
+    var rowIndex = -1;
+    
+    // 2行目から順番に見て、出席番号(0列目)と氏名(1列目)が一致する行があるか探す
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][0] == data.studentId && rows[i][1] == data.name) {
+        rowIndex = i + 1; // 一致する行が見つかった
+        break;
+      }
+    }
+
+    // 書き込むデータ
+    var rowData = [
       data.studentId || "",
       data.name || "",
       data.gender === 'male' ? '男子' : '女子',
@@ -222,12 +229,19 @@ function doPost(e) {
       data.jump || "",
       data.throw || "",
       new Date()
-    ]);
+    ];
+
+    if (rowIndex > 0) {
+      // 既存の行がある場合は「上書き」
+      sheet.getRange(rowIndex, 1, 1, rowData.length).setValues([rowData]);
+    } else {
+      // 新規の場合は「最後尾に追加」
+      sheet.appendRow(rowData);
+    }
 
     return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
 
   } catch (f) {
-    console.error("エラー内容: " + f.toString());
     return ContentService.createTextOutput("Error: " + f.toString()).setMimeType(ContentService.MimeType.TEXT);
   }
 }
