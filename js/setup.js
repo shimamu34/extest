@@ -18,29 +18,25 @@ function saveGasUrl() {
     if (url.startsWith('https://script.google.com')) {
         localStorage.setItem('teacherScriptUrl', url);
         displayStudentUrl(url);
-        alert('URLを保存しました。配布用URLを生徒に伝えてください。');
+        alert('設定を保存しました。下の「生徒配布用URL」をコピーしてください。');
     } else {
         alert('正しいURLを入力してください。');
     }
 }
 
 function displayStudentUrl(teacherUrl) {
-    try {
-        const encodedUrl = btoa(teacherUrl);
-        // location.origin + pathname を使い、末尾に必ずスラッシュを入れる
-        let baseUrl = window.location.origin + window.location.pathname;
-        if (!baseUrl.endsWith('/')) {
-            baseUrl += '/';
-        }
-        const studentUrl = baseUrl + '?t=' + encodedUrl;
-        
-        document.getElementById('studentUrlArea').style.display = 'block';
-        document.getElementById('studentDistUrlInput').value = studentUrl;
-    } catch (e) {
-        console.error('URL生成失敗', e);
-    }
+    const encodedUrl = btoa(unescape(encodeURIComponent(teacherUrl)));
+    let baseUrl = window.location.origin + window.location.pathname;
+    if (!baseUrl.endsWith('/')) baseUrl += '/';
+    const studentUrl = baseUrl + '?t=' + encodedUrl;
+    
+    document.getElementById('studentUrlArea').style.display = 'block';
+    document.getElementById('studentDistUrlInput').value = studentUrl;
 }
+
 function copyStudentUrl() {
-    const url = document.getElementById('studentDistUrl').innerText;
-    navigator.clipboard.writeText(url).then(() => alert('生徒配布用URLをコピーしました！'));
+    const input = document.getElementById('studentDistUrlInput');
+    input.select();
+    document.execCommand('copy');
+    alert('配布用URLをコピーしました！');
 }
