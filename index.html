@@ -197,7 +197,41 @@
             <div style="text-align:right;margin-bottom:20px">
                 <button onclick="closeSetupGuide()" style="background:none;border:none;font-size:30px;cursor:pointer;color:#666">✕</button>
             </div>
-            <div id="setupContent"></div>
+            <div id="setupContent">
+    <h2 style="color: #2b6cb0; text-align: center; margin-bottom: 25px; font-size: 28px;">🚀 送信機能のセットアップ</h2>
+    
+    <div style="background: #f0f7ff; padding: 20px; border-radius: 12px; border-left: 6px solid #2b6cb0; margin-bottom: 20px;">
+        <p style="font-weight: bold; font-size: 18px; color: #2b6cb0; margin-bottom: 10px;">Step 1: スクリプトの準備</p>
+        <ol style="margin-left: 20px; line-height: 1.8;">
+            <li>リポジトリ内の <code>google-apps-script.gs</code> を開き、中身をすべてコピーします。</li>
+            <li>Googleスプレッドシートのメニュー「拡張機能」→「Apps Script」を開きます。</li>
+            <li>もともとあるコードを消して、コピーした内容を貼り付け「保存」します。</li>
+        </ol>
+    </div>
+
+    <div style="background: #f2faf0; padding: 20px; border-radius: 12px; border-left: 6px solid #4CAF50; margin-bottom: 20px;">
+        <p style="font-weight: bold; font-size: 18px; color: #388e3c; margin-bottom: 10px;">Step 2: Webアプリとして公開（重要！）</p>
+        <ol style="margin-left: 20px; line-height: 1.8;">
+            <li>右上の<strong>「デプロイ」</strong>→<strong>「新しいデプロイ」</strong>を選択。</li>
+            <li>種類の選択（歯車アイコン）から<strong>「ウェブアプリ」</strong>を選びます。</li>
+            <li>設定を以下のように変更してください：
+                <ul style="margin-top: 5px; background: white; padding: 10px; border-radius: 8px; list-style: none; border: 1px dashed #4CAF50;">
+                    <li>✅ 次のユーザーとして実行：<strong>自分</strong></li>
+                    <li>✅ アクセスできるユーザー：<strong>全員</strong>（※ここを間違えると送信できません）</li>
+                </ul>
+            </li>
+            <li>「デプロイ」を押し、表示された<strong>「ウェブアプリURL」</strong>をコピーします。</li>
+        </ol>
+    </div>
+
+    <div style="background: #fff5f0; padding: 25px; border-radius: 12px; border: 2px solid #FF5722; text-align: center;">
+        <p style="font-weight: bold; font-size: 18px; color: #FF5722; margin-bottom: 15px;">Step 3: URLの登録</p>
+        <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/..." 
+               style="width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 8px; margin-bottom: 15px; font-size: 16px;">
+        <button class="btn" style="background: linear-gradient(135deg,#FF5722,#FF7043); width: 100%; padding: 15px; font-size: 18px;" 
+                onclick="saveGasUrl()">設定を保存してはじめる</button>
+    </div>
+</div>
         </div>
     </div>
     
