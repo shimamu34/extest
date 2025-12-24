@@ -260,13 +260,13 @@ function doPost(e) {
     <p><strong>3. URLの登録と生徒への配布</strong></p>
     <p style="font-size: 13px; margin-bottom: 10px;">コピーした「ウェブアプリURL」を貼り付けて保存してください。</p>
     
-    <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/..." style="width:100%; padding:10px; margin-bottom:10px; border: 1px solid #ccc; border-radius: 5px;" value="">
+    <input type="text" id="gasUrlInput" autocomplete="off" placeholder="https://script.google.com/macros/s/..." style="width:100%; padding:10px; margin-bottom:10px; border: 1px solid #ccc; border-radius: 5px;" value="">
     
     <button onclick="saveGasUrl()" style="width:100%; padding:12px; background:#FF5722; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">💾 設定を保存して配布URLを作る</button>
     
     <div id="studentUrlArea" style="display:none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #FF5722;">
         <p style="font-size: 13px; font-weight: bold; color: #2d3748;">✅ 準備完了！生徒に配るURL：</p>
-        <input type="text" id="studentDistUrlInput" readonly style="width:100%; padding:10px; font-size:11px; background: #eee; border: 1px solid #ccc; margin-bottom: 10px;" value="">
+        <input type="text" id="studentDistUrlInput" autocomplete="off" readonly style="width:100%; padding:10px; font-size:11px; background: #eee; border: 1px solid #ccc; margin-bottom: 10px;" value="">
         <button onclick="copyStudentUrl()" style="width:100%; padding:10px; background:#4CAF50; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">📋 URLをコピーして生徒に配布</button>
         <p style="font-size: 11px; color: #666; margin-top: 5px;">※このURLをQRコードにするなどして生徒に伝えてください。データが自動で集約されます。</p>
     </div>
