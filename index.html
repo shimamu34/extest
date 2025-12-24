@@ -256,7 +256,7 @@ function doPost(e) {
     <p style="font-size: 13px; margin-top: 10px;">最後に表示される<b>「ウェブアプリURL」</b>をコピーして、この画面に戻ってください。</p>
 </div>
 
-                <div style="background: #fff5f0; padding: 15px; border-radius: 10px; border: 2px solid #FF5722;">
+    <div style="background: #fff5f0; padding: 15px; border-radius: 10px; border: 2px solid #FF5722;">
     <p><strong>3. URLの登録と生徒への配布</strong></p>
     <p style="font-size: 13px; margin-bottom: 10px;">コピーした「ウェブアプリURL」を貼り付けて保存してください。</p>
     
@@ -268,7 +268,6 @@ function doPost(e) {
         <p style="font-size: 13px; font-weight: bold; color: #2d3748;">✅ 準備完了！生徒に配るURL：</p>
         <input type="text" id="studentDistUrlInput" autocomplete="off" readonly style="width:100%; padding:10px; font-size:11px; background: #eee; border: 1px solid #ccc; margin-bottom: 10px;" value="">
         <button onclick="copyStudentUrl()" style="width:100%; padding:10px; background:#4CAF50; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">📋 URLをコピーして生徒に配布</button>
-        <p style="font-size: 11px; color: #666; margin-top: 5px;">※このURLをQRコードにするなどして生徒に伝えてください。データが自動で集約されます。</p>
     </div>
 </div>
             </div>
@@ -279,5 +278,17 @@ function doPost(e) {
     <script src="js/app.js"></script>
     <script src="js/charts.js"></script>
     <script src="js/setup.js"></script>
+
+    <script>
+    function showSetupGuide() {
+        // ガイドを開く時に中身を強制リセット
+        document.getElementById('gasUrlInput').value = ""; 
+        document.getElementById('studentDistUrlInput').value = "";
+        document.getElementById('studentUrlArea').style.display = "none";
+        
+        // モーダルを表示
+        document.getElementById('setupModal').style.display = "block";
+    }
+    </script>
 </body>
 </html>
