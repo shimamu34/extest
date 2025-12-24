@@ -294,73 +294,7 @@ function sendToTeacher() {
         }
     });
 }
-// --- データ管理機能（バックアップ・復元・クリア） ---
-
-// 1. バックアップ：現在の記録をファイル（JSON形式）として保存
-function backupData() {
-    try {
-        const g = document.getElementById("gender").value;
-        const data = localStorage.getItem("m-" + g);
-        
-        if (!data || data === "[]" || data === "{}") {
-            alert("保存するデータがまだ入力されていません。");
-            return;
-        }
-
-        const blob = new Blob([data], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `体力テスト_${g === 'male' ? '男子' : '女子'}_バックアップ.json`;
-        document.body.appendChild(a); // ブラウザ対策で一時的に追加
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        if (typeof N === "function") N("ファイルを保存しました", "success");
-    } catch (e) {
-        alert("バックアップに失敗しました: " + e.message);
-    }
-}
-
-// 2. 復元：保存したファイルを選択して読み込む
-function restoreData() {
-    // 見えないファイル選択ボタンを作る
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = ".json";
-    
-    fileInput.onchange = e => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = event => {
-            try {
-                const g = document.getElementById("gender").value;
-                const json = event.target.result;
-                
-                // 形式が正しいか簡易チェック
-                JSON.parse(json); 
-                
-                localStorage.setItem("m-" + g, json);
-                
-                // 画面を更新する関数（LI）を呼ぶ
-                if (typeof LI === "function") {
-                    LI();
-                    alert("データを復元しました！");
-                } else {
-                    location.reload(); // LIがない場合は画面ごと更新
-                }
-            } catch (err) {
-                alert("ファイルの形式が正しくありません。");
-            }
-        };
-        reader.readAsText(file);
-    };
-    
-    fileInput.click();
-}
+// --- データ管理機能（クリア） ---
 
 // 3. クリア：入力した記録をすべて消去する
 // --- データ管理機能（確実に消去する版） ---
@@ -398,4 +332,27 @@ function clearData() {
         // 念のため画面を再読み込み（これで確実に消えます）
         // location.reload(); // もしこれを入れるとページ全体がリフレッシュされます
     }
+}
+// --- 履歴保存機能（末尾に追加） ---
+function saveYearData() {
+    const g = document.getElementById("gender").value;
+    const grade = document.getElementById("grade").value;
+    const points = [];
+    
+    // 表から8種目の点数を取得（現在の入力値）
+    for(let i=0; i<8; i++) {
+        const row = document.querySelector(`#table tr:nth-child(${i+1})`);
+        points.push(row ? parseInt(row.cells[2].innerText) || 0 : 0);
+    }
+    
+    // 履歴としてブラウザに保存
+    let history = JSON.parse(localStorage.getItem("history-" + g) || "{}");
+    history[grade] = points;
+    localStorage.setItem("history-" + g, JSON.stringify(history));
+    
+    // グラフが開いていれば即時更新
+    if (document.getElementById('radar').style.display !== 'none') {
+        updateRadarChart();
+    }
+    alert("中" + grade + "の記録をグラフに固定しました。");
 }
