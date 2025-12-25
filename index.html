@@ -47,7 +47,6 @@
     
     <div class="card no-print" style="text-align:center">
         <button class="btn" style="background:linear-gradient(135deg,#2c5282,#2b6cb0)" onclick="toggleRadar()">📊 レーダーチャート</button>
-        <button class="btn" style="background:linear-gradient(135deg,#2c5282,#2b6cb0)" onclick="toggleGrowth()">📈 経年変化</button>
         <button class="btn" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2)" onclick="toggleAnalysis()">🎮 体力分析</button>
         <button class="btn" style="background:linear-gradient(135deg,#FF5722,#FF7043)" onclick="toggleTracking()">📈 種目別トラッキング</button>
     </div>
@@ -57,11 +56,6 @@
         <div style="display:flex;justify-content:center">
             <canvas id="rc" width="600" height="600"></canvas>
         </div>
-    </div>
-    
-    <div id="growth" style="display:none" class="card">
-        <h3 style="text-align:center;color:#2b6cb0;margin-bottom:20px">📈 経年変化グラフ</h3>
-        <canvas id="gc" width="1000" height="500"></canvas>
     </div>
     
     <div id="correlation" style="display:none" class="card">
