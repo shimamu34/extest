@@ -196,3 +196,25 @@ canvas {
 #radar, #growth {
     padding: 20px;
 }
+
+/* ボタンごとの個別スタイル定義 */
+.btn-clear {
+    background: linear-gradient(135deg, #4a5568, #2d3748) !important;
+    margin-right: 10px;
+}
+
+.btn-print {
+    background: linear-gradient(135deg, #9c27b0, #7b1fa2) !important;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #4CAF50, #388E3C) !important;
+}
+
+.btn-send {
+    background: linear-gradient(135deg, #e91e63, #c2185b) !important;
+}
+
+.btn-setup {
+    background: linear-gradient(135deg, #FF5722, #FF7043) !important;
+}
