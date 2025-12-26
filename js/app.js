@@ -25,29 +25,45 @@ var radarVisible = radarVisible || [true, true, true, true, true, true];
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. まず「器（テーブル）」をすべて描画する
-    RT(); // マイレコード
-    RS(); // 点数基準表（←これが抜けていた、もしくは順序が不安定でした）
-    RE(); // 総合ランク表（←これが抜けていた）
+    // データの存在確認（デバッグ用）
+    if (typeof D === 'undefined') {
+        console.error("data.js が正しく読み込まれていません");
+        return;
+    }
+
+    // 表の描画を実行
+    try {
+        RT(); // マイレコード
+        RS(); // 点数基準
+        RE(); // 総合ランク
+        LI(); // ローカルストレージからデータ読み込み
+    } catch (e) {
+        console.error("描画エラー:", e);
+    }
     
-    // 2. その後、保存されているデータを読み込む
-    LI(); 
+    // 性別変更イベント
+    const genderEl = document.getElementById("gender");
+    if (genderEl) {
+        genderEl.addEventListener("change", () => {
+            const g = genderEl.value;
+            RT();
+            RS();
+            RE();
+            LI();
+            // チャートが表示されていれば更新
+            if (document.getElementById("radar").style.display !== "none") RR(g);
+            if (document.getElementById("correlation").style.display !== "none") if(typeof RAnalysis === 'function') RAnalysis(g);
+            if (document.getElementById("tracking").style.display !== "none") if(typeof updateTrackingView === 'function') updateTrackingView();
+        });
+    }
     
-    // 3. イベントリスナーの設定
-    document.getElementById("gender").addEventListener("change", () => {
-        const g = document.getElementById("gender").value;
-        RT();
-        RS(); // 性別が変わったら点数表も書き換える
-        RE();
-        LI();
-        if (document.getElementById("radar").style.display !== "none") RR(g);
-        if (document.getElementById("correlation").style.display !== "none") RAnalysis(g);
-        if (document.getElementById("tracking").style.display !== "none") updateTrackingView();
-    });
-    
-    document.getElementById("grade").addEventListener("change", () => {
-        LI(); // 学年が変わったらデータをロード（LIの中でU()が呼ばれるのでハイライトも更新されます）
-    });
+    // 学年変更イベント
+    const gradeEl = document.getElementById("grade");
+    if (gradeEl) {
+        gradeEl.addEventListener("change", () => {
+            LI(); 
+        });
+    }
 });
 
 // 通知表示
