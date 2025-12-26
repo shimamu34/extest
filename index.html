@@ -107,8 +107,11 @@
         </div>
         <div>
             <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">測定値</label>
-            <input type="number" id="trackingValue" step="0.01" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;font-weight:bold" placeholder="数値入力">
-        </div>
+            <input type="number" id="trackingValue" step="0.01" 
+       oninput="checkAnomaly()" 
+       style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;font-weight:bold" 
+       placeholder="数値入力">
+<div id="anomalyWarning" style="color:#ffeb3b; font-size:11px; margin-top:5px; font-weight:bold; min-height:15px"></div>
     </div>
 
     <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:15px; margin-bottom:20px">
