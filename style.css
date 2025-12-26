@@ -218,3 +218,37 @@ canvas {
 .btn-setup {
     background: linear-gradient(135deg, #FF5722, #FF7043) !important;
 }
+
+/* --- 体力図鑑 2列固定のための強制設定 --- */
+#fitnessPokedex {
+    display: grid !important;
+    /* 常に1:1の比率で2列に分割 */
+    grid-template-columns: 1fr 1fr !important;
+    /* カード同士の隙間（20pxだとスマホで狭いので10pxに調整） */
+    gap: 10px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+/* 図鑑内の各カードに対する設定 */
+#fitnessPokedex > div {
+    /* 横幅が溢れないように強制固定 */
+    width: 100% !important; 
+    min-width: 0 !important;
+    /* パディングが広すぎると文字が溢れるので少し削る */
+    padding: 12px 8px !important;
+}
+
+/* スマホ表示での微調整：文字がはみ出さないようにサイズを下げる */
+@media screen and (max-width: 480px) {
+    #fitnessPokedex > div span {
+        font-size: 20px !important; /* 絵文字サイズ */
+    }
+    #fitnessPokedex > div div {
+        font-size: 11px !important; /* ラベル（パワー型など） */
+    }
+    #fitnessPokedex > div div b, 
+    #fitnessPokedex > div div strong {
+        font-size: 14px !important; /* Lv.1などの数字 */
+    }
+}
