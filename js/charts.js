@@ -453,7 +453,7 @@ function addTrackingRecord() {
     const h = D[g].h;
 
     // ★追加：今のマイレコード画面で選ばれている学年を取得（1, 2, 3のどれか）
-    const saveGrade = document.getElementById("grade").value;
+    const saveGrade = document.getElementById("trackingViewGrade").value;
     
     if (isNaN(value) || !date) {
         N('測定値と日付を入力してください', 'error');
