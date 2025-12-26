@@ -231,22 +231,30 @@ function LI() {
     }
 }
 
-// --- 送信機能 ---
+// --- 送信機能（修正版） ---
 function sendToTeacher() {
+    // 1. 通知を表示（これで「動いている感」を出します）
+    N('送信処理を開始します...', 'info');
+
     const toHalfWidth = (str) => str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
 
     const name = prompt("氏名を入力してください");
-    if (!name) return;
+    if (!name) { N('送信をキャンセルしました', 'info'); return; }
 
     let studentIdRaw = prompt("出席番号を入力してください（例：12）");
-    if (!studentIdRaw) return;
+    if (!studentIdRaw) { N('送信をキャンセルしました', 'info'); return; }
     const studentId = toHalfWidth(studentIdRaw);
 
-    const gasUrl = localStorage.getItem('gasUrl');
+    // 2. URLの取得（gasUrl または teacherScriptUrl の両方を確認する）
+    const gasUrl = localStorage.getItem('gasUrl') || localStorage.getItem('teacherScriptUrl');
+    
     if (!gasUrl) {
-        alert("先生がURLを設定していません。初期設定ガイドを確認してください。");
+        alert("送信先URLが見つかりません。初期設定をやり直してください。");
+        N('送信エラー：URL未設定', 'error');
         return;
     }
+
+    N('送信中...', 'info'); // 送信中の通知
 
     const data = {
         name: name,
@@ -272,11 +280,12 @@ function sendToTeacher() {
         body: JSON.stringify(data)
     })
     .then(() => {
-        N('送信リクエストを完了しました！', 'success');
-        alert('送信完了しました。\nスプレッドシートに反映されているか確認してください。');
+        N('送信完了しました！', 'success');
+        alert('先生のスプレッドシートへ送信が完了しました。');
     })
     .catch(err => {
         console.error("Fetch error:", err);
+        N('送信失敗', 'error');
         alert('エラー詳細：' + err);
     });
 }
