@@ -180,36 +180,52 @@
                 <button onclick="closeSetupGuide()" style="background:none;border:none;font-size:30px;cursor:pointer;color:#666">✕</button>
             </div>
             <div id="setupContent">
-    <h2 style="color: #2b6cb0; text-align: center; margin-bottom: 20px; font-size: 20px;">🏫 初期設定ガイド</h2>
+    <h2 style="color: #2b6cb0; text-align: center; margin-bottom: 25px; font-size: 22px;">🏫 初期設定ガイド</h2>
     
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: start;">
+    <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 20px; align-items: start;">
         
         <div>
-            <div style="background: #f0f7ff; padding: 12px; border-radius: 10px; border-left: 5px solid #2b6cb0; margin-bottom: 10px;">
-                <p style="margin:0 0 8px 0; font-size:14px;"><strong>1. コードをコピー</strong></p>
-                <button onclick="copyGsCode()" style="width:100%; padding:8px; background:#2b6cb0; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; font-size:12px;">📋 プログラムをコピー</button>
-                
+            <div style="background: #f0f7ff; padding: 15px; border-radius: 10px; border-left: 5px solid #2b6cb0; margin-bottom: 15px;">
+                <p style="margin:0 0 10px 0; font-weight:bold;">1. 専用プログラムの準備</p>
+                <p style="font-size: 12px; color: #555; margin-bottom: 10px;">下のボタンを押して、集計用コードをクリップボードにコピーします。</p>
+                <button onclick="copyGsCode()" style="width:100%; padding:10px; background:#2b6cb0; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">📋 プログラムをコピー</button>
                 <textarea id="gsCodeSource" style="display:none;">function doPost(e){try{var data=JSON.parse(e.postData.contents);var ss=SpreadsheetApp.getActiveSpreadsheet();var sheetName=data.grade+"年-"+data.class+"組-"+data.session+"回目";var sheet=ss.getSheetByName(sheetName);if(!sheet){sheet=ss.insertSheet(sheetName);sheet.appendRow(['出席番号','氏名','性別','学年','組','回','握力','上体','長座','反復','持久','シャトル','50m','立ち幅','投','日時'])}var rows=sheet.getDataRange().getValues();var rowIndex=-1;for(var i=1;i<rows.length;i++){if(rows[i][0]==data.studentId&&rows[i][1]==data.name){rowIndex=i+1;break}}var rowData=[data.studentId||"",data.name||"",data.gender==='male'?'男子':'女子',data.grade||"",data.class||"",data.session||"",data.grip||"",data.situp||"",data.forward||"",data.sidestep||"",data.endurance||"",data.shuttle||"",data.sprint50||"",data.jump||"",data.throw||"",new Date()];if(rowIndex>0){sheet.getRange(rowIndex,1,1,rowData.length).setValues([rowData])}else{sheet.appendRow(rowData)}return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT)}catch(f){return ContentService.createTextOutput("Error: "+f.toString()).setMimeType(ContentService.MimeType.TEXT)}}</textarea>
             </div>
 
-            <div style="background: #fdfaea; padding: 12px; border-radius: 10px; border-left: 5px solid #f6ad55;">
-                <p style="margin:0 0 5px 0; font-size:14px;"><strong>2. シート設定</strong></p>
-                <ul style="font-size: 11px; padding-left: 15px; line-height: 1.4; margin:0; color:#444;">
-                    <li><a href="https://sheets.new/" target="_blank" style="color:#2b6cb0; font-weight:bold;">新規作成</a> ➔ 拡張機能 ➔ Apps Script</li>
-                    <li>貼り付け ➔ <strong>デプロイ</strong> (全員に公開)</li>
-                </ul>
+            <div style="background: #fdfaea; padding: 15px; border-radius: 10px; border-left: 5px solid #f6ad55;">
+                <p style="margin:0 0 8px 0; font-weight:bold;">2. スプレッドシートの設定</p>
+                <ol style="font-size: 12px; margin:0; padding-left:18px; line-height:1.6; color:#333;">
+                    <li><a href="https://sheets.new/" target="_blank" style="color:#2b6cb0; font-weight:bold;">新規シート</a>を作成し、メニューの<b>「拡張機能」➔「Apps Script」</b>を選択。</li>
+                    <li>元からあるコードを全て消し、コピーしたプログラムを<b>貼り付け</b>ます。</li>
+                    <li>右上の<b>「デプロイ」➔「新しいデプロイ」</b>をクリック。</li>
+                    <li>種類（歯車アイコン）で<b>「ウェブアプリ」</b>を選択。</li>
+                    <li>設定を以下に変更してデプロイを押す。
+                        <ul style="margin:5px 0; padding-left:15px; color:#c53030;">
+                            <li>● 次のユーザーとして実行：<b>自分</b></li>
+                            <li>● アクセスできるユーザー：<b>全員</b></li>
+                        </ul>
+                    </li>
+                </ol>
             </div>
         </div>
 
-        <div style="background: #fff5f0; padding: 15px; border-radius: 10px; border: 2px solid #FF5722; box-sizing: border-box;">
-            <p style="margin:0 0 8px 0; font-size:14px;"><strong>3. URL登録</strong></p>
-            <input type="text" id="gasUrlInput" autocomplete="off" placeholder="URLを貼り付け" style="width:100%; padding:8px; margin-bottom:8px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 12px;">
-            <button onclick="saveGasUrl()" style="width:100%; padding:10px; background:#FF5722; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer; font-size:13px;">💾 保存</button>
-            
-            <div id="studentUrlArea" style="display:none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #FF5722;">
-                <p style="font-size: 11px; font-weight: bold; margin:0 0 5px 0;">✅ 配布URL：</p>
-                <input type="text" id="studentDistUrlInput" readonly style="width:100%; padding:6px; font-size:10px; background: #eee; border: 1px solid #ccc; margin-bottom: 5px; box-sizing: border-box;">
-                <button onclick="copyStudentUrl()" style="width:100%; padding:8px; background:#4CAF50; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer; font-size:11px;">📋 コピー</button>
+        <div>
+            <div style="background: #fff5f0; padding: 15px; border-radius: 10px; border: 2px solid #FF5722; box-sizing:border-box;">
+                <p style="margin:0 0 10px 0; font-weight:bold;">3. URLの登録と保存</p>
+                <p style="font-size: 12px; margin-bottom: 10px;">発行された「ウェブアプリURL」を下に貼り付けてください。</p>
+                <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/..." style="width:100%; padding:10px; margin-bottom:10px; border: 1px solid #ccc; border-radius: 5px; box-sizing:border-box; font-size:12px;">
+                <button onclick="saveGasUrl()" style="width:100%; padding:12px; background:#FF5722; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">💾 設定を保存して配布URL作成</button>
+                
+                <div id="studentUrlArea" style="display:none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #FF5722;">
+                    <p style="font-size: 12px; font-weight:bold; color:#2d3748; margin-bottom:8px;">✅ 生徒に配布するURL：</p>
+                    <input type="text" id="studentDistUrlInput" readonly style="width:100%; padding:10px; font-size:11px; background: #eee; border: 1px solid #ccc; margin-bottom: 10px; box-sizing:border-box;">
+                    <button onclick="copyStudentUrl()" style="width:100%; padding:10px; background:#4CAF50; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">📋 配布URLをコピー</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; padding: 12px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; font-size: 11px; color: #666;">
+                <p style="font-weight: bold; margin:0 0 5px 0; color:#d69e2e;">⚠️ 「承認」を求められたら：</p>
+                「詳細を表示（Advanced）」➔「（プロジェクト名）に移動」➔「許可」の順にクリックしてください。
             </div>
         </div>
     </div>
