@@ -286,48 +286,50 @@ function doPost(e) {
     </div>
     
     <script src="js/data.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/charts.js"></script>
-    <script src="js/setup.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/setup.js"></script>
 
-    <script>
+    <script>
     // 1. パスコードをチェックする関数
-function checkPasscode() {
-    const code = prompt("管理者用パスコードを入力してください（4桁）");
-
-    if (code === "9076") {
-        // 合っていたら設定画面を表示
-        showSetupGuide();
-    } else if (code !== null) {
-        // 間違っていたら警告
-        alert("パスコードが違います。");
+    function checkPasscode() {
+        const code = prompt("管理者用パスコードを入力してください（4桁）");
+        if (code === "9076") {
+            showSetupGuide();
+        } else if (code !== null) {
+            alert("パスコードが違います。");
+        }
     }
-}
 
-// 2. 設定画面を実際に開く関数
-function showSetupGuide() {
-    // 入力欄をリセット
-    const gasInput = document.getElementById('gasUrlInput');
-    const distInput = document.getElementById('studentDistUrlInput');
-    const urlArea = document.getElementById('studentUrlArea');
+    // 2. 設定画面を表示する関数
+    function showSetupGuide() {
+        const gasInput = document.getElementById('gasUrlInput');
+        const distInput = document.getElementById('studentDistUrlInput');
+        const urlArea = document.getElementById('studentUrlArea');
+        if (gasInput) gasInput.value = ""; 
+        if (distInput) distInput.value = "";
+        if (urlArea) urlArea.style.display = "none";
+        document.getElementById('setupModal').style.display = "block";
+    }
 
-    if (gasInput) gasInput.value = ""; 
-    if (distInput) distInput.value = "";
-    if (urlArea) urlArea.style.display = "none";
-    
-    // モーダルを表示
-    document.getElementById('setupModal').style.display = "block";
-}
-</script
-    <script>
-    // ページ読み込み時に実行
+    // 3. ページ読み込み時の初期化
     window.onload = function() {
+        // 学年・性別の変更時に表を更新するようにイベントを追加
+        document.getElementById("gender").addEventListener("change", function() {
+            if (typeof renderTable === 'function') renderTable();
+            if (typeof RR === 'function') RR(this.value);
+        });
+        
+        document.getElementById("grade").addEventListener("change", function() {
+            if (typeof renderTable === 'function') renderTable();
+            const g = document.getElementById("gender").value;
+            if (typeof RR === 'function') RR(g);
+        });
+
+        // 初回実行
         const gender = document.getElementById("gender").value;
-        // マイレコードのテーブルを描画（app.jsの関数名に合わせてください）
         if (typeof renderTable === 'function') renderTable(); 
-        // レーダーチャートを初期描画
         if (typeof RR === 'function') RR(gender);
     };
-</script>
-</body>
+    </script> </body>
 </html>
