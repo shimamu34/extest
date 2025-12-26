@@ -25,26 +25,31 @@ var radarVisible = radarVisible || [true, true, true, true, true, true];
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', function() {
-    RT();
-    RS();
-    RE();
-    LI();
+    // 1. まず「器（テーブル）」をすべて描画する
+    RT(); // マイレコード
+    RS(); // 点数基準表（←これが抜けていた、もしくは順序が不安定でした）
+    RE(); // 総合ランク表（←これが抜けていた）
     
+    // 2. その後、保存されているデータを読み込む
+    LI(); 
+    
+    // 3. イベントリスナーの設定
     document.getElementById("gender").addEventListener("change", () => {
-    const g = document.getElementById("gender").value; // ここが "男" か "女" になる
-    RT();
-    RS();
-    // RR(g) や RAnalysis(g) に正しく "男"/"女" が渡るようになります
-    if (document.getElementById("radar").style.display !== "none") RR(g);
-    if (document.getElementById("correlation").style.display !== "none") RAnalysis(g);
-        if (document.getElementById("tracking").style.display !== "none") updateTrackingView();
+        const g = document.getElementById("gender").value;
+        RT();
+        RS(); // 性別が変わったら点数表も書き換える
+        RE();
         LI();
+        if (document.getElementById("radar").style.display !== "none") RR(g);
+        if (document.getElementById("correlation").style.display !== "none") RAnalysis(g);
+        if (document.getElementById("tracking").style.display !== "none") updateTrackingView();
     });
     
     document.getElementById("grade").addEventListener("change", () => {
-    LI(); // 学年が変わったらデータをロードする
-　　　});
+        LI(); // 学年が変わったらデータをロード（LIの中でU()が呼ばれるのでハイライトも更新されます）
+    });
 });
+
 // 通知表示
 function N(m, t = 'success') {
     const n = document.getElementById('notif');
