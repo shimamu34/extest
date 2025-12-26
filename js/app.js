@@ -216,6 +216,8 @@ function U() {
     const highlightEl = document.getElementById(`e${lv}${gr}`);
     if (highlightEl) highlightEl.classList.add("highlight");
     SI();
+
+    if (typeof updateAllCharts === 'function') updateAllCharts();
 }
 
 // 【上書き】学年別オートセーブ
