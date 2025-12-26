@@ -491,45 +491,37 @@ function addTrackingRecord() {
 }
 
 function updateTrackingView() {
-    const eventIdx = parseInt(document.getElementById("trackingViewEvent").value);
-    const g = document.getElementById("gender").value;
-    
-    // ★追加：新しく作った「表示学年」リストから値を取得
-    const viewGrade = document.getElementById("trackingViewGrade").value;
-    
-    const key = `tracking-${g}`;
-    const trackingData = JSON.parse(localStorage.getItem(key) || '{}');
-    
-    // すべての記録を取得
-    const allRecords = trackingData[eventIdx] || [];
-    
-    // ★修正：選択した学年(viewGrade)と同じ学年のデータだけを抜き出す
-    const records = allRecords.filter(r => String(r.grade) === String(viewGrade));
-    
-    const h = D[g].h;
+    const eventIdx = parseInt(document.getElementById("trackingViewEvent").value);
+    const g = document.getElementById("gender").value;
+    const viewGrade = document.getElementById("trackingViewGrade").value;
+    const key = `tracking-${g}`;
+    const trackingData = JSON.parse(localStorage.getItem(key) || '{}');
+    const allRecords = trackingData[eventIdx] || [];
+    const records = allRecords.filter(r => String(r.grade) === String(viewGrade));
+    const h = D[g].h;
 
-    // グラフのリセット
-    const canvas = document.getElementById("trackingGraph");
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    if (records.length === 0) {
-        ctx.fillStyle = '#666';
-        ctx.font = '18px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText(`中${viewGrade}年の記録がありません`, 500, 200);
-        
-        document.getElementById("trackingStats").innerHTML = '<p style="text-align:center;color:#666">データがありません</p>';
-        document.getElementById("trackingList").innerHTML = '';
-        return;
-    }
-    
-    // グラフと統計情報を描画
-    drawTrackingGraph(records, h[eventIdx]);
-    updateTrackingStats(records, h[eventIdx]);
-    
-    // ★修正：リスト表示関数に allRecords と viewGrade を渡す
-    updateTrackingList(allRecords, h[eventIdx], eventIdx, viewGrade);
+    // --- ヘッダー部分のレイアウト修正 ---
+    const trackingArea = document.getElementById("tracking");
+    // 既存の「変容グラフ」というタイトルがHTML側にある場合は、JSで上書きするか、HTML側を調整します。
+    // ここでは統計表示エリア(trackingStats)より上の部分を整理する想定です。
+
+    const canvas = document.getElementById("trackingGraph");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    if (records.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '18px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`中${viewGrade}年の記録がありません`, canvas.width/2, 200);
+        document.getElementById("trackingStats").innerHTML = '<div style="text-align:center;color:#666;padding:20px;background:#f5f5f5;border-radius:8px">データがありません</div>';
+        document.getElementById("trackingList").innerHTML = '';
+        return;
+    }
+    
+    drawTrackingGraph(records, h[eventIdx]);
+    updateTrackingStats(records, h[eventIdx]); // 下記の修正版が呼ばれます
+    updateTrackingList(allRecords, h[eventIdx], eventIdx, viewGrade);
 }
 
 function drawTrackingGraph(records, eventName) {
@@ -614,54 +606,70 @@ function drawTrackingGraph(records, eventName) {
 }
 
 function updateTrackingStats(records, eventName) {
-    const first = records[0];
-    const last = records[records.length - 1];
-    const diff = last.value - first.value;
-    const diffPercent = ((diff / first.value) * 100).toFixed(1);
-    const avg = (records.reduce((sum, r) => sum + r.value, 0) / records.length).toFixed(1);
-    const max = Math.max(...records.map(r => r.value));
-    const maxRecord = records.find(r => r.value === max);
-    
-    const diffColor = diff > 0 ? '#4CAF50' : diff < 0 ? '#f44336' : '#666';
-    const diffIcon = diff > 0 ? '📈' : diff < 0 ? '📉' : '➡️';
-    
-    let html = `
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:20px">
-            <div style="background:#f5f5f5;padding:15px;border-radius:8px;text-align:center">
-                <div style="color:#666;font-size:13px;margin-bottom:5px">初回記録</div>
-                <div style="font-size:24px;font-weight:bold;color:#FF5722">${first.value}</div>
-                <div style="color:#999;font-size:12px">${first.date}</div>
-            </div>
-            <div style="background:#f5f5f5;padding:15px;border-radius:8px;text-align:center">
-                <div style="color:#666;font-size:13px;margin-bottom:5px">最新記録</div>
-                <div style="font-size:24px;font-weight:bold;color:#FF5722">${last.value}</div>
-                <div style="color:#999;font-size:12px">${last.date}</div>
-            </div>
-            <div style="background:#f5f5f5;padding:15px;border-radius:8px;text-align:center">
-                <div style="color:#666;font-size:13px;margin-bottom:5px">伸び ${diffIcon}</div>
-                <div style="font-size:24px;font-weight:bold;color:${diffColor}">${diff > 0 ? '+' : ''}${diff.toFixed(1)}</div>
-                <div style="color:${diffColor};font-size:12px;font-weight:bold">${diff > 0 ? '+' : ''}${diffPercent}%</div>
-            </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px">
-            <div style="background:#f5f5f5;padding:15px;border-radius:8px">
-                <div style="color:#666;font-size:13px;margin-bottom:8px">📊 統計情報</div>
-                <div style="font-size:14px;line-height:1.8">
-                    • 測定回数: ${records.length}回<br>
-                    • 平均値: ${avg}<br>
-                    • 最高記録: ${max} (${maxRecord.date})
-                </div>
-            </div>
-            <div style="background:#f5f5f5;padding:15px;border-radius:8px">
-                <div style="color:#666;font-size:13px;margin-bottom:8px">💡 分析コメント</div>
-                <div style="font-size:14px;line-height:1.8">
-                    ${diff > 0 ? '順調に成長しています！この調子で頑張りましょう🎉' : diff < 0 ? '一時的に下がっていますが、コンディションを整えて再チャレンジ💪' : '記録が安定しています。次のステップを目指しましょう！'}
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.getElementById("trackingStats").innerHTML = html;
+    const first = records[0];
+    const last = records[records.length - 1];
+    const diff = last.value - first.value;
+    const diffPercent = ((diff / first.value) * 100).toFixed(1);
+    const avg = (records.reduce((sum, r) => sum + r.value, 0) / records.length).toFixed(1);
+    const max = Math.max(...records.map(r => r.value));
+    const maxRecord = records.find(r => r.value === max);
+    
+    // 伸びの色判定（50m走や持久走は数値が低いほうが良いため、種目名で判定）
+    const isLowerBetter = eventName.includes("50m") || eventName.includes("持久");
+    let isImproved = isLowerBetter ? diff < 0 : diff > 0;
+    
+    const diffColor = isImproved ? '#d9534f' : (diff === 0 ? '#666' : '#0275d8');
+    const diffIcon = isImproved ? '📈' : (diff === 0 ? '➡️' : '📉');
+    
+    // 数値の符号調整
+    const diffDisplay = (diff > 0 ? "+" : "") + diff.toFixed(1);
+
+    let html = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px;">
+            <div style="background:#fff; padding:15px; border-radius:10px; text-align:center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #eee;">
+                <div style="color:#888; font-size:11px; margin-bottom:5px; font-weight:bold;">初回記録</div>
+                <div style="font-size:20px; font-weight:bold; color:#333;">${first.value}</div>
+                <div style="color:#bbb; font-size:10px;">${first.date}</div>
+            </div>
+            <div style="background:#fff; padding:15px; border-radius:10px; text-align:center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #eee;">
+                <div style="color:#888; font-size:11px; margin-bottom:5px; font-weight:bold;">最新記録</div>
+                <div style="font-size:20px; font-weight:bold; color:#FF5722;">${last.value}</div>
+                <div style="color:#bbb; font-size:10px;">${last.date}</div>
+            </div>
+            <div style="background:#fff; padding:15px; border-radius:10px; text-align:center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #eee; border-top: 4px solid ${diffColor};">
+                <div style="color:#888; font-size:11px; margin-bottom:5px; font-weight:bold;">伸び ${diffIcon}</div>
+                <div style="font-size:20px; font-weight:bold; color:${diffColor}">${diffDisplay}</div>
+                <div style="color:${diffColor}; font-size:10px; font-weight:bold;">${diffPercent}%</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div style="background:#f8f9fa; padding:15px; border-radius:10px; border-left: 5px solid #6c757d;">
+                <div style="color:#444; font-size:13px; font-weight:bold; margin-bottom:10px; display:flex; align-items:center;">
+                    <span style="margin-right:5px;">📊</span> 統計情報
+                </div>
+                <div style="font-size:13px; line-height:1.8; color: #555;">
+                    <div style="display:flex; justify-content:space-between;"><span>測定回数</span> <b>${records.length}回</b></div>
+                    <div style="display:flex; justify-content:space-between;"><span>平均値</span> <b>${avg}</b></div>
+                    <div style="display:flex; justify-content:space-between;"><span>最高記録</span> <b>${max}</b></div>
+                    <div style="font-size:10px; color:#999; text-align:right;">(${maxRecord.date})</div>
+                </div>
+            </div>
+            <div style="background:#eef7ff; padding:15px; border-radius:10px; border-left: 5px solid #0275d8;">
+                <div style="color:#0275d8; font-size:13px; font-weight:bold; margin-bottom:10px; display:flex; align-items:center;">
+                    <span style="margin-right:5px;">💡</span> 分析コメント
+                </div>
+                <div style="font-size:13px; line-height:1.6; color:#01438d; font-weight: 500;">
+                    ${isImproved ? 
+                        '素晴らしい向上です！トレーニングの成果がしっかり出ていますね。この調子を維持しましょう！' : 
+                        (diff === 0 ? '記録が安定しています。さらなる向上を目指して、練習メニューに変化をつけてみるのも良いかもしれません。' : 
+                        '今回は少し記録を落としましたが、体調や環境の影響もあります。次の測定でリベンジしましょう！')}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById("trackingStats").innerHTML = html;
 }
 
 function updateTrackingList(allRecords, eventName, eventIdx, viewGrade) {
@@ -710,4 +718,3 @@ function updateAllCharts() {
     if (document.getElementById("correlation").style.display !== "none") RAnalysis(g);
     if (document.getElementById("tracking").style.display !== "none") updateTrackingView();
 }
-chartsコードです。確認してみて
