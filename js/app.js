@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
         RT();
         RS();
         if (document.getElementById("radar").style.display !== "none") RR(g);
-        if (document.getElementById("growth").style.display !== "none") RG(g);
         if (document.getElementById("correlation").style.display !== "none") RAnalysis(g);
         if (document.getElementById("tracking").style.display !== "none") updateTrackingView();
         LI();
