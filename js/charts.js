@@ -710,3 +710,27 @@ function updateAllCharts() {
     if (document.getElementById("correlation").style.display !== "none") RAnalysis(g);
     if (document.getElementById("tracking").style.display !== "none") updateTrackingView();
 }
+
+function checkAnomaly() {
+    const eventId = document.getElementById("trackingEvent").value;
+    const val = parseFloat(document.getElementById("trackingValue").value);
+    const inputEl = document.getElementById("trackingValue");
+    const warningEl = document.getElementById("anomalyWarning");
+    const check = THRESHOLDS[eventId];
+
+    if (isNaN(val) || val === 0) {
+        inputEl.style.backgroundColor = "white";
+        warningEl.innerText = "";
+        return;
+    }
+
+    if (val < check.min || val > check.max) {
+        // 異常値の場合：背景を薄い赤にし、警告を出す
+        inputEl.style.backgroundColor = "#ffcdd2"; 
+        warningEl.innerText = `⚠️ 数値が ${check.min}〜${check.max} の範囲外のようです`;
+    } else {
+        // 正常な場合：背景を白（または元の色）に戻す
+        inputEl.style.backgroundColor = "white";
+        warningEl.innerText = "";
+    }
+}
