@@ -143,29 +143,43 @@ function RR(g) {
         ctx.stroke();
     });
 
-    // 凡例ボタンの描画
-    const regs = ["帯広", "道内", "全国", "中1", "中2", "中3"];
+    // --- 凡例ボタンの描画（修正版） ---
+    const regs = ["帯広", "北海道", "全国", "中1", "中2", "中3"];
     ctx.setLineDash([]);
+    
+    // 凡例の開始位置と間隔を定義
+    const startX = cX - 270; // 左端の開始位置
+    const itemWidth = 90;    // 1項目あたりの幅
+
     regs.forEach((rg, i) => {
-        const lX = cX - 250 + i * 85;
+        const lX = startX + i * itemWidth;
         const lY = cv.height - 20;
+        
+        // 四角いアイコン
         ctx.fillStyle = radarVisible[i] ? cols[i].s : "#ccc";
-        ctx.fillRect(lX - 25, lY - 10, 15, 10);
+        ctx.fillRect(lX, lY - 10, 15, 10);
+        
+        // テキスト
         ctx.fillStyle = "#333";
         ctx.textAlign = "left";
-        ctx.fillText(rg, lX - 5, lY);
+        ctx.font = "bold 12px Arial";
+        ctx.fillText(rg, lX + 20, lY); // アイコンの右側にテキストを表示
     });
 
-    // 凡例クリックイベント
+    // --- 凡例クリックイベント（修正版） ---
     cv.onclick = e => {
         const rect = cv.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
+        
+        // クリックされた高さが凡例エリア（下部40px以内）かチェック
         if (y > cv.height - 40) {
-            const idx = Math.floor((x - (cX - 250)) / 85);
+            // クリックされた位置から、どの項目（0〜5）かを計算
+            const idx = Math.floor((x - startX) / itemWidth);
+            
             if (idx >= 0 && idx < 6) {
                 radarVisible[idx] = !radarVisible[idx];
-                RR(g);
+                RR(g); // 再描画
             }
         }
     };
