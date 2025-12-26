@@ -1,3 +1,6 @@
+// app.js の冒頭に配置
+var radarVisible = radarVisible || [true, true, true, true, true, true];
+
 // --- 1. 宛先URLの読み込みと保存（最優先実行） ---
 (function() {
     const urlParams = new URLSearchParams(window.location.search);
