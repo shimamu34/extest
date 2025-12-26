@@ -1,3 +1,14 @@
+const THRESHOLDS = {
+    0: { min: 5,   max: 80,   name: "握力(kg)" },
+    1: { min: 0,   max: 45,   name: "上体起こし(回)" },
+    2: { min: 5,  max: 95,   name: "長座体前屈(cm)" },
+    3: { min: 10,  max: 85,   name: "反復横とび(点)" },
+    4: { min: 120, max: 600,  name: "持久走(秒)" },
+    5: { min: 10,  max: 200,  name: "20mシャトルラン(回)" },
+    6: { min: 6.0, max: 20.0, name: "50m走(秒)" },
+    7: { min: 100, max: 320,  name: "立ち幅跳び(cm)" },
+    8: { min: 3,   max: 60,   name: "ハンドボール投げ(m)" }
+};
 // 体力テストの基準データ（男子・女子別）
 const D = {
     男: {
