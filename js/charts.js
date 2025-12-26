@@ -32,167 +32,116 @@ function toggleTracking() {
 }
 
 // レーダーチャート描画
+let radarVisible = [true, true, true, true, true, true]; 
+
 function RR(g) {
     const cv = document.getElementById("rc");
     const ctx = cv.getContext("2d");
-    const h = D[g].h.slice(0, 9);
+    const h = D[g].h.slice(0, 9); // 9種目
+    
+    // 6色定義（0-2:統計、3-5:自分学年）
     const cols = [
-        {s: "rgba(255,99,132,1)", f: "rgba(255,99,132,0.2)"},
-        {s: "rgba(54,162,235,1)", f: "rgba(54,162,235,0.2)"},
-        {s: "rgba(75,192,192,1)", f: "rgba(75,192,192,0.2)"},
-        {s: "rgba(255,206,86,1)", f: "rgba(255,206,86,0.2)"},
-        {s: "rgba(153,102,255,0.5)", f: "rgba(153,102,255,0.1)"}
+        {s: "rgba(255,99,132,1)", f: "rgba(255,99,132,0.2)"}, // 0:帯広
+        {s: "rgba(54,162,235,1)", f: "rgba(54,162,235,0.2)"}, // 1:北海道
+        {s: "rgba(75,192,192,1)", f: "rgba(75,192,192,0.2)"}, // 2:全国
+        {s: "rgba(255,159,64,1)", f: "rgba(255,159,64,0.1)"}, // 3:中1
+        {s: "rgba(153,102,255,1)", f: "rgba(153,102,255,0.1)"},// 4:中2
+        {s: "rgba(76,175,80,1)", f: "rgba(76,175,80,0.1)"}    // 5:中3
     ];
+
+    // 保存されている全学年データを取得
+    const allData = JSON.parse(localStorage.getItem("y-" + g) || '{}');
+    const dataSets = [];
     
-    const rs = [];
+    // 1-3. 統計データ
     ["帯広市", "北海道", "全国"].forEach(rg => {
-        rs.push(h.map((x, i) => CS(A[g][rg][i], x, g)));
+        dataSets.push(h.map((x, i) => CS(A[g][rg][i], x, g)));
     });
-    
-    rs.push(h.map((x, i) => {
-        const inp = document.getElementById(`i${i}`);
-        if (!inp) return 0;
-        const v = parseFloat(inp.value);
-        return isNaN(v) ? 0 : CS(v, x, g);
-    }));
-    
-    const gr = document.getElementById("grade").value;
-    const k = `y-${g}`;
-    const yd = JSON.parse(localStorage.getItem(k) || '{}');
-    const pg = gr === '2' ? '中1' : gr === '3' ? '中2' : null;
-    let ps = null;
-    
-    if (pg && yd[pg]) {
-        ps = h.map((x, i) => CS(yd[pg].v[i], x, g));
-    }
-    
+
+    // 4-6. 自分の各学年データ
+    ["1", "2", "3"].forEach(grKey => {
+        if (allData[grKey] && allData[grKey].some(v => v !== "")) {
+            // 空文字でないデータがある場合のみ計算してセット
+            dataSets.push(h.map((x, i) => CS(parseFloat(allData[grKey][i]) || 0, x, g)));
+        } else {
+            dataSets.push(null);
+        }
+    });
+
     ctx.clearRect(0, 0, cv.width, cv.height);
     
     const cX = cv.width / 2;
     const cY = cv.height / 2;
-    const rad = 220;
+    const rad = 220; // 半径
     const as = (Math.PI * 2) / h.length;
-    
+
+    // 背景（円と軸）の描画
     ctx.strokeStyle = "#e0e0e0";
     ctx.lineWidth = 1;
     for (let i = 1; i <= 10; i++) {
-        ctx.beginPath();
-        ctx.arc(cX, cY, (rad / 10) * i, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.beginPath(); ctx.arc(cX, cY, (rad / 10) * i, 0, Math.PI * 2); ctx.stroke();
     }
-    
-    ctx.strokeStyle = "#ccc";
     h.forEach((lb, i) => {
         const a = as * i - Math.PI / 2;
-        const x = cX + Math.cos(a) * rad;
-        const y = cY + Math.sin(a) * rad;
-        ctx.beginPath();
-        ctx.moveTo(cX, cY);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-        
-        ctx.fillStyle = "#333";
-        ctx.font = "12px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText(lb, cX + Math.cos(a) * (rad + 40), cY + Math.sin(a) * (rad + 40));
+        ctx.beginPath(); ctx.moveTo(cX, cY); ctx.lineTo(cX + Math.cos(a) * rad, cY + Math.sin(a) * rad); ctx.stroke();
+        ctx.fillStyle = "#333"; ctx.textAlign = "center";
+        ctx.fillText(K(lb), cX + Math.cos(a) * (rad + 35), cY + Math.sin(a) * (rad + 35));
     });
-    
-    if (ps && radarVisible[4]) {
-        ctx.fillStyle = cols[4].f;
-        ctx.beginPath();
-        ps.forEach((sc, i) => {
-            const a = as * i - Math.PI / 2;
-            const x = cX + Math.cos(a) * ((rad / 10) * sc);
-            const y = cY + Math.sin(a) * ((rad / 10) * sc);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        });
-        ctx.closePath();
-        ctx.fill();
+
+    // データ描画
+    const currentGr = document.getElementById("grade").value;
+    dataSets.forEach((scs, ri) => {
+        if (!scs || !radarVisible[ri]) return;
         
-        ctx.strokeStyle = cols[4].s;
-        ctx.lineWidth = 2;
-        ctx.setLineDash([5, 5]);
-        ctx.beginPath();
-        ps.forEach((sc, i) => {
-            const a = as * i - Math.PI / 2;
-            const x = cX + Math.cos(a) * ((rad / 10) * sc);
-            const y = cY + Math.sin(a) * ((rad / 10) * sc);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        });
-        ctx.closePath();
-        ctx.stroke();
-        ctx.setLineDash([]);
-    }
-    
-    rs.forEach((scs, ri) => {
-        if (!radarVisible[ri]) return;
         const c = cols[ri];
+        // 選択中の学年（自分データ）なら実線、それ以外（過去学年）は点線
+        const isSelf = ri >= 3;
+        const isActive = isSelf && (ri - 2).toString() === currentGr;
         
-        ctx.fillStyle = c.f;
         ctx.beginPath();
+        ctx.setLineDash(isSelf && !isActive ? [5, 5] : []);
+        ctx.strokeStyle = c.s;
+        ctx.fillStyle = c.f;
+        ctx.lineWidth = isActive ? 3 : 2;
+
         scs.forEach((sc, i) => {
             const a = as * i - Math.PI / 2;
-            const x = cX + Math.cos(a) * ((rad / 10) * sc);
-            const y = cY + Math.sin(a) * ((rad / 10) * sc);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
+            const r = (rad / 10) * sc;
+            const x = cX + Math.cos(a) * r;
+            const y = cY + Math.sin(a) * r;
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
         });
         ctx.closePath();
         ctx.fill();
-        
-        ctx.strokeStyle = c.s;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        scs.forEach((sc, i) => {
-            const a = as * i - Math.PI / 2;
-            const x = cX + Math.cos(a) * ((rad / 10) * sc);
-            const y = cY + Math.sin(a) * ((rad / 10) * sc);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        });
-        ctx.closePath();
         ctx.stroke();
-        
-        ctx.fillStyle = c.s;
-        scs.forEach((sc, i) => {
-            const a = as * i - Math.PI / 2;
-            const x = cX + Math.cos(a) * ((rad / 10) * sc);
-            const y = cY + Math.sin(a) * ((rad / 10) * sc);
-            ctx.beginPath();
-            ctx.arc(x, y, 4, 0, Math.PI * 2);
-            ctx.fill();
-        });
     });
-    
-    const lY = cv.height - 40;
-    const regs = ["帯広市", "北海道", "全国", "自分"];
-    if (ps) regs.push(`去年(${pg})`);
-    
+
+    // 凡例ボタンの描画
+    const regs = ["帯広", "道内", "全国", "中1", "中2", "中3"];
+    ctx.setLineDash([]);
     regs.forEach((rg, i) => {
-        const lX = cX - 180 + i * 90;
+        const lX = cX - 250 + i * 85;
+        const lY = cv.height - 20;
         ctx.fillStyle = radarVisible[i] ? cols[i].s : "#ccc";
-        ctx.fillRect(lX - 30, lY, 20, 10);
-        ctx.fillStyle = radarVisible[i] ? "#333" : "#999";
-        ctx.font = "14px Arial";
+        ctx.fillRect(lX - 25, lY - 10, 15, 10);
+        ctx.fillStyle = "#333";
         ctx.textAlign = "left";
-        ctx.fillText(rg, lX, lY + 10);
+        ctx.fillText(rg, lX - 5, lY);
     });
-    
+
+    // 凡例クリックイベント
     cv.onclick = e => {
         const rect = cv.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        regs.forEach((rg, i) => {
-            const lX = cX - 180 + i * 90;
-            if (x >= lX - 30 && x <= lX + 60 && y >= lY - 5 && y <= lY + 15) {
-                radarVisible[i] = !radarVisible[i];
+        if (y > cv.height - 40) {
+            const idx = Math.floor((x - (cX - 250)) / 85);
+            if (idx >= 0 && idx < 6) {
+                radarVisible[idx] = !radarVisible[idx];
                 RR(g);
             }
-        });
+        }
     };
-    cv.style.cursor = 'pointer';
 }
 
 // 体力分析
