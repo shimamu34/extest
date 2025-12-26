@@ -197,6 +197,8 @@ function U() {
     const highlightEl = document.getElementById(`e${lv}${gr}`);
     if (highlightEl) highlightEl.classList.add("highlight");
     SI();
+    // 入力するたびに図鑑も再描画させる
+    RAnalysis(g);
     if (typeof updateAllCharts === 'function') updateAllCharts();
 }
 
@@ -308,22 +310,23 @@ function clearData() {
 }
 
 function RAnalysis(g) {
-    const pokedex = document.getElementById("fitnessPokedex");
-    if (!pokedex) return;
+    const container = document.getElementById("fitnessPokedex");
+    if (!container) return;
 
+    // 1. スコア計算ロジック（既存の仕組みを維持）
     const h = D[g].h.slice(0, 9);
     let myScores = [];
     for (let i = 0; i < 9; i++) {
         const inp = document.getElementById(`i${i}`);
-        myScores.push(inp && !isNaN(parseFloat(inp.value)) ? CS(parseFloat(inp.value), h[i], g) : 0);
+        const v = parseFloat(inp ? inp.value : NaN);
+        myScores.push(!isNaN(v) ? CS(v, h[i], g) : 0);
     }
 
     const calcAvg = (idx) => {
         const v = idx.map(i => myScores[i]).filter(s => s > 0);
-        return v.length > 0 ? v.reduce((a, b) => a + b, 0) / v.length : 0;
+        return v.length > 0 ? v.reduce((sum, s) => sum + s, 0) / v.length : 0;
     };
 
-    // 表示順を固定
     const types = [
         {name: 'パワー型', emoji: '💪', avg: calcAvg([0, 7, 8]), color: '#f5576c'},
         {name: '持久力型', emoji: '🏃', avg: calcAvg([4, 5]), color: '#00f2fe'},
@@ -331,18 +334,18 @@ function RAnalysis(g) {
         {name: '柔軟性型', emoji: '🤸', avg: calcAvg([1, 2]), color: '#fee140'}
     ];
 
+    // 2. 中身の生成（2列に収まるようサイズを極限まで絞る）
     let html = '';
     types.forEach(type => {
         const level = Math.floor(type.avg);
         const progress = (type.avg / 10) * 100;
         
-        // カード1枚の幅を「100%（＝半分）」に強制して、2つ並ぶようにする
         html += `
-            <div style="background:rgba(255,255,255,0.15); padding:10px; border-radius:10px; box-sizing:border-box; width:100%; min-width:0;">
-                <div style="display:flex; align-items:center; margin-bottom:8px;">
-                    <span style="font-size:20px; margin-right:5px;">${type.emoji}</span>
-                    <div style="overflow:hidden;">
-                        <div style="font-size:11px; font-weight:bold; white-space:nowrap;">${type.name}</div>
+            <div style="background:rgba(255,255,255,0.15); padding:10px; border-radius:10px; box-sizing:border-box; width:100% !important; min-width:0 !important; overflow:hidden;">
+                <div style="display:flex; align-items:center; margin-bottom:5px;">
+                    <span style="font-size:20px; margin-right:5px; flex-shrink:0;">${type.emoji}</span>
+                    <div style="min-width:0; overflow:hidden;">
+                        <div style="font-size:11px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${type.name}</div>
                         <div style="font-size:16px; font-weight:bold;">Lv.${level}</div>
                     </div>
                 </div>
@@ -352,5 +355,17 @@ function RAnalysis(g) {
             </div>`;
     });
 
-    pokedex.innerHTML = html;
+    // 3. 【最重要】innerHTMLを入れた直後に、JSからグリッドを強制再起動する
+    container.innerHTML = html;
+    container.style.display = "grid";
+    container.style.gridTemplateColumns = "1fr 1fr";
+    container.style.gap = "10px";
+
+    // 総合点とランクの表示更新
+    const totalScoreEl = document.getElementById("i9");
+    if (totalScoreEl) {
+        const totalScore = totalScoreEl.querySelector("div").textContent;
+        const rank = totalScoreEl.querySelectorAll("div")[1].textContent;
+        document.getElementById("totalRank").innerHTML = `総合評価: ${rank} (${totalScore}点)`;
+    }
 }
