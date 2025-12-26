@@ -38,7 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
         LI();
     });
     
-    document.getElementById("grade").addEventListener("change", U);
+    document.getElementById("grade").addEventListener("change", () => {
+    LI(); // 学年が変わったらデータをロードする
 });
 
 // 通知表示
@@ -214,21 +215,40 @@ function U() {
     SI();
 }
 
+// 【上書き】学年別オートセーブ
 function SI() {
     const g = document.getElementById("gender").value;
+    const gr = document.getElementById("grade").value; // 現在の学年を取得
     let v = [];
-    for (let i = 0; i < 9; i++) { v.push(document.getElementById(`i${i}`).value || ""); }
-    localStorage.setItem("m-" + g, JSON.stringify(v));
+    for (let i = 0; i < 9; i++) { 
+        v.push(document.getElementById(`i${i}`).value || ""); 
+    }
+    
+    // y-性別 というキーの中に { "学年": [記録] } の形で保存
+    let allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
+    allData[gr] = v;
+    localStorage.setItem("y-" + g, JSON.stringify(allData));
 }
 
+// 【上書き】学年別データロード
 function LI() {
     const g = document.getElementById("gender").value;
-    const sv = localStorage.getItem("m-" + g);
+    const gr = document.getElementById("grade").value;
+    const sv = localStorage.getItem("y-" + g);
+    
     if (sv) {
-        const v = JSON.parse(sv);
+        const allData = JSON.parse(sv);
+        const v = allData[gr] || ["","","","","","","","",""]; // その学年のデータ
         for (let i = 0; i < v.length; i++) {
             const input = document.getElementById(`i${i}`);
             if (input) input.value = v[i];
+        }
+        U(); // 計算とグラフ更新
+    } else {
+        // データがない場合は入力欄を空にする
+        for (let i = 0; i < 9; i++) {
+            const input = document.getElementById(`i${i}`);
+            if (input) input.value = "";
         }
         U();
     }
@@ -295,89 +315,26 @@ function sendToTeacher() {
 }
 // --- データ管理機能（クリア） ---
 
-// 3. クリア：入力した記録をすべて消去する
-// --- データ管理機能（確実に消去する版） ---
-
+// 【上書き】選択中の学年のみ確実に消去する
 function clearData() {
-    // 1. 確認ダイアログを出す
-    if (confirm("入力したすべての記録を消去してもよろしいですか？")) {
+    const g = document.getElementById("gender").value;
+    const gr = document.getElementById("grade").value;
+
+    if (confirm(`中学${gr}年生の入力記録をすべて消去しますか？\n（他の学年の記録は残りません）`)) {
         
-        // 2. データの保存場所（localStorage）を空にする
-        const g = document.getElementById("gender").value;
-        localStorage.removeItem("m-" + g);
+        // 1. localStorageからその学年のデータだけ削除
+        let allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
+        delete allData[gr];
+        localStorage.setItem("y-" + g, JSON.stringify(allData));
         
-        // 3. 入力欄（input）をすべて空文字にする
+        // 2. 入力欄を空にする
         for (let i = 0; i < 9; i++) {
             const inputField = document.getElementById(`i${i}`);
-            if (inputField) {
-                inputField.value = ""; // 文字を消す
-            }
+            if (inputField) inputField.value = "";
         }
         
-        // 4. 合計点や評価の表示（i9）をリセットする
-        const scoreArea = document.getElementById("i9");
-        if (scoreArea) {
-            scoreArea.innerHTML = "<div>0</div><div>E</div>";
-        }
-
-        // 5. グラフや表のハイライトを更新する
-        if (typeof U === "function") {
-            U(); 
-        }
-
-        // 6. 完了通知
-        N("記録をすべて消去しました", "info");
-        
-        // 念のため画面を再読み込み（これで確実に消えます）
-        // location.reload(); // もしこれを入れるとページ全体がリフレッシュされます
+        // 3. 表示のリセットと再計算
+        U(); 
+        N(`中${gr}の記録を消去しました`, "info");
     }
-}
-// --- 履歴保存機能（末尾に追加） ---
-function saveYearData() {
-    const g = document.getElementById("gender").value;
-    const grade = document.getElementById("grade").value;
-    const points = [];
-    
-    // 表から8種目の点数を取得（現在の入力値）
-    for(let i=0; i<8; i++) {
-        const row = document.querySelector(`#table tr:nth-child(${i+1})`);
-        points.push(row ? parseInt(row.cells[2].innerText) || 0 : 0);
-    }
-    
-    // 履歴としてブラウザに保存
-    let history = JSON.parse(localStorage.getItem("history-" + g) || "{}");
-    history[grade] = points;
-    localStorage.setItem("history-" + g, JSON.stringify(history));
-    
-    // グラフが開いていれば即時更新
-    if (document.getElementById('radar').style.display !== 'none') {
-        updateRadarChart();
-    }
-    alert("中" + grade + "の記録をグラフに固定しました。");
-}
-// 【保存機能】今の学年の点数を履歴として保存する関数
-function saveYearData() {
-    const g = document.getElementById("gender").value;
-    const grade = document.getElementById("grade").value;
-    const points = [];
-    
-    // 表（table）から今の点数（1〜10点）を8種目分抜き出す
-    for(let i=0; i<8; i++) {
-        // 表の各行の3番目のセル（点数が入っている場所）を取得
-        const row = document.querySelector(`#table tr:nth-child(${i+1})`);
-        const p = row ? parseInt(row.cells[2].innerText) : 0;
-        points.push(isNaN(p) ? 0 : p);
-    }
-    
-    // 過去の全履歴を読み出し、今回の学年分を上書きして保存し直す
-    let history = JSON.parse(localStorage.getItem("history-" + g) || "{}");
-    history[grade] = points;
-    localStorage.setItem("history-" + g, JSON.stringify(history));
-    
-    // グラフが開いている状態なら、その場でグラフを更新する
-    if (document.getElementById('radar').style.display !== 'none') {
-        updateRadarChart();
-    }
-    
-    alert("中" + grade + "年生の記録として保存しました。グラフに反映されます。");
 }
