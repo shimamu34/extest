@@ -338,13 +338,12 @@ function RAnalysis(g) {
         const level = Math.floor(type.avg);
         const progress = (type.avg / 10) * 100;
         
-        // ★重要：widthを100%にし、外側のgridで2列に分ける
         html += `
             <div style="background:rgba(255,255,255,0.15); padding:8px; border-radius:10px; box-sizing:border-box; width:100%; min-width:0; overflow:hidden;">
                 <div style="display:flex; align-items:center; margin-bottom:5px;">
-                    <span style="font-size:18px; margin-right:4px;">${type.emoji}</span>
+                    <span style="font-size:18px; margin-right:4px; flex-shrink:0;">${type.emoji}</span>
                     <div style="min-width:0;">
-                        <div style="font-size:10px; font-weight:bold; white-space:nowrap;">${type.name}</div>
+                        <div style="font-size:10px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${type.name}</div>
                         <div style="font-size:14px; font-weight:bold;">Lv.${level}</div>
                     </div>
                 </div>
@@ -355,7 +354,14 @@ function RAnalysis(g) {
     });
 
     container.innerHTML = html;
-    
-    // 改めてグリッドを強制適用（ダメ押し）
+
+    // ★以前のコードで一番重要だった「2列強制」の命令★
     container.setAttribute("style", "display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; width: 100% !important;");
+
+    const totalScoreEl = document.getElementById("i9");
+    if (totalScoreEl) {
+        const totalScore = totalScoreEl.querySelector("div").textContent;
+        const rank = totalScoreEl.querySelectorAll("div")[1].textContent;
+        document.getElementById("totalRank").innerHTML = `総合評価: ${rank} (${totalScore}点)`;
+    }
 }
