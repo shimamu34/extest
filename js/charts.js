@@ -1,3 +1,6 @@
+// charts.js の一番上に追記（二重定義エラーを防ぎつつ初期値を確保）
+var radarVisible = radarVisible || [true, true, true, true, true, true];
+
 // グラフ表示切り替え
 function toggleRadar() {
     const c = document.getElementById("radar");
