@@ -9,15 +9,6 @@ function toggleRadar() {
     }
 }
 
-function toggleGrowth() {
-    const c = document.getElementById("growth");
-    if (c.style.display === "none") {
-        c.style.display = "block";
-        RG(document.getElementById("gender").value);
-    } else {
-        c.style.display = "none";
-    }
-}
 
 function toggleAnalysis() {
     const c = document.getElementById("correlation");
@@ -202,89 +193,6 @@ function RR(g) {
         });
     };
     cv.style.cursor = 'pointer';
-}
-
-// 経年変化グラフ
-function RG(g) {
-    const cv = document.getElementById("gc");
-    const ctx = cv.getContext("2d");
-    const h = D[g].h.slice(0, 9);
-    const k = `y-${g}`;
-    const yd = JSON.parse(localStorage.getItem(k) || '{}');
-    
-    ctx.clearRect(0, 0, cv.width, cv.height);
-    
-    const grs = ['中1', '中2', '中3'];
-    const cols = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0'];
-    const p = {t: 40, r: 100, b: 60, l: 60};
-    const cW = cv.width - p.l - p.r;
-    const cH = cv.height - p.t - p.b;
-    
-    ctx.strokeStyle = '#ccc';
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= 3; i++) {
-        const x = p.l + i * (cW / 3);
-        ctx.beginPath();
-        ctx.moveTo(x, p.t);
-        ctx.lineTo(x, p.t + cH);
-        ctx.stroke();
-    }
-    
-    ctx.fillStyle = '#333';
-    ctx.font = '14px Arial';
-    ctx.textAlign = 'center';
-    grs.forEach((gr, i) => {
-        ctx.fillText(gr, p.l + i * (cW / 3), cv.height - p.b + 25);
-    });
-    
-    h.forEach((lb, idx) => {
-        const cl = cols[idx];
-        ctx.strokeStyle = cl;
-        ctx.fillStyle = cl;
-        ctx.lineWidth = 2;
-        
-        let pts = [];
-        grs.forEach((gr, gi) => {
-            if (yd[gr]) {
-                const vl = yd[gr].v[idx];
-                const sc = CS(vl, lb, g);
-                const x = p.l + gi * (cW / 3);
-                const y = p.t + cH - (sc / 10) * cH;
-                pts.push({x, y, val: vl});
-            }
-        });
-        
-        if (pts.length > 1) {
-            ctx.beginPath();
-            pts.forEach((pt, i) => {
-                if (i === 0) ctx.moveTo(pt.x, pt.y);
-                else ctx.lineTo(pt.x, pt.y);
-            });
-            ctx.stroke();
-        }
-        
-        pts.forEach(pt => {
-            ctx.beginPath();
-            ctx.arc(pt.x, pt.y, 5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#333';
-            ctx.font = '11px Arial';
-            ctx.fillText(pt.val, pt.x, pt.y - 10);
-            ctx.fillStyle = cl;
-        });
-    });
-    
-    const lX = cv.width - p.r + 10;
-    let lY = p.t;
-    ctx.font = '12px Arial';
-    ctx.textAlign = 'left';
-    h.forEach((lb, idx) => {
-        ctx.fillStyle = cols[idx];
-        ctx.fillRect(lX, lY, 15, 10);
-        ctx.fillStyle = '#333';
-        ctx.fillText(lb, lX + 20, lY + 9);
-        lY += 20;
-    });
 }
 
 // 体力分析
