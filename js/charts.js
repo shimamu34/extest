@@ -85,21 +85,34 @@ function RR(g) {
     h.forEach((lb, i) => {
         const a = as * i - Math.PI / 2;
         ctx.beginPath(); ctx.moveTo(cX, cY); ctx.lineTo(cX + Math.cos(a) * rad, cY + Math.sin(a) * rad); ctx.stroke();
-        ctx.fillStyle = "#333"; ctx.textAlign = "center";
         
-        // --- ここで名前を強制的にフルネームに変換 ---
+        ctx.fillStyle = "#333"; 
+        ctx.textAlign = "center";
+        ctx.font = "bold 13px Arial"; // 少し小さくして確実に枠内に収める
+
+        // --- 名前を強制的にフルネームに変換 ---
         let fullLabel = lb;
-        if (lb === "持") fullLabel = "持久走";
-        if (lb === "シ") fullLabel = "20mシャトルラン";
-        if (lb === "握") fullLabel = "握力";
-        if (lb === "上") fullLabel = "上体起こし";
-        if (lb === "長") fullLabel = "長座体前屈";
-        if (lb === "反") fullLabel = "反復横とび";
-        if (lb === "立") fullLabel = "立ち幅とび";
-        if (lb === "ハ") fullLabel = "ハンドボール投";
-        if (lb === "50") fullLabel = "50m走";
-        
-        ctx.fillText(fullLabel, cX + Math.cos(a) * (rad + 35), cY + Math.sin(a) * (rad + 35));
+        if (lb.includes("持")) fullLabel = "持久走";
+        else if (lb.includes("シ")) fullLabel = "20mシャトルラン";
+        else if (lb.includes("握")) fullLabel = "握力";
+        else if (lb.includes("上")) fullLabel = "上体起こし";
+        else if (lb.includes("長")) fullLabel = "長座体前屈";
+        else if (lb.includes("反")) fullLabel = "反復横とび";
+        else if (lb.includes("立")) fullLabel = "立ち幅とび";
+        else if (lb.includes("ハ")) fullLabel = "ハンドボール投";
+        else if (lb.includes("50")) fullLabel = "50m走";
+
+        // 描画位置の調整（35 → 25 に少し内側へ寄せ、上下位置も微調整）
+        const offset = 25; 
+        let x = cX + Math.cos(a) * (rad + offset);
+        let y = cY + Math.sin(a) * (rad + offset);
+
+        // 文字の位置が上下に来る場合、少しだけy軸をずらすと読みやすくなります
+        if (Math.abs(Math.sin(a)) > 0.9) {
+            y += (Math.sin(a) > 0) ? 10 : -5;
+        }
+
+        ctx.fillText(fullLabel, x, y);
     });
 
     // データ描画
