@@ -18,10 +18,10 @@
     </div>
     
     <div class="card no-print" style="text-align:center">
-        性別：<select id="gender" style="padding:8px;border-radius:8px;border:2px solid #e0e0e0;margin:0 10px">
-            <option value="male">男子</option>
-            <option value="female">女子</option>
-        </select>
+        性別：<select id="gender" onchange="RR(this.value)" style="...">
+    <option value="男">男子</option>
+    <option value="女">女子</option>
+</select>
         学年：<select id="grade" style="padding:8px;border-radius:8px;border:2px solid #e0e0e0;margin:0 10px">
             <option value="1">中1</option>
             <option value="2" selected>中2</option>
@@ -318,6 +318,16 @@ function showSetupGuide() {
     // モーダルを表示
     document.getElementById('setupModal').style.display = "block";
 }
+</script
+    <script>
+    // ページ読み込み時に実行
+    window.onload = function() {
+        const gender = document.getElementById("gender").value;
+        // マイレコードのテーブルを描画（app.jsの関数名に合わせてください）
+        if (typeof renderTable === 'function') renderTable(); 
+        // レーダーチャートを初期描画
+        if (typeof RR === 'function') RR(gender);
+    };
 </script>
 </body>
 </html>
