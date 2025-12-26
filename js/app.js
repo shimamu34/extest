@@ -306,3 +306,57 @@ function clearData() {
         N(`中${gr}の記録を消去しました`, "info");
     }
 }
+
+// これを app.js の最後に追加すれば、HTMLの修正を活かしたまま2列に固定されます
+function RAnalysis(g) {
+    const pokedex = document.getElementById("fitnessPokedex");
+    if (!pokedex) return;
+
+    // 1. まずHTMLで作った「2列のルール」をJSからも念押しで適用
+    pokedex.style.display = "grid";
+    pokedex.style.gridTemplateColumns = "1fr 1fr";
+    pokedex.style.gap = "20px";
+
+    // 2. 中身（カード）を生成
+    // ※ 既存の types 配列や CS関数などのロジックは app.js 内で完結するように書く
+    const h = D[g].h.slice(0, 9);
+    let myScores = [];
+    for (let i = 0; i < 9; i++) {
+        const inp = document.getElementById(`i${i}`);
+        const v = parseFloat(inp ? inp.value : NaN);
+        myScores.push(!isNaN(v) ? CS(v, h[i], g) : 0);
+    }
+
+    const calcAvg = (idx) => {
+        const v = idx.map(i => myScores[i]).filter(s => s > 0);
+        return v.length > 0 ? v.reduce((a, b) => a + b, 0) / v.length : 0;
+    };
+
+    const types = [
+        {name: 'パワー型', emoji: '💪', avg: calcAvg([0, 7, 8]), color: '#f5576c'},
+        {name: '持久力型', emoji: '🏃', avg: calcAvg([4, 5]), color: '#00f2fe'},
+        {name: '敏捷性型', emoji: '⚡', avg: calcAvg([3, 6]), color: '#38f9d7'},
+        {name: '柔軟性型', emoji: '🤸', avg: calcAvg([1, 2]), color: '#fee140'}
+    ];
+
+    let html = '';
+    types.forEach(type => {
+        const level = Math.floor(type.avg);
+        const progress = (type.avg / 10) * 100;
+        // カードの幅を100%にすることで、HTMLの「1fr 1fr」にピッタリ収まるようにします
+        html += `
+            <div style="background:rgba(255,255,255,0.15);padding:15px;border-radius:12px;box-sizing:border-box;width:100%">
+                <div style="display:flex;align-items:center;margin-bottom:10px">
+                    <span style="font-size:24px;margin-right:8px">${type.emoji}</span>
+                    <div style="flex:1">
+                        <div style="font-size:13px;font-weight:bold">${type.name}</div>
+                        <div style="font-size:18px;font-weight:bold">Lv.${level}</div>
+                    </div>
+                </div>
+                <div style="background:rgba(255,255,255,0.3);height:10px;border-radius:5px;overflow:hidden">
+                    <div style="background:${type.color};height:100%;width:${progress}%"></div>
+                </div>
+            </div>`;
+    });
+    pokedex.innerHTML = html;
+}
