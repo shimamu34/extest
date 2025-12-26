@@ -451,6 +451,9 @@ function addTrackingRecord() {
     const memo = document.getElementById("trackingMemo").value;
     const g = document.getElementById("gender").value;
     const h = D[g].h;
+
+    // ★追加：今のマイレコード画面で選ばれている学年を取得（1, 2, 3のどれか）
+    const saveGrade = document.getElementById("grade").value;
     
     if (isNaN(value) || !date) {
         N('測定値と日付を入力してください', 'error');
@@ -458,61 +461,75 @@ function addTrackingRecord() {
     }
     
     const score = CS(value, h[eventIdx], g);
-    
     const key = `tracking-${g}`;
     let trackingData = JSON.parse(localStorage.getItem(key) || '{}');
     
-    if (!trackingData[eventIdx]) {
-        trackingData[eventIdx] = [];
-    }
+    if (!trackingData[eventIdx]) trackingData[eventIdx] = [];
     
+    // ★ここを修正：データを保存する箱に grade を追加
     trackingData[eventIdx].push({
         date: date,
         value: value,
         unit: unit,
         memo: memo,
-        score: score
+        score: score,
+        grade: saveGrade // これで学年が保存される
     });
     
     trackingData[eventIdx].sort((a, b) => new Date(a.date) - new Date(b.date));
-    
     localStorage.setItem(key, JSON.stringify(trackingData));
     
+    // 入力欄をクリア
     document.getElementById("trackingValue").value = '';
-    document.getElementById("trackingUnit").value = '';
     document.getElementById("trackingMemo").value = '';
     
     N('記録を追加しました！', 'success');
     
-    document.getElementById("trackingViewEvent").value = eventIdx;
+    // 表示中の学年を、保存した学年に自動で合わせる
+    document.getElementById("trackingViewGrade").value = saveGrade;
     updateTrackingView();
 }
 
 function updateTrackingView() {
     const eventIdx = parseInt(document.getElementById("trackingViewEvent").value);
     const g = document.getElementById("gender").value;
-    const h = D[g].h;
+    
+    // ★追加：新しく作った「表示学年」リストから値を取得
+    const viewGrade = document.getElementById("trackingViewGrade").value;
     
     const key = `tracking-${g}`;
     const trackingData = JSON.parse(localStorage.getItem(key) || '{}');
-    const records = trackingData[eventIdx] || [];
+    
+    // すべての記録を取得
+    const allRecords = trackingData[eventIdx] || [];
+    
+    // ★修正：選択した学年(viewGrade)と同じ学年のデータだけを抜き出す
+    const records = allRecords.filter(r => String(r.grade) === String(viewGrade));
+    
+    const h = D[g].h;
+
+    // グラフのリセット
+    const canvas = document.getElementById("trackingGraph");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     if (records.length === 0) {
-        document.getElementById("trackingGraph").getContext("2d").clearRect(0, 0, 1000, 400);
-        const ctx = document.getElementById("trackingGraph").getContext("2d");
         ctx.fillStyle = '#666';
         ctx.font = '18px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('記録を追加すると、グラフが表示されます', 500, 200);
+        ctx.fillText(`中${viewGrade}年の記録がありません`, 500, 200);
         
         document.getElementById("trackingStats").innerHTML = '<p style="text-align:center;color:#666">データがありません</p>';
-        document.getElementById("trackingList").innerHTML = '<p style="text-align:center;color:#666;padding:20px">データがありません</p>';
+        document.getElementById("trackingList").innerHTML = '';
         return;
     }
     
+    // グラフと統計情報を描画
     drawTrackingGraph(records, h[eventIdx]);
     updateTrackingStats(records, h[eventIdx]);
-    updateTrackingList(records, h[eventIdx], eventIdx);
+    
+    // ★修正：リスト表示関数に allRecords と viewGrade を渡す
+    updateTrackingList(allRecords, h[eventIdx], eventIdx, viewGrade);
 }
 
 function drawTrackingGraph(records, eventName) {
@@ -647,27 +664,27 @@ function updateTrackingStats(records, eventName) {
     document.getElementById("trackingStats").innerHTML = html;
 }
 
-function updateTrackingList(records, eventName, eventIdx) {
+function updateTrackingList(allRecords, eventName, eventIdx, viewGrade) {
     let html = '<table style="width:100%;border-collapse:collapse">';
-    html += '<tr style="background:#FF5722;color:white"><th style="padding:12px">No</th><th>日付</th><th>測定値</th><th>伸び</th><th>単元</th><th>メモ</th><th>操作</th></tr>';
+    html += '<tr style="background:#FF5722;color:white"><th style="padding:12px">No</th><th>日付</th><th>測定値</th><th>メモ</th><th>操作</th></tr>';
     
-    records.forEach((r, i) => {
-        const diff = i > 0 ? (r.value - records[i - 1].value).toFixed(1) : '-';
-        const diffColor = i > 0 ? (r.value > records[i - 1].value ? '#4CAF50' : r.value < records[i - 1].value ? '#f44336' : '#666') : '#666';
+    allRecords.forEach((r, i) => {
+        // ★修正：選択中の学年以外のデータは表示しない
+        if (String(r.grade) !== String(viewGrade)) return;
         
         html += `<tr style="border-bottom:1px solid #f0f0f0">
             <td style="padding:12px;text-align:center;font-weight:bold">${i + 1}</td>
             <td style="padding:12px;text-align:center">${r.date}</td>
             <td style="padding:12px;text-align:center;font-weight:bold;color:#FF5722">${r.value}</td>
-            <td style="padding:12px;text-align:center;font-weight:bold;color:${diffColor}">${diff !== '-' && parseFloat(diff) > 0 ? '+' : ''}${diff}</td>
-            <td style="padding:12px;text-align:center">${r.unit || '-'}</td>
             <td style="padding:12px;text-align:center">${r.memo || '-'}</td>
-            <td style="padding:12px;text-align:center"><button class="btn" style="background:#f44336;padding:6px 12px;font-size:12px" onclick="deleteTrackingRecord(${eventIdx}, ${i})">削除</button></td>
+            <td style="padding:12px;text-align:center">
+                <button class="btn" style="background:#f44336;padding:6px 12px;font-size:12px" 
+                onclick="deleteTrackingRecord(${eventIdx}, ${i})">削除</button>
+            </td>
         </tr>`;
     });
     
     html += '</table>';
-    
     document.getElementById("trackingList").innerHTML = html;
 }
 
