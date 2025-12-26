@@ -86,7 +86,7 @@ function RR(g) {
         const a = as * i - Math.PI / 2;
         ctx.beginPath(); ctx.moveTo(cX, cY); ctx.lineTo(cX + Math.cos(a) * rad, cY + Math.sin(a) * rad); ctx.stroke();
         ctx.fillStyle = "#333"; ctx.textAlign = "center";
-        ctx.fillText(K(lb), cX + Math.cos(a) * (rad + 35), cY + Math.sin(a) * (rad + 35));
+        ctx.fillText(lb, cX + Math.cos(a) * (rad + 35), cY + Math.sin(a) * (rad + 35));
     });
 
     // データ描画
