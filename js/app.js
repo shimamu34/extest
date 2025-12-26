@@ -22,7 +22,6 @@ var radarVisible = radarVisible || [true, true, true, true, true, true];
 })();
 
 // グローバル変数
-let radarVisible = [true, true, true, true, true];
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', function() {
@@ -43,8 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.getElementById("grade").addEventListener("change", () => {
     LI(); // 学年が変わったらデータをロードする
+　　　});
 });
-
 // 通知表示
 function N(m, t = 'success') {
     const n = document.getElementById('notif');
