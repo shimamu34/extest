@@ -313,7 +313,6 @@ function RAnalysis(g) {
     const container = document.getElementById("fitnessPokedex");
     if (!container) return;
 
-    // 1. スコア計算ロジック（既存の仕組みを維持）
     const h = D[g].h.slice(0, 9);
     let myScores = [];
     for (let i = 0; i < 9; i++) {
@@ -334,38 +333,29 @@ function RAnalysis(g) {
         {name: '柔軟性型', emoji: '🤸', avg: calcAvg([1, 2]), color: '#fee140'}
     ];
 
-    // 2. 中身の生成（2列に収まるようサイズを極限まで絞る）
     let html = '';
     types.forEach(type => {
         const level = Math.floor(type.avg);
         const progress = (type.avg / 10) * 100;
         
+        // ★重要：widthを100%にし、外側のgridで2列に分ける
         html += `
-            <div style="background:rgba(255,255,255,0.15); padding:10px; border-radius:10px; box-sizing:border-box; width:100% !important; min-width:0 !important; overflow:hidden;">
+            <div style="background:rgba(255,255,255,0.15); padding:8px; border-radius:10px; box-sizing:border-box; width:100%; min-width:0; overflow:hidden;">
                 <div style="display:flex; align-items:center; margin-bottom:5px;">
-                    <span style="font-size:20px; margin-right:5px; flex-shrink:0;">${type.emoji}</span>
-                    <div style="min-width:0; overflow:hidden;">
-                        <div style="font-size:11px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${type.name}</div>
-                        <div style="font-size:16px; font-weight:bold;">Lv.${level}</div>
+                    <span style="font-size:18px; margin-right:4px;">${type.emoji}</span>
+                    <div style="min-width:0;">
+                        <div style="font-size:10px; font-weight:bold; white-space:nowrap;">${type.name}</div>
+                        <div style="font-size:14px; font-weight:bold;">Lv.${level}</div>
                     </div>
                 </div>
-                <div style="background:rgba(255,255,255,0.3); height:8px; border-radius:4px; overflow:hidden;">
+                <div style="background:rgba(255,255,255,0.3); height:6px; border-radius:3px; overflow:hidden;">
                     <div style="background:${type.color}; height:100%; width:${progress}%;"></div>
                 </div>
             </div>`;
     });
 
-    // 3. 【最重要】innerHTMLを入れた直後に、JSからグリッドを強制再起動する
     container.innerHTML = html;
-    container.style.display = "grid";
-    container.style.gridTemplateColumns = "1fr 1fr";
-    container.style.gap = "10px";
-
-    // 総合点とランクの表示更新
-    const totalScoreEl = document.getElementById("i9");
-    if (totalScoreEl) {
-        const totalScore = totalScoreEl.querySelector("div").textContent;
-        const rank = totalScoreEl.querySelectorAll("div")[1].textContent;
-        document.getElementById("totalRank").innerHTML = `総合評価: ${rank} (${totalScore}点)`;
-    }
+    
+    // 改めてグリッドを強制適用（ダメ押し）
+    container.setAttribute("style", "display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; width: 100% !important;");
 }
