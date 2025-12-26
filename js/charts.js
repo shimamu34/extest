@@ -32,8 +32,6 @@ function toggleTracking() {
 }
 
 // レーダーチャート描画
-let radarVisible = [true, true, true, true, true, true]; 
-
 function RR(g) {
     const cv = document.getElementById("rc");
     const ctx = cv.getContext("2d");
@@ -643,4 +641,12 @@ function deleteTrackingRecord(eventIdx, recordIdx) {
         N('記録を削除しました', 'info');
         updateTrackingView();
     }
+}
+// charts.js の一番下に追加
+function updateAllCharts() {
+    const g = document.getElementById("gender").value;
+    // 表示されている時だけ描画を更新する
+    if (document.getElementById("radar").style.display !== "none") RR(g);
+    if (document.getElementById("correlation").style.display !== "none") RAnalysis(g);
+    if (document.getElementById("tracking").style.display !== "none") updateTrackingView();
 }
