@@ -86,7 +86,20 @@ function RR(g) {
         const a = as * i - Math.PI / 2;
         ctx.beginPath(); ctx.moveTo(cX, cY); ctx.lineTo(cX + Math.cos(a) * rad, cY + Math.sin(a) * rad); ctx.stroke();
         ctx.fillStyle = "#333"; ctx.textAlign = "center";
-        ctx.fillText(lb, cX + Math.cos(a) * (rad + 35), cY + Math.sin(a) * (rad + 35));
+        
+        // --- ここで名前を強制的にフルネームに変換 ---
+        let fullLabel = lb;
+        if (lb === "持") fullLabel = "持久走";
+        if (lb === "シ") fullLabel = "20mシャトルラン";
+        if (lb === "握") fullLabel = "握力";
+        if (lb === "上") fullLabel = "上体起こし";
+        if (lb === "長") fullLabel = "長座体前屈";
+        if (lb === "反") fullLabel = "反復横とび";
+        if (lb === "立") fullLabel = "立ち幅とび";
+        if (lb === "ハ") fullLabel = "ハンドボール投";
+        if (lb === "50") fullLabel = "50m走";
+        
+        ctx.fillText(fullLabel, cX + Math.cos(a) * (rad + 35), cY + Math.sin(a) * (rad + 35));
     });
 
     // データ描画
