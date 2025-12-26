@@ -305,45 +305,37 @@ function doPost(e) {
     <script src="js/setup.js"></script>
 
     <script>
-    // 1. パスコードをチェックする関数
-    function checkPasscode() {
-        const code = prompt("管理者用パスコードを入力してください（4桁）");
-        if (code === "9076") {
-            showSetupGuide();
-        } else if (code !== null) {
-            alert("パスコードが違います。");
-        }
+// 1. パスコードチェック関数（変更なし）
+function checkPasscode() {
+    const code = prompt("管理者用パスコードを入力してください（4桁）");
+    if (code === "9076") {
+        showSetupGuide();
+    } else if (code !== null) {
+        alert("パスコードが違います。");
     }
+}
 
-    // 2. 設定画面を表示する関数
-    function showSetupGuide() {
-        const gasInput = document.getElementById('gasUrlInput');
-        const distInput = document.getElementById('studentDistUrlInput');
-        const urlArea = document.getElementById('studentUrlArea');
-        if (gasInput) gasInput.value = ""; 
-        if (distInput) distInput.value = "";
-        if (urlArea) urlArea.style.display = "none";
-        document.getElementById('setupModal').style.display = "block";
-    }
+// 2. 設定画面表示（変更なし）
+function showSetupGuide() {
+    document.getElementById('setupModal').style.display = "block";
+}
 
-    // 3. ページ読み込み時の初期化
-    window.onload = function() {
-        // 学年・性別の変更時に表を更新するようにイベントを追加
-        document.getElementById("gender").addEventListener("change", function() {
-            if (typeof renderTable === 'function') renderTable();
-            if (typeof RR === 'function') RR(this.value);
-        });
-        
-        document.getElementById("grade").addEventListener("change", function() {
-            if (typeof renderTable === 'function') renderTable();
-            const g = document.getElementById("gender").value;
-            if (typeof RR === 'function') RR(g);
-        });
+// 3. イベントリスナーの設定（window.onloadを使わずに直接設定）
+document.addEventListener("DOMContentLoaded", function() {
+    const genderEl = document.getElementById("gender");
+    const gradeEl = document.getElementById("grade");
 
-        // 初回実行
-        const gender = document.getElementById("gender").value;
-        if (typeof renderTable === 'function') renderTable(); 
-        if (typeof RR === 'function') RR(gender);
+    const updateAll = () => {
+        if (typeof renderTable === 'function') renderTable();
+        if (typeof RR === 'function') RR(genderEl.value);
     };
-    </script> </body>
+
+    if(genderEl) genderEl.addEventListener("change", updateAll);
+    if(gradeEl) gradeEl.addEventListener("change", updateAll);
+
+    // 初回実行
+    setTimeout(updateAll, 100); // データの読み込み完了を少し待って実行
+});
+</script>
+</body>
 </html>
