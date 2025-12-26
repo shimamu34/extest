@@ -83,7 +83,16 @@
         <div style="background:linear-gradient(135deg,#FF5722,#FF7043);padding:30px;border-radius:15px;margin-bottom:30px;color:white">
             <h4 style="margin:0 0 25px 0;font-size:22px;text-align:center">📝 新しい記録を追加</h4>
             <div style="background:rgba(255,255,255,0.15);padding:25px;border-radius:12px;backdrop-filter:blur(10px)">
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px; margin-bottom:15px">
+                
+                <div style="display:grid; grid-template-columns: 1fr 1.5fr 1fr; gap:15px; margin-bottom:15px">
+                    <div>
+                        <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">日付</label>
+                        <input type="date" id="trackingDate" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box">
+                    </div>
+                    <div>
+                        <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">学習単元 / 授業内容</label>
+                        <input type="text" id="trackingUnit" placeholder="例：短距離走、バスケットボール" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box">
+                    </div>
                     <div>
                         <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">学年</label>
                         <select id="trackingGrade" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;background:white;box-sizing:border-box">
@@ -92,6 +101,9 @@
                             <option value="3">中3</option>
                         </select>
                     </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px">
                     <div>
                         <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">種目</label>
                         <select id="trackingEvent" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;background:white;box-sizing:border-box">
@@ -108,25 +120,28 @@
                     </div>
                     <div>
                         <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">測定値</label>
-                        <input type="number" id="trackingValue" step="0.01" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;font-weight:bold;box-sizing:border-box" placeholder="数値">
+                        <input type="number" id="trackingValue" step="0.01" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;font-weight:bold;box-sizing:border-box" placeholder="数値入力">
                     </div>
                 </div>
-                <div style="text-align:center; margin-top:15px;">
+
+                <div style="margin-bottom:20px">
+                    <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">本時の振り返り・メモ</label>
+                    <textarea id="trackingMemo" rows="2" placeholder="気づいたことや目標など" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box;font-family:inherit"></textarea>
+                </div>
+
+                <div style="text-align:center;">
                     <button class="btn" style="background:linear-gradient(135deg,#4CAF50,#66BB6A);font-size:16px;padding:12px 40px" onclick="addTrackingRecord()">➕ 記録を追加</button>
                 </div>
             </div>
         </div>
 
         <div style="padding: 20px; background: #fff; border: 1px solid #eee; border-radius: 12px; margin-top: 20px;">
-            
-            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; flex-wrap: wrap;">
-                <h3 style="margin: 0; font-size: 1.25em; color: #333; display: flex; align-items: center; gap: 8px;">
-                    📊 変容グラフ
-                </h3>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                <h3 style="margin: 0; font-size: 1.25em; color: #333;">📊 変容グラフ</h3>
                 
-                <div style="display: flex; align-items: center; gap: 10px; background: #f8f9fa; padding: 5px 15px; border-radius: 30px; border: 1px solid #e2e8f0;">
-                    <span style="font-size: 0.85em; font-weight: bold; color: #666;">表示種目:</span>
-                    <select id="trackingViewEvent" onchange="updateTrackingView()" style="padding: 5px 8px; border-radius: 5px; border: 1px solid #cbd5e0; background: white; cursor: pointer; font-size: 13px;">
+                <div style="display: flex; align-items: center; gap: 8px; background: #f8f9fa; padding: 5px 12px; border-radius: 30px; border: 1px solid #e2e8f0;">
+                    <span style="font-size: 0.85em; font-weight: bold; color: #666;">種目:</span>
+                    <select id="trackingViewEvent" onchange="updateTrackingView()" style="padding: 4px; border-radius: 5px; border: 1px solid #cbd5e0; font-size: 13px;">
                         <option value="0">握力</option>
                         <option value="1">上体起こし</option>
                         <option value="2">長座体前屈</option>
@@ -137,20 +152,12 @@
                         <option value="7">立ち幅とび</option>
                         <option value="8">ハンドボール投</option>
                     </select>
-
-                    <span style="font-size: 0.85em; font-weight: bold; color: #666; margin-left: 5px;">学年:</span>
-                    <select id="trackingViewGrade" onchange="updateTrackingView()" style="padding: 5px 8px; border-radius: 5px; border: 1px solid #cbd5e0; background: white; cursor: pointer; font-size: 13px;">
-                        <option value="1">中1</option>
-                        <option value="2" selected>中2</option>
-                        <option value="3">中3</option>
-                    </select>
                 </div>
             </div>
 
             <div style="position: relative; height: 350px; width: 100%;">
                 <canvas id="trackingGraph"></canvas>
             </div>
-
             <div id="trackingStats" style="margin-top: 25px;"></div>
         </div>
 
