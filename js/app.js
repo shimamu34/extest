@@ -31,11 +31,12 @@ document.addEventListener('DOMContentLoaded', function() {
     LI();
     
     document.getElementById("gender").addEventListener("change", () => {
-        const g = document.getElementById("gender").value;
-        RT();
-        RS();
-        if (document.getElementById("radar").style.display !== "none") RR(g);
-        if (document.getElementById("correlation").style.display !== "none") RAnalysis(g);
+    const g = document.getElementById("gender").value; // ここが "男" か "女" になる
+    RT();
+    RS();
+    // RR(g) や RAnalysis(g) に正しく "男"/"女" が渡るようになります
+    if (document.getElementById("radar").style.display !== "none") RR(g);
+    if (document.getElementById("correlation").style.display !== "none") RAnalysis(g);
         if (document.getElementById("tracking").style.display !== "none") updateTrackingView();
         LI();
     });
@@ -78,7 +79,8 @@ function TS(t) {
 
 // スコア計算
 function CS(v, h, g) {
-    const c = D[g].c;
+    // 引数 g に "男" か "女" が渡されていれば、このままで動きます
+    const c = D[g].c; 
     const k = K(h);
     let rv = k === "50m" || k === "持" ? Math.ceil(v * 100) / 100 : Math.floor(v);
     for (let j = 0; j < c.length; j++) {
@@ -106,7 +108,13 @@ function CS(v, h, g) {
 
 // テーブル描画
 function RT() {
-    const g = document.getElementById("gender").value;
+    const g = document.getElementById("gender").value; // ここで "男" か "女" を取得
+    
+    // D[g] が存在するかチェックする一文を入れると安全です
+    if (!D[g]) {
+        console.error("データが見つかりません:", g);
+        return;
+    }
     const h = D[g].h;
     let s = '<table><tr><th></th>';
     h.forEach(x => s += `<th>${x}</th>`);
