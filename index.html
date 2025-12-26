@@ -194,22 +194,19 @@
   try {
     var data = JSON.parse(e.postData.contents);
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    // シート名を「学年-組-回」で作成
     var sheetName = data.grade + "年-" + data.class + "組-" + data.session + "回目";
     var sheet = ss.getSheetByName(sheetName);
-    
-    // シートがなければ新規作成し、ヘッダーを追加
+
     if (!sheet) {
       sheet = ss.insertSheet(sheetName);
       sheet.appendRow(['出席番号', '氏名', '性別', '学年', '組', '回', '握力', '上体', '長座', '反復', '持久', 'シャトル', '50m', '立ち幅', '投', '日時']);
     }
 
-    // 出席番号を確実に半角数値に変換する
+    // ★★★ ここで全角を半角に強制変換（出席番号） ★★★
     var sId = data.studentId ? String(data.studentId).replace(/[０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 65248);
     }) : "";
 
-    // 既存のデータ（同じ出席番号かつ同じ氏名）があるか確認して上書き判定
     var rows = sheet.getDataRange().getValues();
     var rowIndex = -1;
     for (var i = 1; i < rows.length; i++) {
@@ -219,9 +216,8 @@
       }
     }
 
-    // 保存用データの配列作成
     var rowData = [
-      sId,
+      sId, // 半角に変換された番号
       data.name || "",
       (data.gender === 'male' || data.gender === '男' || data.gender === '男子') ? '男子' : '女子',
       data.grade || "",
@@ -236,14 +232,12 @@
       data.sprint50 || "",
       data.jump || "",
       data.throw || "",
-      new Date() // 送信日時
+      new Date()
     ];
 
     if (rowIndex > 0) {
-      // 既存データがあればその行を更新
       sheet.getRange(rowIndex, 1, 1, rowData.length).setValues([rowData]);
     } else {
-      // 新規データなら最後尾に追加
       sheet.appendRow(rowData);
     }
 
