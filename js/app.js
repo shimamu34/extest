@@ -339,17 +339,25 @@ function RAnalysis(g) {
                 return validScores.length > 0 ? validScores.reduce((sum, s) => sum + s, 0) / validScores.length : 0;
             };
             
+            // --- パワー型 ---
+            // 握力(0), 上体起こし(2), 立ち幅(7), ハンド投(8) の平均
             const powerAvg = calcAvg([0, 2, 7, 8]);
-    　　　　　const enduranceBest = Math.max(myScores[4], myScores[5]);
 
-　　　　　　　　let enduranceCount = 0;
-　　　　　　　　let enduranceSum = 0;
+            // --- 持久力型 ---
+            // 1. 持久走(4)とシャトルラン(5)の高い方を1つのスコアとして扱う
+            const enduranceBest = Math.max(myScores[4], myScores[5]);
+            
+            // 2. 「持久系ベスト」と「上体起こし(2)」の2つの値で平均を出す
+            // ※0（未入力）を除外して平均化するロジック
+            let eList = [];
+            if (enduranceBest > 0) eList.push(enduranceBest);
+            if (myScores[2] > 0) eList.push(myScores[2]);
+            const enduranceAvg = eList.length > 0 ? eList.reduce((a, b) => a + b, 0) / eList.length : 0;
 
-　　　　　　　　if (enduranceBest > 0) { enduranceSum += enduranceBest; enduranceCount++; }
-　　　　　　　　if (myScores[2] > 0) { enduranceSum += myScores[2]; enduranceCount++; }
-
-　　　　　　　　const enduranceAvg = enduranceCount > 0 ? enduranceSum / enduranceCount : 0;
+            // --- 敏捷性型 ---
             const agilityAvg = calcAvg([3, 6, 8]);
+
+            // --- 柔軟性型 ---
             const flexibilityAvg = calcAvg([1, 2]);
             
             const types = [
