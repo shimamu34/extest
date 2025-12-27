@@ -339,9 +339,17 @@ function RAnalysis(g) {
                 return validScores.length > 0 ? validScores.reduce((sum, s) => sum + s, 0) / validScores.length : 0;
             };
             
-            const powerAvg = calcAvg([0, 7, 8]);
-            const enduranceAvg = calcAvg([4, 5]);
-            const agilityAvg = calcAvg([3, 6]);
+            const powerAvg = calcAvg([0, 2, 7, 8]);
+    　　　　　const enduranceBest = Math.max(myScores[4], myScores[5]);
+
+　　　　　　　　let enduranceCount = 0;
+　　　　　　　　let enduranceSum = 0;
+
+　　　　　　　　if (enduranceBest > 0) { enduranceSum += enduranceBest; enduranceCount++; }
+　　　　　　　　if (myScores[2] > 0) { enduranceSum += myScores[2]; enduranceCount++; }
+
+　　　　　　　　const enduranceAvg = enduranceCount > 0 ? enduranceSum / enduranceCount : 0;
+            const agilityAvg = calcAvg([3, 6, 8]);
             const flexibilityAvg = calcAvg([1, 2]);
             
             const types = [
