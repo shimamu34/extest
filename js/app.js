@@ -334,38 +334,35 @@ function RAnalysis(g) {
             }
             
             // タイプ別レベル計算
-            const calcAvg = (indices) => {
-                const validScores = indices.map(i => myScores[i]).filter(s => s > 0);
-                return validScores.length > 0 ? validScores.reduce((sum, s) => sum + s, 0) / validScores.length : 0;
-            };
-            
-            // --- パワー型 ---
-            // 握力(0), 上体起こし(2), 立ち幅(7), ハンド投(8) の平均
-            const powerAvg = calcAvg([0, 2, 7, 8]);
+// 0:握力, 1:上体起こし, 2:長座体前屈, 3:反復横とび, 4:持久走, 5:シャトルラン, 6:50m, 7:立ち幅跳び, 8:ハンドボール投げ
 
-            // --- 持久力型 ---
-            // 1. 持久走(4)とシャトルラン(5)の高い方を1つのスコアとして扱う
-            const enduranceBest = Math.max(myScores[4], myScores[5]);
-            
-            // 2. 「持久系ベスト」と「上体起こし(2)」の2つの値で平均を出す
-            // ※0（未入力）を除外して平均化するロジック
-            let eList = [];
-            if (enduranceBest > 0) eList.push(enduranceBest);
-            if (myScores[2] > 0) eList.push(myScores[2]);
-            const enduranceAvg = eList.length > 0 ? eList.reduce((a, b) => a + b, 0) / eList.length : 0;
+const calcAvg = (indices) => {
+    const validScores = indices.map(i => myScores[i]).filter(s => s > 0);
+    return validScores.length > 0 ? validScores.reduce((sum, s) => sum + s, 0) / validScores.length : 0;
+};
 
-            // --- 敏捷性型 ---
-            const agilityAvg = calcAvg([3, 6, 8]);
+// パワー型：握力(0), 上体起こし(1), 立ち幅(7), ハンド(8)
+const powerAvg = calcAvg([0, 1, 7, 8]); 
 
-            // --- 柔軟性型 ---
-            const flexibilityAvg = calcAvg([1, 2]);
-            
-            const types = [
-                {name: 'パワー型', emoji: '💪', avg: powerAvg, color: '#f5576c'},
-                {name: '持久力型', emoji: '🏃', avg: enduranceAvg, color: '#00f2fe'},
-                {name: '敏捷性型', emoji: '⚡', avg: agilityAvg, color: '#38f9d7'},
-                {name: '柔軟性型', emoji: '🤸', avg: flexibilityAvg, color: '#fee140'}
-            ];
+// 持久力型：(持久走(4) or シャトルラン(5)の高い方) と 上体起こし(1) の平均
+const enduranceBest = Math.max(myScores[4], myScores[5]);
+let eList = [];
+if (enduranceBest > 0) eList.push(enduranceBest);
+if (myScores[1] > 0) eList.push(myScores[1]); // 上体起こしは「1」番！
+const enduranceAvg = eList.length > 0 ? eList.reduce((a, b) => a + b, 0) / eList.length : 0;
+
+// 敏捷性型：反復横とび(3), 50m走(6), ハンドボール投(8)
+const agilityAvg = calcAvg([3, 6, 8]);
+
+// 柔軟性型：長座体前屈(2), 上体起こし(1)
+const flexibilityAvg = calcAvg([2, 1]); // 長座は「2」、上体は「1」！
+
+const types = [
+    {name: 'パワー型', emoji: '💪', avg: powerAvg, color: '#f5576c'},
+    {name: '持久力型', emoji: '🏃', avg: enduranceAvg, color: '#00f2fe'},
+    {name: '敏捷性型', emoji: '⚡', avg: agilityAvg, color: '#38f9d7'},
+    {name: '柔軟性型', emoji: '🤸', avg: flexibilityAvg, color: '#fee140'}
+];
             
             // 図鑑表示
             let pokedexHtml = '';
