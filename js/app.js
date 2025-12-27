@@ -395,8 +395,11 @@ const types = [
             document.getElementById("fitnessPokedex").innerHTML = pokedexHtml;
             
             // 総合評価
-            const validScores = myScores.filter(s => s > 0);
-            const totalScore = validScores.reduce((a, b) => a + b, 0);
+            // 持久系は高い方のみを採用し、合計8種目で計算
+　　　const totalScore = 
+    myScores[0] + myScores[1] + myScores[2] + myScores[3] + 
+    Math.max(myScores[4], myScores[5]) + // 持久走 or シャトルラン
+    myScores[6] + myScores[7] + myScores[8];
             const gr = parseInt(document.getElementById("grade").value);
             let rank = 'E';
             let rankMin = 0, rankMax = 0;
@@ -455,8 +458,10 @@ function setGoal(goalType) {
                 myScores.push(!isNaN(v) ? CS(v, h[i], g) : 0);
             }
             
-            const validScores = myScores.filter(s => s > 0);
-            const totalScore = validScores.reduce((a, b) => a + b, 0);
+            const totalScore = 
+   　　　　　　 myScores[0] + myScores[1] + myScores[2] + myScores[3] + 
+   　　　　　　 Math.max(myScores[4], myScores[5]) + 
+    　　　　　　myScores[6] + myScores[7] + myScores[8];
             
             let targetScore = 0;
             let goalTitle = '';
