@@ -652,3 +652,19 @@ function setGoal(goalType) {
             
             document.getElementById("goalSimulator").innerHTML = html;
         }
+
+function printWithChart() {
+    // 1. グラフを描画する関数を強制的に実行する
+    // ※あなたのコードでのグラフ描画関数名（例: updateRadarChart など）に合わせてください
+    if (typeof updateRadarChart === 'function') {
+        updateRadarChart(); 
+    } else if (typeof renderRadar === 'function') {
+        renderRadar();
+    }
+
+    // 2. ほんの少しだけ待ってから印刷ダイアログを開く
+    // （描画が完了する時間を稼ぐため）
+    setTimeout(() => {
+        window.print();
+    }, 300); 
+}
