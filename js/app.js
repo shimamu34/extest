@@ -71,6 +71,10 @@ function TS(t) {
 }
 
 function CS(v, h, g) {
+    // 追加：入力が空、null、undefined、または 0 の場合は 0 点を返す
+    if (v === null || v === undefined || v === "" || parseFloat(v) === 0) {
+        return 0;
+    }
     const c = D[g].c; 
     const k = K(h);
     let rv = k === "50m" || k === "持" ? Math.ceil(v * 100) / 100 : Math.floor(v);
@@ -157,7 +161,11 @@ function U() {
     let scores = [];
     h.slice(0, -1).forEach((x, i) => {
         const v = parseFloat(document.getElementById(`i${i}`).value);
-        if (isNaN(v)) { scores.push(null); return; }
+        // 修正：isNaN(v) だけでなく v === 0 の場合も null（未入力扱い）として処理する
+        if (isNaN(v) || v === 0) { 
+            scores.push(null); 
+            return; 
+        }
         const k = K(x);
         let rv = k === "50m" || k === "持" ? Math.ceil(v * 100) / 100 : Math.floor(v);
         for (let j = 0; j < c.length; j++) {
