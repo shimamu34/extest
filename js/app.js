@@ -111,14 +111,16 @@ function RT() {
             if (r === "記録") {
                 if (j === 4) { 
                     // 持久走のセル：幅を他と合わせ、中の入力欄を45%ずつにする
-                    s += `<td style="min-width: 100px; padding: 4px;">
-                            <div style="display: flex; align-items: center; justify-content: space-between;">
-                                <input type="number" id="i4_min" onchange="U()" placeholder="分" style="width: 45%; padding: 4px; box-sizing: border-box; text-align: center;">
-                                <span style="width: 10%; text-align: center; font-weight: bold;">:</span>
-                                <input type="number" id="i4_sec" onchange="U()" placeholder="秒" style="width: 45%; padding: 4px; box-sizing: border-box; text-align: center;">
-                            </div>
-                            <input type="hidden" id="i4"> 
-                          </td>`;
+                    s += `<td style="width: 80px; padding: 4px;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
+                <input type="number" id="i4_min" onchange="U()" placeholder="分" 
+                       style="width: 35px; padding: 4px 2px; box-sizing: border-box; text-align: center; font-size: 14px;">
+                <span style="font-weight: bold;">:</span>
+                <input type="number" id="i4_sec" onchange="U()" placeholder="秒" 
+                       style="width: 35px; padding: 4px 2px; box-sizing: border-box; text-align: center; font-size: 14px;">
+            </div>
+            <input type="hidden" id="i4"> 
+          </td>`;
                 } else if (j < 9) {
                     s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width: 100%; box-sizing: border-box;"></td>`;
                 } else {
