@@ -243,77 +243,61 @@ input[type="number"] {
 
 /* --- 印刷用スタイル設定 --- */
 @media print {
-    /* 1. 背景色と文字色の強制（インク節約しつつ見た目を維持） */
+    /* 1. 全体の余白を最小化 */
+    @page {
+        size: A4;
+        margin: 10mm; /* 余白を15mmから10mmへ削減 */
+    }
+
     body {
         background: white !important;
         padding: 0 !important;
         min-height: auto !important;
     }
 
-    /* 2. 不要な要素を消す（ボタン類、図鑑、通知など） */
-    .btn, .notification, #fitnessPokedex, .button-group, .controls, h1 {
+    /* 2. 不要なものを消す */
+    .btn, .notification, #fitnessPokedex, .button-group, .controls, h1, .no-print {
         display: none !important;
     }
 
-    /* 3. カードの余白を印刷用に調整 */
+    /* 3. カードの余白をゼロにする */
     .card {
         box-shadow: none !important;
         border: none !important;
         padding: 0 !important;
-        margin: 0 auto !important;
-        max-width: 100% !important;
+        margin: 0 !important;
     }
 
-    /* 4. テーブルを印刷に最適化（1枚に収まりやすくする） */
+    /* 4. テーブルをコンパクトに */
     table {
         width: 100% !important;
-        border: 1px solid #333 !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 5px !important; /* グラフとの隙間を最小に */
     }
 
     th, td {
-        border: 1px solid #ccc !important;
-        color: black !important;
-        padding: 6px 2px !important;
-        font-size: 11pt !important;
+        padding: 4px 2px !important; /* セルの高さを圧縮 */
+        font-size: 10pt !important;
     }
 
-    th {
-        background: #f0f0f0 !important;
-        color: black !important;
-    }
-
-    /* 入力欄の枠を消して値だけを見せる */
-    input[type="number"] {
-        border: none !important;
-        background: transparent !important;
-        font-size: 12pt !important;
-        max-width: none !important;
-    }
-
-    /* 5. レーダーチャートの配置調整 */
+    /* 5. グラフを強制的に小さくして1枚目にねじ込む */
     #radar {
         display: block !important;
-        margin-top: 10px !important;
-        page-break-inside: avoid; /* チャートが途中で切れるのを防ぐ */
+        margin: 0 auto !important;
+        padding: 0 !important;
+        text-align: center;
+        width: 100%;
     }
 
     #rc {
-        width: 100% !important;
-        max-width: 500px !important; /* A4幅に合わせたサイズ制限 */
-        height: auto !important;
-        margin: 0 auto;
-        display: block;
+        /* ここが重要：サイズをさらに小さく設定 */
+        width: 380px !important; 
+        height: 380px !important; 
+        margin: 0 auto !important;
     }
 
-    /* 持久走の「分：秒」のコロンなどの装飾 */
-    span {
-        color: black !important;
-    }
-
-    /* 6. ページ余白の設定 */
-    @page {
-        size: A4;
-        margin: 15mm;
+    /* 6. タイトルの隙間を消す */
+    h2 {
+        margin: 0 0 5px 0 !important;
+        font-size: 14pt !important;
     }
 }
