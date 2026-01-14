@@ -109,8 +109,20 @@ function RT() {
         s += '<tr><td>' + r + '</td>';
         h.forEach((x, j) => {
             if (r === "記録") {
-                if (j < 9) s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1"></td>`;
-                else s += `<td id="i9"><div>0</div><div>E</div></td>`;
+                // --- ここから修正 ---
+                if (j === 4) { // 4番目（持久走）だけ分・秒に分ける
+                    s += `<td style="display: flex; align-items: center; justify-content: center; gap: 2px; border: none; min-width: 100px;">
+                            <input type="number" id="i4_min" onchange="U()" placeholder="分" style="width: 40px; padding: 4px; font-size: 14px;">
+                            <span style="font-weight: bold;">:</span>
+                            <input type="number" id="i4_sec" onchange="U()" placeholder="秒" style="width: 40px; padding: 4px; font-size: 14px;">
+                            <input type="hidden" id="i4"> 
+                          </td>`;
+                } else if (j < 9) {
+                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1"></td>`;
+                } else {
+                    s += `<td id="i9"><div>0</div><div>E</div></td>`;
+                }
+                // --- ここまで修正 ---
             } else {
                 let v = A[g][r][j];
                 if (j === 9) { v = T[g][r]; s += `<td>${v}</td>`; }
@@ -146,6 +158,17 @@ function RE() {
 }
 
 function U() {
+    // 【追加】分と秒を合体させて、隠し持った i4 に入れる
+    const m = parseInt(document.getElementById("i4_min")?.value) || 0;
+    const sec = parseInt(document.getElementById("i4_sec")?.value) || 0;
+    const i4 = document.getElementById("i4");
+    if (i4) {
+        if (m > 0 || sec > 0) {
+            i4.value = (m * 60) + sec;
+        } else {
+            i4.value = "";
+        }
+    }
     const g = document.getElementById("gender").value;
     const gr = parseInt(document.getElementById("grade").value);
     const c = D[g].c; const h = D[g].h;
@@ -224,19 +247,37 @@ function LI() {
     const g = document.getElementById("gender").value;
     const gr = document.getElementById("grade").value;
     const sv = localStorage.getItem("y-" + g);
+    
     if (sv) {
         const allData = JSON.parse(sv);
         const v = allData[gr] || ["","","","","","","","",""];
         for (let i = 0; i < v.length; i++) {
             const input = document.getElementById(`i${i}`);
-            if (input) input.value = v[i];
+            if (input) {
+                input.value = v[i];
+                
+                // --- 持久走の秒数を「分」と「秒」に分けて表示させる追加処理 ---
+                if (i === 4 && v[i] !== "") {
+                    const total = parseInt(v[i]);
+                    const mField = document.getElementById("i4_min");
+                    const sField = document.getElementById("i4_sec");
+                    if (mField && sField) {
+                        mField.value = Math.floor(total / 60); // 分を計算
+                        sField.value = total % 60;             // あまった秒
+                    }
+                }
+            }
         }
         U();
     } else {
+        // データがない時は全部空にする
         for (let i = 0; i < 9; i++) {
             const input = document.getElementById(`i${i}`);
             if (input) input.value = "";
         }
+        // 持久走の分・秒入力欄も忘れずに空にする
+        if (document.getElementById("i4_min")) document.getElementById("i4_min").value = "";
+        if (document.getElementById("i4_sec")) document.getElementById("i4_sec").value = "";
         U();
     }
 }
