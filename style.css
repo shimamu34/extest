@@ -42,7 +42,7 @@ h2 span {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     /* paddingを 12px → 6px 12px に変更（上下を半分に） */
     padding: 6px 12px; 
-    margin: 5px auto;
+    margin: 2px auto;
     max-width: 1200px;
 }
 
