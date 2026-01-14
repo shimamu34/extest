@@ -24,17 +24,25 @@ h1 {
 h2 {
     text-align: center;
     color: #333;
-    font-size: 1.3em; /* わずかに縮小 */
+    font-size: 1.3em; /* 大きさは維持 */
     font-weight: 600;
-    margin: 10px 0 5px; /* 上下の隙間を大幅に短縮（旧：20px 0 10px） */
+    /* marginを 10px 0 5px → 2px 0 2px に変更 */
+    margin: 2px 0 2px; 
+    line-height: 1.1; /* 行間を詰め、タイトルの専有面積を減らす */
+}
+
+h2 span {
+    margin-top: 1px !important; /* 日本語との距離を最小限に */
+    line-height: 1.2;
 }
 
 .card {
     background: white;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    padding: 12px; /* 内側の余白を少し縮小 */
-    margin: 5px auto; /* カード同士の隙間を半分に（旧：10px auto） */
+    /* paddingを 12px → 6px 12px に変更（上下を半分に） */
+    padding: 6px 12px; 
+    margin: 5px auto;
     max-width: 1200px;
 }
 
