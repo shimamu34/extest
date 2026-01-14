@@ -51,30 +51,29 @@
         font-size: 13px;
     }
 
-    /* 目標達成シミュレーターの4つのボタン専用の設定 */
-#correlation .btn[onclick^="setGoal"] {
-    /* 横幅を「ほぼ半分」に指定して、横に2つしか並べないようにします */
-    width: 46% !important; 
-    height: 80px !important;
-    margin: 5px 1% !important; /* 左右に少し隙間を作って2つ並べる */
-    
-    font-size: 17px !important;
-    font-weight: bold !important;
-    border-radius: 15px !important;
-    
-    /* ボタンの中の文字を中央に寄せる */
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    vertical-align: top;
-    
-    box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+ /* ボタンを囲んでいる「箱」そのものの幅を強制固定する */
+#correlation div:has(> button[onclick^="setGoal"]) {
+    display: block !important;
+    width: 100% !important;
+    max-width: 500px !important; /* ボタン2個分＋隙間の幅に固定 */
+    margin: 0 auto 25px auto !important; /* 中央に寄せる */
+    text-align: center !important;
 }
 
-/* 親要素（ボタンを囲んでいる場所）の中身を中央に寄せる */
-#correlation div:has(> button[onclick^="setGoal"]), 
-#correlation div {
-    text-align: center !important;
+/* ボタンのサイズを「半分」に固定して横に2つ並べる */
+#correlation .btn[onclick^="setGoal"] {
+    display: inline-flex !important;
+    width: 230px !important;    /* 固定値にすることで勝手に伸び縮みさせません */
+    height: 70px !important;
+    margin: 5px !important;     /* ボタン周りの余白 */
+    
+    font-size: 16px !important;
+    font-weight: bold !important;
+    border-radius: 12px !important;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+    vertical-align: top !important;
 }
  </style>
   
