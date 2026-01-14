@@ -244,70 +244,64 @@ input[type="number"] {
    印刷専用スタイル（A4一枚に集約）
    ============================================= */
 @media print {
-    /* 1. 全体設定：背景を白くし、画面上の不要な要素を全て消す */
+    /* 1. ページ全体の余白を最小限にする */
+    @page {
+        size: A4 portrait;
+        margin: 5mm; /* 10mmから5mmに短縮 */
+    }
+
     body {
         background: white !important;
         padding: 0 !important;
         margin: 0 !important;
     }
 
-    /* 2. 印刷しない要素を完全に除外 */
+    /* 2. 不要な要素を消し、隙間をゼロにする */
     h1, .no-print, .notification, #setupModal, 
     #correlation, #tracking, #eval, #score,
-    .card h2 span { 
+    h2 span, h3 { 
         display: none !important; 
     }
 
-    /* 3. カードの装飾（影や角丸）をリセット */
+    /* 3. カードの余白とタイトル周りを極限まで詰める */
     .card {
         box-shadow: none !important;
         border: none !important;
         margin: 0 !important;
-        padding: 5mm !important;
+        padding: 0 0 5px 0 !important; /* 下方向の余白を最小限に */
         width: 100% !important;
-        max-width: none !important;
     }
 
-    /* 4. レイアウトの固定（記録表とグラフをセットにする） */
-    /* 記録表のカード */
-    .card:has(#table) {
-        display: block !important;
-        page-break-after: avoid;
+    h2 {
+        font-size: 14pt !important;
+        margin: 0 0 5px 0 !important;
+        text-align: left !important; /* 左寄せにして高さを節約 */
     }
 
-    /* レーダーチャートのカード */
-    #radar {
-        display: block !important; /* 画面で隠れていても印刷時は出す */
-        margin-top: 10px !important;
-        text-align: center;
-    }
-
-    /* 5. グラフと表のサイズ調整 */
-    #rc {
-        max-width: 140mm !important; /* A4幅に収まるサイズ */
-        max-height: 140mm !important;
-        margin: 0 auto;
-    }
-
+    /* 4. テーブルの行の高さを詰める */
     table {
-        font-size: 10pt !important;
-        border: 1px solid #ccc !important;
+        font-size: 9pt !important; /* 文字を少し小さく */
+        border-collapse: collapse !important;
+        width: 100% !important;
     }
 
     th, td {
-        padding: 4px !important;
-        border: 1px solid #eee !important;
-        color: black !important;
+        padding: 2px 4px !important; /* セル内の上下余白を最小に */
+        border: 1px solid #000 !important;
     }
 
-    th {
-        background: #f0f0f0 !important;
-        -webkit-print-color-adjust: exact;
+    /* 5. グラフのサイズを強制的に小さくする */
+    #radar {
+        display: block !important;
+        margin-top: 5px !important;
+        text-align: center;
+        page-break-inside: avoid; /* グラフの途中で改ページさせない */
     }
 
-    /* A4縦の設定 */
-    @page {
-        size: A4 portrait;
-        margin: 10mm;
+    #rc {
+        /* ここを調整！2枚目に行く場合は 110mm くらいまで下げてください */
+        width: 120mm !important; 
+        height: 120mm !important;
+        margin: 0 auto;
     }
 }
