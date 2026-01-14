@@ -49,6 +49,27 @@
         padding: 8px !important;
         font-size: 13px;
     }
+
+    /* --- 目標達成ボタンを大きく押しやすくする --- */
+
+/* 1. ボタンを横いっぱいに広げ、高さを出す */
+#correlation .btn {
+    width: 90%;             /* 横幅を広く（お好みで100%でもOK） */
+    margin: 8px auto;       /* ボタン同士の間隔を広げる */
+    padding: 15px 20px;     /* 縦に厚みを持たせる */
+    font-size: 18px;        /* 文字を大きく */
+    font-weight: bold;      /* 文字を太く */
+    display: block;         /* 縦に並べて押しやすくする */
+    border-radius: 12px;    /* 角を少し丸くしてモダンに */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* 浮き出させて「押せる感」を出す */
+    transition: transform 0.1s; /* 押した時の反応用 */
+}
+
+/* 2. ボタンを押した時に少し沈む演出（フィードバック） */
+#correlation .btn:active {
+    transform: translateY(2px);
+    box-shadow: none;
+}
 </style>
   
 </head>
