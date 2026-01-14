@@ -76,12 +76,19 @@ th {
     font-weight: 600;
     font-size: 13px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block; /* ボタンが不自然に広がらないように固定 */
+    transition: transform 0.1s;
 }
 
-.btn-send { background: #e91e63; width: 100%; font-size: 1.1em; padding: 15px; }
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* モバイルで個別に幅を調整したい場合はここを変更 */
+.btn-send { background: #e91e63; font-size: 1.1em; padding: 15px 20px; }
 .btn-clear { background: #4a5568; }
-.btn-save { background: #4CAF50; width: 100%; }
-.btn-setup { background: #FF5722; width: 100%; }
+.btn-save { background: #4CAF50; }
+.btn-setup { background: #FF5722; }
 
 input[type="number"] {
     width: 100%;
@@ -161,6 +168,23 @@ input[type="number"] {
         -webkit-overflow-scrolling: touch;
     }
     .scroll-container table { min-width: 800px; }
+
+    /* モバイル時のボタン幅の調整（引き伸ばしを防止） */
+    .btn-send, .btn-save, .btn-setup {
+        width: auto; /* 100%から自動幅に変更 */
+        min-width: 120px;
+        margin: 5px auto;
+        display: inline-block;
+    }
+    
+    /* ボタンコンテナの中央揃えを保証 */
+    .button-group, .controls {
+        text-align: center;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
 }
 
 /* --- 図鑑 (2列固定) --- */
