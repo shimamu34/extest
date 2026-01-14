@@ -109,20 +109,21 @@ function RT() {
         s += '<tr><td>' + r + '</td>';
         h.forEach((x, j) => {
             if (r === "記録") {
-                // --- ここから修正 ---
-                if (j === 4) { // 4番目（持久走）だけ分・秒に分ける
-                    s += `<td style="display: flex; align-items: center; justify-content: center; gap: 2px; border: none; min-width: 100px;">
-                            <input type="number" id="i4_min" onchange="U()" placeholder="分" style="width: 40px; padding: 4px; font-size: 14px;">
-                            <span style="font-weight: bold;">:</span>
-                            <input type="number" id="i4_sec" onchange="U()" placeholder="秒" style="width: 40px; padding: 4px; font-size: 14px;">
+                if (j === 4) { 
+                    // 持久走のセル：幅を他と合わせ、中の入力欄を45%ずつにする
+                    s += `<td style="min-width: 100px; padding: 4px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <input type="number" id="i4_min" onchange="U()" placeholder="分" style="width: 45%; padding: 4px; box-sizing: border-box; text-align: center;">
+                                <span style="width: 10%; text-align: center; font-weight: bold;">:</span>
+                                <input type="number" id="i4_sec" onchange="U()" placeholder="秒" style="width: 45%; padding: 4px; box-sizing: border-box; text-align: center;">
+                            </div>
                             <input type="hidden" id="i4"> 
                           </td>`;
                 } else if (j < 9) {
-                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1"></td>`;
+                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width: 100%; box-sizing: border-box;"></td>`;
                 } else {
                     s += `<td id="i9"><div>0</div><div>E</div></td>`;
                 }
-                // --- ここまで修正 ---
             } else {
                 let v = A[g][r][j];
                 if (j === 9) { v = T[g][r]; s += `<td>${v}</td>`; }
