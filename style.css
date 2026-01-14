@@ -1,3 +1,4 @@
+/* --- 既存のスタイル --- */
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +7,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    padding: 20px 10px;  /* 40pxから20px/10pxに減らして、上下の余白を詰める */
+    padding: 10px; /* 上下左右10pxに統一 */
     background: linear-gradient(135deg, #2c5282 0%, #2b6cb0 100%);
     min-height: 100vh;
 }
@@ -14,7 +15,7 @@ body {
 h1 {
     text-align: center;
     color: white;
-    font-size: 2.5em;
+    font-size: 2em;
     font-weight: 700;
     margin-bottom: 10px;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -23,27 +24,21 @@ h1 {
 h2 {
     text-align: center;
     color: #333;
-    font-size: 1.8em;
+    font-size: 1.5em;
     font-weight: 600;
-    margin: 30px 0 20px;
-    padding: 0 20px;
+    margin: 20px 0 10px;
 }
 
 .card {
     background: white;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    padding: 20px;       /* 30pxから20pxに減らして枠内をスリムに */
-    margin: 10px auto;   /* 20pxから10pxに減らして白枠同士の間隔を狭く */
+    padding: 15px;
+    margin: 10px auto;
     max-width: 1200px;
-    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-}
-
+/* --- テーブルの基本設定 --- */
 table {
     border-collapse: collapse;
     margin: 0 auto;
@@ -54,8 +49,7 @@ table {
 }
 
 th, td {
-    border: none;
-    padding: 12px 8px;
+    padding: 10px 5px;
     text-align: center;
     border-bottom: 1px solid #f0f0f0;
 }
@@ -64,191 +58,128 @@ th {
     background: linear-gradient(135deg, #2c5282 0%, #2b6cb0 100%);
     color: white;
     font-weight: 600;
-    font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-tr:last-child td {
-    border-bottom: none;
-}
-
-tr:hover {
-    background: #ebf4ff;
-}
-
-input[type="number"] {
-    width: 90px;
-    padding: 8px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 14px;
-    transition: all 0.3s;
-    text-align: center;
-}
-
-input[type="number"]:focus {
-    outline: none;
-    border-color: #2b6cb0;
-    box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
-}
-
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-input[type="number"] {
-    -moz-appearance: textfield;
+    font-size: 0.8em;
 }
 
 .highlight {
-    background: linear-gradient(135deg, #2c528215 0%, #2b6cb015 100%) !important;
+    background: rgba(43, 108, 176, 0.1) !important;
+    font-weight: bold;
 }
 
+/* --- ボタン・入力欄 --- */
 .btn {
-    padding: 12px 24px;
-    margin: 5px;
+    padding: 10px 15px;
     cursor: pointer;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     color: white;
     font-weight: 600;
-    font-size: 14px;
-    transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-size: 13px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+.btn-send { background: #e91e63; width: 100%; font-size: 1.1em; padding: 15px; }
+.btn-clear { background: #4a5568; }
+.btn-save { background: #4CAF50; width: 100%; }
+.btn-setup { background: #FF5722; width: 100%; }
+
+input[type="number"] {
+    width: 100%;
+    max-width: 80px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
 }
 
-.btn:active {
-    transform: translateY(0);
+/* --- 【重要】モバイル(縦画面)用最適化スタイル --- */
+@media screen and (max-width: 640px) {
+    /* 1. マイレコード・総合ランクを縦並びのカード形式に変換 */
+    .mobile-card-table table, 
+    .mobile-card-table thead, 
+    .mobile-card-table tbody, 
+    .mobile-card-table th, 
+    .mobile-card-table td, 
+    .mobile-card-table tr {
+        display: block;
+    }
+
+    .mobile-card-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .mobile-card-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #2b6cb0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .mobile-card-table td {
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+        position: relative;
+        padding-left: 50% !important;
+        text-align: right !important;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        font-size: 14px;
+    }
+
+    /* 行の最初のセル（項目名）を青い帯にする */
+    .mobile-card-table td:first-child {
+        background: #2b6cb0;
+        color: white;
+        font-weight: bold;
+        text-align: center !important;
+        padding-left: 10px !important;
+        justify-content: center;
+    }
+
+    .mobile-card-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        text-align: left;
+        font-weight: bold;
+        color: #666;
+    }
+    
+    .mobile-card-table td:first-child:before {
+        display: none; /* カテゴリ行にはラベルを表示しない */
+    }
+
+    /* 2. 点数基準表は「横スクロール」 */
+    .scroll-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .scroll-container table { min-width: 800px; }
+}
+
+/* --- 図鑑 (2列固定) --- */
+#fitnessPokedex {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
 }
 
 .notification {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 16px 24px;
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    padding: 15px;
     background: white;
-    color: #333;
-    border-radius: 12px;
-    display: none;
-    z-index: 1000;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(400px);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-.notification::before {
-    content: '✓';
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    background: #4CAF50;
-    color: white;
-    border-radius: 50%;
+    border-radius: 10px;
+    z-index: 2000;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
     text-align: center;
-    line-height: 24px;
-    margin-right: 10px;
-}
-
-.notification.error::before {
-    content: '✕';
-    background: #f44336;
-}
-
-.notification.info::before {
-    content: 'ℹ';
-    background: #2196F3;
-}
-
-@media print {
-    .no-print {
-        display: none !important;
-    }
-    #radar {
-        display: flex !important;
-    }
-    body {
-        background: white;
-    }
-}
-
-canvas {
-    border-radius: 12px;
-}
-
-#radar, #growth {
-    padding: 20px;
-}
-
-/* ボタンごとの個別スタイル定義 */
-.btn-clear {
-    background: linear-gradient(135deg, #4a5568, #2d3748) !important;
-    margin-right: 10px;
-}
-
-.btn-print {
-    background: linear-gradient(135deg, #9c27b0, #7b1fa2) !important;
-}
-
-.btn-save {
-    background: linear-gradient(135deg, #4CAF50, #388E3C) !important;
-}
-
-.btn-send {
-    background: linear-gradient(135deg, #e91e63, #c2185b) !important;
-}
-
-.btn-setup {
-    background: linear-gradient(135deg, #FF5722, #FF7043) !important;
-}
-
-/* --- 体力図鑑 2列固定のための強制設定 --- */
-#fitnessPokedex {
-    display: grid !important;
-    /* 常に1:1の比率で2列に分割 */
-    grid-template-columns: 1fr 1fr !important;
-    /* カード同士の隙間（20pxだとスマホで狭いので10pxに調整） */
-    gap: 10px !important;
-    width: 100% !important;
-    margin: 0 auto !important;
-}
-
-/* 図鑑内の各カードに対する設定 */
-#fitnessPokedex > div {
-    /* 横幅が溢れないように強制固定 */
-    width: 100% !important; 
-    min-width: 0 !important;
-    /* パディングが広すぎると文字が溢れるので少し削る */
-    padding: 12px 8px !important;
-}
-
-/* スマホ表示での微調整：文字がはみ出さないようにサイズを下げる */
-@media screen and (max-width: 480px) {
-    #fitnessPokedex > div span {
-        font-size: 20px !important; /* 絵文字サイズ */
-    }
-    #fitnessPokedex > div div {
-        font-size: 11px !important; /* ラベル（パワー型など） */
-    }
-    #fitnessPokedex > div div b, 
-    #fitnessPokedex > div div strong {
-        font-size: 14px !important; /* Lv.1などの数字 */
-    }
+    display: none;
 }
