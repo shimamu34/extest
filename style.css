@@ -239,4 +239,75 @@ input[type="number"] {
         margin: 3px 2px;
     }
 }
+
+/* =============================================
+   印刷専用スタイル（A4一枚に集約）
+   ============================================= */
+@media print {
+    /* 1. 全体設定：背景を白くし、画面上の不要な要素を全て消す */
+    body {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* 2. 印刷しない要素を完全に除外 */
+    h1, .no-print, .notification, #setupModal, 
+    #correlation, #tracking, #eval, #score,
+    .card h2 span { 
+        display: none !important; 
+    }
+
+    /* 3. カードの装飾（影や角丸）をリセット */
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 5mm !important;
+        width: 100% !important;
+        max-width: none !important;
+    }
+
+    /* 4. レイアウトの固定（記録表とグラフをセットにする） */
+    /* 記録表のカード */
+    .card:has(#table) {
+        display: block !important;
+        page-break-after: avoid;
+    }
+
+    /* レーダーチャートのカード */
+    #radar {
+        display: block !important; /* 画面で隠れていても印刷時は出す */
+        margin-top: 10px !important;
+        text-align: center;
+    }
+
+    /* 5. グラフと表のサイズ調整 */
+    #rc {
+        max-width: 140mm !important; /* A4幅に収まるサイズ */
+        max-height: 140mm !important;
+        margin: 0 auto;
+    }
+
+    table {
+        font-size: 10pt !important;
+        border: 1px solid #ccc !important;
+    }
+
+    th, td {
+        padding: 4px !important;
+        border: 1px solid #eee !important;
+        color: black !important;
+    }
+
+    th {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact;
+    }
+
+    /* A4縦の設定 */
+    @page {
+        size: A4 portrait;
+        margin: 10mm;
+    }
 }
