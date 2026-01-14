@@ -451,11 +451,33 @@ function deleteTrackingRecord(eventIdx, recordIdx) {
         updateTrackingView();
     }
 }
-// charts.js の一番下に追加
+
 function updateAllCharts() {
     const g = document.getElementById("gender").value;
     // 表示されている時だけ描画を更新する
     if (document.getElementById("radar").style.display !== "none") RR(g);
     if (document.getElementById("correlation").style.display !== "none") RAnalysis(g);
     if (document.getElementById("tracking").style.display !== "none") updateTrackingView();
+}
+
+function preparePrint() {
+    // 1. 性別の値を取得
+    const gender = document.getElementById("gender").value;
+
+    // 2. グラフエリアが「none」だと描画がバグる場合があるため、一時的に表示状態にする
+    const radarArea = document.getElementById("radar");
+    const originalDisplay = radarArea.style.display;
+    radarArea.style.display = "block";
+
+    // 3. グラフ描画関数(RR)を強制実行
+    RR(gender);
+
+    // 4. 描画が完了するのをわずかに待ってから印刷ダイアログを開く
+    setTimeout(() => {
+        window.print();
+        
+        // 5. 印刷が終わったら元の表示状態（隠れていたなら隠す）に戻す
+        // ※ 印刷プレビューを閉じるとここが実行されます
+        radarArea.style.display = originalDisplay;
+    }, 300);
 }
