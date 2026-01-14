@@ -25,7 +25,32 @@
         padding: 4px 2px !important;
         height: auto !important;
     }
+    
+    /* シミュレーターの余白カット★ */
+    #goalSimulator table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 14px; 
+    }
+
+    #goalSimulator th, 
+    #goalSimulator td {
+        padding: 5px 4px !important; /* セル内の上下余白を極限まで詰めました */
+        border-bottom: 1px solid #eee;
+    }
+
+    #goalSimulator {
+        padding: 5px !important; /* 外枠との隙間も最小限に */
+    }
+
+    .advice-box {
+        margin-top: 8px !important;
+        padding: 8px !important;
+        font-size: 13px;
+    }
 </style>
+  
 </head>
 <body>
     <h1 style="letter-spacing: 4px; font-family: 'Helvetica Neue', Arial, sans-serif;">
