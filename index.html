@@ -51,34 +51,30 @@
         font-size: 13px;
     }
 
-    /* --- 目標達成ボタンを確実に2列×2段にする --- */
-
-/* 1. ボタンが入っている親要素（箱）を狭くして、2つずつしか入らないようにする */
-#correlation div:has(> .btn[onclick^="setGoal"]) {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    gap: 15px !important;
-    max-width: 500px !important; /* ここを狭くすることで3つ目が横に並べなくなります */
-    margin: 0 auto 25px auto !important;
-}
-
-/* 2. ボタンを大きくし、かつ「1列に2つ」の幅を強制する */
+    /* 目標達成シミュレーターの4つのボタン専用の設定 */
 #correlation .btn[onclick^="setGoal"] {
-    /* 1列に2つのサイズ（隙間を考慮して約48%） */
-    width: calc(50% - 15px) !important; 
-    min-width: 180px !important;      /* 小さくなりすぎないようガード */
-    height: 70px !important;          /* 押しやすい高さ */
-    margin: 0 !important;
-    font-size: 16px !important;
+    /* 横幅を「ほぼ半分」に指定して、横に2つしか並べないようにします */
+    width: 46% !important; 
+    height: 80px !important;
+    margin: 5px 1% !important; /* 左右に少し隙間を作って2つ並べる */
+    
+    font-size: 17px !important;
     font-weight: bold !important;
-    border-radius: 12px !important;
-    display: flex !important;
+    border-radius: 15px !important;
+    
+    /* ボタンの中の文字を中央に寄せる */
+    display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    line-height: 1.2 !important;
+    vertical-align: top;
+    
     box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+}
+
+/* 親要素（ボタンを囲んでいる場所）の中身を中央に寄せる */
+#correlation div:has(> button[onclick^="setGoal"]), 
+#correlation div {
+    text-align: center !important;
 }
  </style>
   
