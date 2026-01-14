@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>中学体力テスト記録システム</title>
     <link rel="stylesheet" href="style.css">
+  
   <style>
     /* 1. 全ての入力欄を「少し低め」かつ「スピンボタンが太く見える」バランスにする */
     input[type="number"] {
@@ -50,38 +51,39 @@
         font-size: 13px;
     }
 
-    /* --- 目標達成ボタンを「2個 × 2段」で大きくする --- */
+    /* --- 画面復旧 & ボタン2個×2段の安全な設定 --- */
 
-/* 1. ボタンを配置するコンテナ（親要素）の設定 */
-#correlation div[style*="text-align:center;margin-bottom:25px"] {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 横に2列並べる */
-    gap: 12px;                      /* ボタン同士の隙間 */
-    padding: 10px;
-    max-width: 600px;               /* 広がりすぎないよう制限 */
-    margin: 0 auto 25px auto;       /* 中央寄せ */
+/* ボタンを囲んでいるコンテナをグリッド配置にする */
+#correlation div:has(> button[onclick^="setGoal"]) {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important; /* 横に2列 */
+    gap: 15px !important;                      /* ボタンの隙間 */
+    padding: 10px !important;
+    max-width: 600px;
+    margin: 0 auto 25px auto !important;
 }
 
-/* 2. ボタン自体のサイズと装飾 */
-#correlation .btn {
-    width: 100% !important;         /* グリッドの幅いっぱいに広げる */
-    margin: 0 !important;           /* 余計なマージンを消す */
-    padding: 20px 10px !important;  /* 縦に厚みをもたせる */
-    font-size: 17px !important;     /* 文字を大きく */
-    font-weight: bold;
-    border-radius: 12px;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.15); /* 立体的なボタン感 */
-    display: flex;
+/* ボタン自体のデザイン調整 */
+#correlation .btn[onclick^="setGoal"] {
+    width: 100% !important;
+    height: 80px !important;       /* 高さをしっかり出す */
+    margin: 0 !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    border-radius: 15px !important;
+    line-height: 1.2 !important;
+    display: flex !important;
     align-items: center;
     justify-content: center;
-    min-height: 70px;               /* 高さを揃える */
+    box-shadow: 0 5px 0 rgba(0,0,0,0.1);
 }
 
-/* 3. 押した時の感触 */
-#correlation .btn:active {
+/* 押し心地の演出 */
+#correlation .btn[onclick^="setGoal"]:active {
     transform: translateY(3px);
     box-shadow: none;
 }
+ </style>
   
 </head>
 <body>
