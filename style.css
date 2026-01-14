@@ -301,3 +301,57 @@ input[type="number"] {
         font-size: 14pt !important;
     }
 }
+/* 画面上ではレーダーチャートを隠しておく */
+.radar-section {
+    display: none;
+}
+
+@media print {
+    /* 1. 全ての要素を一度隠す */
+    body * {
+        visibility: hidden;
+    }
+
+    /* 2. 記録表とレーダーチャート、およびその中身だけを表示する */
+    .print-target, .print-target *,
+    .radar-section, .radar-section * {
+        visibility: visible;
+    }
+
+    /* 3. 表示位置を上端に固定 */
+    .print-target {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        display: block !important;
+    }
+
+    .radar-section {
+        position: absolute;
+        top: 350px; /* 表の高さに合わせて調整（1枚に収めるキモ） */
+        left: 0;
+        width: 100% !important;
+        display: block !important;
+        text-align: center;
+    }
+
+    /* 4. グラフのサイズをA4に最適化 */
+    #rc {
+        width: 420px !important;
+        height: 420px !important;
+        margin: 0 auto;
+    }
+
+    /* 不要な余白や背景をリセット */
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    @page {
+        size: A4;
+        margin: 10mm;
+    }
+}
