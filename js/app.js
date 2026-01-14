@@ -112,12 +112,12 @@ function RT() {
                 if (j === 4) { 
                     // 持久走のセル：幅を他と合わせ、中の入力欄を45%ずつにする
                     s += `<td style="min-width: 110px; padding: 4px;">
-            <div style="display: flex; align-items: center; justify-content: center; height: 26px; border: 1px solid #767676; border-radius: 2px; background-color: #ffffff; box-sizing: content-box;">
+            <div style="display: flex; align-items: center; justify-content: center; height: 26px; border: 1px solid; border-color: #767676 #dbdbdb #dbdbdb #767676; background-color: #ffffff; box-sizing: content-box;">
                 <input type="number" id="i4_min" onchange="U()" placeholder="分" 
-                       style="width: 40px; height: 100%; border: none; outline: none; text-align: center; font-size: 14px; background: transparent; padding: 0; margin: 0;">
-                <span style="font-weight: bold; color: #000; padding: 0 1px; line-height: 1;">:</span>
+                       style="width: 40px; height: 100%; border: none; outline: none; text-align: center; font-size: 14px; background: transparent; padding: 0;">
+                <span style="font-weight: bold; color: #666; padding: 0 1px;">:</span>
                 <input type="number" id="i4_sec" onchange="U()" placeholder="秒" 
-                       style="width: 40px; height: 100%; border: none; outline: none; text-align: center; font-size: 14px; background: transparent; padding: 0; margin: 0;">
+                       style="width: 40px; height: 100%; border: none; outline: none; text-align: center; font-size: 14px; background: transparent; padding: 0;">
             </div>
             <input type="hidden" id="i4"> 
           </td>`;
