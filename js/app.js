@@ -97,11 +97,19 @@ function CS(v, h, g) {
     return 0;
 }
 
-// テーブル・評価描画（既存のままでOK）
+// テーブル・評価描画
 function RT() {
     const g = document.getElementById("gender").value;
     if (!D[g]) return;
     const h = D[g].h;
+    
+    // 秒数を「分'秒"」に変換するヘルパー関数
+    const formatTime = (sec) => {
+        const m = Math.floor(sec / 60);
+        const s = Math.round(sec % 60);
+        return `${m}'${s.toString().padStart(2, '0')}"`;
+    };
+
     let s = '<table><tr><th></th>';
     h.forEach(x => s += `<th>${x}</th>`);
     s += '</tr>';
@@ -110,7 +118,6 @@ function RT() {
         h.forEach((x, j) => {
             if (r === "記録") {
                 if (j === 4) { 
-                    // 持久走のセル：幅を他と合わせ、中の入力欄を45%ずつにする
                     s += `<td style="width: 100px; padding: 4px;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 3px;">
                 <input type="number" id="i4_min" onchange="U()" placeholder="分" 
@@ -128,8 +135,19 @@ function RT() {
                 }
             } else {
                 let v = A[g][r][j];
-                if (j === 9) { v = T[g][r]; s += `<td>${v}</td>`; }
-                else { const sc = CS(v, x, g); s += `<td><div>${v}</div><div style="font-size:0.85em;color:#666">(${sc}点)</div></td>`; }
+                // --- 持久走（j === 4）かつ平均値行の表示を変換 ---
+                let displayVal = v;
+                if (j === 4) {
+                    displayVal = formatTime(v);
+                }
+
+                if (j === 9) { 
+                    v = T[g][r]; 
+                    s += `<td>${v}</td>`; 
+                } else { 
+                    const sc = CS(v, x, g); 
+                    s += `<td><div>${displayVal}</div><div style="font-size:0.85em;color:#666">(${sc}点)</div></td>`; 
+                }
             }
         });
         s += '</tr>';
