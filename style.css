@@ -1,4 +1,4 @@
-/* --- 共通リセット --- */
+/* --- 既存のスタイル --- */
 * {
     margin: 0;
     padding: 0;
@@ -7,143 +7,236 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    padding: 10px;
+    padding: 5px; /* 全体のパディングを少し縮小 */
     background: linear-gradient(135deg, #2c5282 0%, #2b6cb0 100%);
     min-height: 100vh;
-    color: #333;
 }
 
-/* --- カードデザイン --- */
+h1 {
+    text-align: center;
+    color: white;
+    font-size: 1.8em; /* わずかに縮小 */
+    font-weight: 700;
+    margin-bottom: 5px; /* 隙間を詰める */
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    font-size: 1.3em; /* 大きさは維持 */
+    font-weight: 600;
+    /* marginを 10px 0 5px → 2px 0 2px に変更 */
+    margin: 2px 0 2px; 
+    line-height: 1.1; /* 行間を詰め、タイトルの専有面積を減らす */
+}
+
+h2 span {
+    margin-top: 1px !important; /* 日本語との距離を最小限に */
+    line-height: 1.2;
+}
+
 .card {
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    margin: 10px auto;
-    max-width: 1000px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    /* paddingを 12px → 6px 12px に変更（上下を半分に） */
+    padding: 6px 12px; 
+    margin: 2px auto;
+    max-width: 1200px;
+}
+
+/* --- テーブルの基本設定 --- */
+table {
+    border-collapse: collapse;
+    margin: 0 auto;
+    width: 100%;
+    background: white;
+    border-radius: 12px;
     overflow: hidden;
 }
 
-/* --- ボタン設定（崩れないよう調整） --- */
-.button-group, .controls, .no-print {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-}
-
-.btn {
-    padding: 10px 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    transition: transform 0.1s;
-    min-width: 100px;
-}
-
-.btn:active { transform: scale(0.95); }
-
-/* --- テーブル（画面表示用） --- */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    font-size: 14px;
-}
-
 th, td {
-    border-bottom: 1px solid #eee;
-    padding: 10px 5px;
+    padding: 8px 5px; /* セル内の余白を少し縮小 */
     text-align: center;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 th {
-    background: #f8faff;
-    color: #2b6cb0;
+    background: linear-gradient(135deg, #2c5282 0%, #2b6cb0 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 0.8em;
 }
 
-/* --- セレクトボックス --- */
-select {
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 16px;
+.highlight {
+    background: rgba(43, 108, 176, 0.1) !important;
+    font-weight: bold;
 }
 
-/* --- 【最重要】画面上での非表示設定 --- */
-/* 印刷用のターゲットエリアを画面上ではただのカードとして扱う */
-#radar {
-    display: none; /* グラフはボタンを押すまで隠す */
+/* --- ボタン・入力欄 --- */
+.btn {
+    padding: 8px 12px; /* ボタンを少しだけコンパクトに */
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    transition: transform 0.1s;
 }
 
-/* --------------------------------------------------
-   🖨️ 印刷用設定 (A4一枚に収める)
--------------------------------------------------- */
-@media print {
-    /* 画面上の要素を全消し */
-    body {
-        background: white !important;
-        padding: 0 !important;
-    }
-
-    .no-print, h1, .btn, .notification, #setupModal {
-        display: none !important;
-    }
-
-    /* 印刷対象のコンテナをリセット */
-    .card {
-        box-shadow: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-        max-width: none !important;
-    }
-
-    /* 1枚に無理やり収めるための絶対配置 */
-    /* 個人測定ログ(テーブル) */
-    .card:has(#table) {
-        position: absolute !important;
-        top: 0;
-        left: 0;
-    }
-
-    /* レーダーチャート */
-    #radar {
-        display: block !important; /* 印刷時は強制表示 */
-        position: absolute !important;
-        top: 380px !important; /* 表の下に配置 */
-        left: 0;
-        width: 100% !important;
-        text-align: center;
-    }
-
-    /* グラフの大きさをA4幅に最適化 */
-    #rc {
-        width: 450px !important;
-        height: 450px !important;
-        margin: 0 auto;
-    }
-
-    /* 文字サイズ調整 */
-    th, td {
-        font-size: 11pt !important;
-        padding: 4px !important;
-    }
-
-    @page {
-        size: A4;
-        margin: 10mm;
-    }
+.btn:active {
+    transform: scale(0.98);
 }
 
-/* --- スマホ用調整 --- */
-@media screen and (max-width: 600px) {
+/* ボタンごとの色設定 */
+.btn-send { background: #e91e63; }
+.btn-clear { background: #4a5568; } 
+.btn-print { background: #2d5a27; } 
+.btn-save { background: #4CAF50; }
+.btn-setup { background: #FF5722; }
+
+input[type="number"] {
+    width: 100%;
+    max-width: 80px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* ボタンを囲むコンテナの余白を調整 */
+.button-group, .controls {
+    margin: 5px 0; /* セクション間のボタン欄の余白を縮小 */
+}
+
+/* --- 【重要】モバイル(縦画面)用最適化スタイル --- */
+@media screen and (max-width: 640px) {
+    .mobile-card-table table, 
+    .mobile-card-table thead, 
+    .mobile-card-table tbody, 
+    .mobile-card-table th, 
+    .mobile-card-table td, 
+    .mobile-card-table tr {
+        display: block;
+    }
+
+    .mobile-card-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .mobile-card-table tr {
+        margin-bottom: 10px; /* カード同士の隙間を短縮 */
+        border: 1px solid #2b6cb0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .mobile-card-table td {
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+        position: relative;
+        padding-left: 50% !important;
+        text-align: right !important;
+        min-height: 36px; /* 高さを少し低く調整 */
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        font-size: 14px;
+    }
+
+    .mobile-card-table td:first-child {
+        background: #2b6cb0;
+        color: white;
+        font-weight: bold;
+        text-align: center !important;
+        padding-left: 10px !important;
+        justify-content: center;
+        min-height: 30px;
+    }
+
+    .mobile-card-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        text-align: left;
+        font-weight: bold;
+        color: #666;
+    }
+    
+    .mobile-card-table td:first-child:before {
+        display: none;
+    }
+
+    .scroll-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .scroll-container table { min-width: 800px; }
+
     .btn {
-        flex: 1 1 40%; /* 2列に並ぶように */
+        width: auto;
+        min-width: 90px;
+        margin: 3px; /* ボタン間の隙間を短縮 */
+        padding: 8px 12px; 
         font-size: 12px;
     }
-    h1 { font-size: 1.4em; }
+    
+    .button-group, .controls {
+        text-align: center;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 3px;
+    }
+}
+
+/* --- 図鑑 (2列固定) --- */
+#fitnessPokedex {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-top: 5px;
+}
+
+.notification {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    z-index: 2000;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    text-align: center;
+    display: none;
+}
+
+/* ほどよく大きく、押しやすいサイズ感 */
+#gender, #grade, #class, #session {
+    font-size: 16px;          /* iPhoneでズームされない最低サイズ */
+    padding: 6px 10px;       /* ほどよい余白 */
+    border: 1px solid #ccc;  /* 主張しすぎない枠線 */
+    border-radius: 6px;      /* 少しだけ角を丸く */
+    background-color: #fff;
+    margin: 0 5px;           /* 項目間の適切な隙間 */
+    vertical-align: middle;
+}
+
+/* スマホでも横に並びやすいように調整 */
+@media screen and (max-width: 640px) {
+    #gender, #grade, #class, #session {
+        padding: 5px 8px;
+        font-size: 15px;
+        margin: 3px 2px;
+    }
+}
 }
