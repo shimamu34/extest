@@ -76,7 +76,7 @@ th {
     font-weight: 600;
     font-size: 13px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    display: inline-block; /* ボタンが不自然に広がらないように固定 */
+    display: inline-block;
     transition: transform 0.1s;
 }
 
@@ -84,8 +84,8 @@ th {
     transform: scale(0.98);
 }
 
-/* モバイルで個別に幅を調整したい場合はここを変更 */
-.btn-send { background: #e91e63; font-size: 1.1em; padding: 15px 20px; }
+/* ボタンごとの色設定（サイズ指定を削除して統一） */
+.btn-send { background: #e91e63; }
 .btn-clear { background: #4a5568; }
 .btn-save { background: #4CAF50; }
 .btn-setup { background: #FF5722; }
@@ -158,7 +158,7 @@ input[type="number"] {
     }
     
     .mobile-card-table td:first-child:before {
-        display: none; /* カテゴリ行にはラベルを表示しない */
+        display: none;
     }
 
     /* 2. 点数基準表は「横スクロール」 */
@@ -169,21 +169,21 @@ input[type="number"] {
     }
     .scroll-container table { min-width: 800px; }
 
-    /* モバイル時のボタン幅の調整（引き伸ばしを防止） */
-    .btn-send, .btn-save, .btn-setup {
-        width: auto; /* 100%から自動幅に変更 */
-        min-width: 120px;
-        margin: 5px auto;
-        display: inline-block;
+    /* モバイル時のボタンサイズ調整 */
+    .btn {
+        width: auto;
+        min-width: 100px;
+        margin: 5px;
+        padding: 10px 15px; /* 全てのボタンでサイズを統一 */
+        font-size: 13px;
     }
     
-    /* ボタンコンテナの中央揃えを保証 */
     .button-group, .controls {
         text-align: center;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 10px;
+        gap: 5px;
     }
 }
 
