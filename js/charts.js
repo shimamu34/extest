@@ -40,6 +40,7 @@ function RR(g) {
     const ctx = cv.getContext("2d");
     const h = D[g].h.slice(0, 9); // 9種目
     
+    
     const cols = [
         {s: "rgba(255,99,132,1)", f: "rgba(255,99,132,0.2)"}, // 0:帯広
         {s: "rgba(54,162,235,1)", f: "rgba(54,162,235,0.2)"}, // 1:北海道
@@ -78,8 +79,8 @@ function RR(g) {
     // --- 以下、描画処理（変更なしですが、関数として完結させるため記載） ---
     ctx.clearRect(0, 0, cv.width, cv.height);
     const cX = cv.width / 2;
-    const cY = cv.height / 2;
-    const rad = 220; 
+    const cY = cv.height / 2 - 15; // ここをマイナスにすると上に上がります
+    const rad = 210; // 半径をわずかに小さくすると、さらに余白をコントロールしやすくなります 
     const as = (Math.PI * 2) / h.length;
 
     // 背景（目盛り）描画
@@ -130,7 +131,7 @@ function RR(g) {
         else if (lb.includes("ハ")) fullLabel = "ハンドボール投";
         else if (lb.includes("50")) fullLabel = "50m走";
 
-        const offset = 25; 
+        const offset = 18; 
         let x = cX + Math.cos(a) * (rad + offset);
         let y = cY + Math.sin(a) * (rad + offset);
         if (Math.abs(Math.sin(a)) > 0.9) y += (Math.sin(a) > 0) ? 10 : -5;
