@@ -51,37 +51,35 @@
         font-size: 13px;
     }
 
-    /* --- 画面復旧 & ボタン2個×2段の安全な設定 --- */
-
-/* ボタンを囲んでいるコンテナをグリッド配置にする */
-#correlation div:has(> button[onclick^="setGoal"]) {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important; /* 横に2列 */
-    gap: 15px !important;                      /* ボタンの隙間 */
-    padding: 10px !important;
-    max-width: 600px;
+    /* 目標達成シミュレーターのボタンを2列×2段に強制する */
+#correlation div:has(> .btn) {
+    display: flex !important;
+    flex-wrap: wrap !important;     /* 折り返しを許可 */
+    justify-content: center !important;
+    gap: 15px !important;
+    max-width: 650px;
     margin: 0 auto 25px auto !important;
 }
 
-/* ボタン自体のデザイン調整 */
 #correlation .btn[onclick^="setGoal"] {
-    width: 100% !important;
-    height: 80px !important;       /* 高さをしっかり出す */
+    /* 1列に2つ並ぶように、幅を45%強に設定 */
+    flex: 0 0 calc(50% - 15px) !important; 
+    height: 80px !important;
     margin: 0 !important;
     font-size: 18px !important;
     font-weight: bold !important;
     border-radius: 15px !important;
-    line-height: 1.2 !important;
     display: flex !important;
     align-items: center;
     justify-content: center;
     box-shadow: 0 5px 0 rgba(0,0,0,0.1);
 }
 
-/* 押し心地の演出 */
-#correlation .btn[onclick^="setGoal"]:active {
-    transform: translateY(3px);
-    box-shadow: none;
+/* モバイル（画面が狭い時）は1列にする場合はここを調整 */
+@media (max-width: 480px) {
+    #correlation .btn[onclick^="setGoal"] {
+        flex: 0 0 100% !important; /* スマホでは1枚ずつ大きく */
+    }
 }
  </style>
   
