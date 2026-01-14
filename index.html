@@ -44,13 +44,13 @@
         </select>
     </div>
     
-    <div class="card">
-        <h2 style="color:#2b6cb0; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 2px;">
-    📈 個人測定ログ
-    <span style="display: block; font-size: 0.4em; font-weight: normal; opacity: 0.7; margin-top: 4px;">MY PERFORMANCE RECORD</span>
-</h2>
-        <div id="table"></div>
-    </div>
+    <div class="card print-target">
+    <h2 style="color:#2b6cb0; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 2px;">
+        📈 個人測定ログ
+        <span style="display: block; font-size: 0.4em; font-weight: normal; opacity: 0.7; margin-top: 4px;">MY PERFORMANCE RECORD</span>
+    </h2>
+    <div id="table"></div>
+</div>
     
     <div class="card no-print" style="text-align:center">
         <button class="btn" style="background:linear-gradient(135deg,#2c5282,#2b6cb0)" onclick="toggleRadar()">📊 レーダーチャート</button>
@@ -58,12 +58,12 @@
         <button class="btn" style="background:linear-gradient(135deg,#FF5722,#FF7043)" onclick="toggleTracking()">📈 種目別トラッキング</button>
     </div>
     
-    <div id="radar" style="display:none" class="card">
-        <h3 style="text-align:center;color:#2b6cb0;margin-bottom:20px">📊 レーダーチャート</h3>
-        <div style="display:flex;justify-content:center">
-            <canvas id="rc" width="600" height="600"></canvas>
-        </div>
-    </div>
+    <div id="radar" class="card radar-section">
+    <h3 style="text-align:center;color:#2b6cb0;margin-bottom:20px">📊 レーダーチャート</h3>
+    <div style="display:flex;justify-content:center">
+        <canvas id="rc" width="600" height="600"></canvas>
+    </div>
+</div>
     
 <div id="correlation" style="display:none" class="card">
     <h3 style="text-align:center;color:#9c27b0;margin-bottom:30px">🎮 体力レーダー図鑑 × 目標達成シミュレーター</h3>
