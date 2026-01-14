@@ -87,7 +87,19 @@ function RR(g) {
     ctx.lineWidth = 1;
     for (let i = 1; i <= 10; i++) {
         ctx.beginPath(); ctx.arc(cX, cY, (rad / 10) * i, 0, Math.PI * 2); ctx.stroke();
+    // ★追加：1点、5点、10点のときだけ数字を表示
+    if (i === 1 || i === 5 || i === 10) {
+        ctx.fillStyle = "#999"; // 目盛りの数字の色
+        ctx.font = "bold 10px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        
+        // 数字の背景を白く塗って、グラフの線と重なっても見やすくする
+        const textY = cY - (rad / 10) * i;
+        ctx.clearRect(cX - 10, textY - 7, 20, 14); // 簡易的な背景消去
+        ctx.fillText(i + "点", cX, textY);
     }
+}
     
     // 軸とラベル描画
     h.forEach((lb, i) => {
