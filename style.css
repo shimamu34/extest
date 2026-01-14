@@ -86,7 +86,8 @@ th {
 
 /* ボタンごとの色設定（サイズ指定を削除して統一） */
 .btn-send { background: #e91e63; }
-.btn-clear { background: #1a202c; }
+.btn-clear { background: #4a5568; }
+.btn-print { background: #1a202c; } 
 .btn-save { background: #4CAF50; }
 .btn-setup { background: #FF5722; }
 
