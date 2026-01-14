@@ -350,11 +350,20 @@ function clearData() {
         let allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
         delete allData[gr];
         localStorage.setItem("y-" + g, JSON.stringify(allData));
+        
+        // 1. 通常の入力欄（i0〜i8）をすべて空にする
         for (let i = 0; i < 9; i++) {
             const inputField = document.getElementById(`i${i}`);
             if (inputField) inputField.value = "";
         }
-        U(); 
+        
+        // 2. 【追加】持久走専用の入力欄（分・秒）も空にする
+        const mField = document.getElementById("i4_min");
+        const sField = document.getElementById("i4_sec");
+        if (mField) mField.value = "";
+        if (sField) sField.value = "";
+        
+        U(); // 合計点や評価もリセット
         N(`中${gr}の記録を消去しました`, "info");
     }
 }
