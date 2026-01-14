@@ -111,13 +111,13 @@ function RT() {
             if (r === "記録") {
                 if (j === 4) { 
                     // 持久走のセル：幅を他と合わせ、中の入力欄を45%ずつにする
-                    s += `<td style="min-width: 110px; padding: 4px; vertical-align: middle;">
-            <div style="display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #ccc; border-radius: 4px; padding: 2px;">
+                    s += `<td style="min-width: 110px; padding: 0; vertical-align: middle; height: 1px;">
+            <div style="display: flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box;">
                 <input type="number" id="i4_min" onchange="U()" placeholder="分" 
-                       style="width: 42px; border: none; outline: none; padding: 4px 2px; text-align: center; font-size: 14px;">
-                <span style="font-weight: bold; color: #666;">:</span>
+                       style="width: 45px; height: 100%; border: none; outline: none; padding: 0; text-align: center; font-size: 14px; background: transparent;">
+                <span style="font-weight: bold; color: #666; padding: 0 2px; line-height: 1;">:</span>
                 <input type="number" id="i4_sec" onchange="U()" placeholder="秒" 
-                       style="width: 42px; border: none; outline: none; padding: 4px 2px; text-align: center; font-size: 14px;">
+                       style="width: 45px; height: 100%; border: none; outline: none; padding: 0; text-align: center; font-size: 14px; background: transparent;">
             </div>
             <input type="hidden" id="i4"> 
           </td>`;
