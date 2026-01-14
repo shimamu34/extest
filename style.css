@@ -212,31 +212,23 @@ input[type="number"] {
     display: none;
 }
 
-/* 性別、学年、組、測定回の選択リストを大きく使いやすくする */
-#gender, 
-#grade, 
-#class, 
-#session {
-    font-size: 1.1rem;       /* 文字を大きく */
-    padding: 10px 15px;      /* 内側の余白を広げて箱を大きく */
-    border: 2px solid #2b6cb0; /* 枠線を少し太くして目立たせる */
-    border-radius: 10px;     /* 角を丸く */
+/* ほどよく大きく、押しやすいサイズ感 */
+#gender, #grade, #class, #session {
+    font-size: 16px;          /* iPhoneでズームされない最低サイズ */
+    padding: 6px 10px;       /* ほどよい余白 */
+    border: 1px solid #ccc;  /* 主張しすぎない枠線 */
+    border-radius: 6px;      /* 少しだけ角を丸く */
     background-color: #fff;
-    cursor: pointer;
-    margin: 5px 5px;        /* 前後の隙間を調整 */
-    color: #333;
-    font-weight: bold;
-    -webkit-appearance: none; /* iOS等のデフォルトスタイルを解除(任意) */
-    appearance: none;
-    min-width: 90px;         /* 最小の横幅 */
+    margin: 0 5px;           /* 項目間の適切な隙間 */
+    vertical-align: middle;
 }
 
-/* スマホ等でタップしやすいように調整 */
+/* スマホでも横に並びやすいように調整 */
 @media screen and (max-width: 640px) {
     #gender, #grade, #class, #session {
-        padding: 12px 10px;
-        font-size: 1rem;
-        margin: 5px 2px;
-        min-width: 80px;
+        padding: 5px 8px;
+        font-size: 15px;
+        margin: 3px 2px;
     }
+}
 }
