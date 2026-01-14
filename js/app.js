@@ -109,7 +109,7 @@ function RT() {
         s += '<tr><td>' + r + '</td>';
         h.forEach((x, j) => {
             if (r === "記録") {
-                if (j < 9) s += `<td><input type="number" id="i${j}" onchange="U()" step="0.01"></td>`;
+                if (j < 9) s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1"></td>`;
                 else s += `<td id="i9"><div>0</div><div>E</div></td>`;
             } else {
                 let v = A[g][r][j];
