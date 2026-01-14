@@ -118,16 +118,15 @@ function RT() {
         h.forEach((x, j) => {
             if (r === "記録") {
                 if (j === 4) { 
-                    s += `<td style="width: 100px; padding: 4px;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 3px;">
-                <input type="number" id="i4_min" onchange="U()" placeholder="分" 
-                       style="width: 42px; text-align: center; font-size: 14px; padding: 3.5px 0; box-sizing: border-box;">
-                <span style="font-weight: bold;">:</span>
-                <input type="number" id="i4_sec" onchange="U()" placeholder="秒" 
-                       style="width: 42px; text-align: center; font-size: 14px; padding: 3.5px 0; box-sizing: border-box;">
-            </div>
-            <input type="hidden" id="i4"> 
-          </td>`;
+                    s += `<td style="width: 120px; padding: 4px;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+        <input type="number" id="i4_min" onchange="U()" placeholder="分" 
+               style="width: 50px; text-align: center;"> <span style="font-weight: bold;">:</span>
+        <input type="number" id="i4_sec" onchange="U()" placeholder="秒" 
+               style="width: 50px; text-align: center;">
+    </div>
+    <input type="hidden" id="i4"> 
+</td>`;
                 } else if (j < 9) {
                     s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width: 100%; box-sizing: border-box;"></td>`;
                 } else {
