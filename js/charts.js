@@ -86,20 +86,29 @@ function RR(g) {
     ctx.strokeStyle = "#e0e0e0";
     ctx.lineWidth = 1;
     for (let i = 1; i <= 10; i++) {
-        ctx.beginPath(); ctx.arc(cX, cY, (rad / 10) * i, 0, Math.PI * 2); ctx.stroke();
-    // ★追加：1点、5点、10点のときだけ数字を表示
-    if (i === 1 || i === 5 || i === 10) {
-        ctx.fillStyle = "#999"; // 目盛りの数字の色
-        ctx.font = "bold 10px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        
-        // 数字の背景を白く塗って、グラフの線と重なっても見やすくする
-        const textY = cY - (rad / 10) * i;
-        ctx.clearRect(cX - 10, textY - 7, 20, 14); // 簡易的な背景消去
-        ctx.fillText(i + "点", cX, textY);
+        ctx.beginPath(); 
+        ctx.arc(cX, cY, (rad / 10) * i, 0, Math.PI * 2); 
+        ctx.stroke();
+
+        // --- ★ここから追加・修正：目盛りの数字を大きく表示 ---
+        if (i === 1 || i === 5 || i === 10) {
+            const text = i + "点";
+            const textY = cY - (rad / 10) * i;
+            
+            // 1. 数字を見やすくするために背景に白い丸を描画
+            ctx.beginPath();
+            ctx.fillStyle = "rgba(255, 255, 255, 0.8)"; // 80%の不透明度
+            ctx.arc(cX, textY, 12, 0, Math.PI * 2); // 半径12pxの白い円
+            ctx.fill();
+
+            // 2. 文字の描画（太字で大きく）
+            ctx.fillStyle = "#444"; // 少し濃いめのグレー
+            ctx.font = "bold 14px Arial"; // サイズを10px → 14pxに拡大
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(text, cX, textY);
+        }
     }
-}
     
     // 軸とラベル描画
     h.forEach((lb, i) => {
