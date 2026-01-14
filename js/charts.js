@@ -34,155 +34,130 @@ function toggleTracking() {
     }
 }
 
-// レーダーチャート描画
+// レーダーチャート描画（RR関数全体をこの内容で上書きしてください）
 function RR(g) {
-    const cv = document.getElementById("rc");
-    const ctx = cv.getContext("2d");
-    const h = D[g].h.slice(0, 9); // 9種目
-    
-    // 6色定義（0-2:統計、3-5:自分学年）
-    const cols = [
-        {s: "rgba(255,99,132,1)", f: "rgba(255,99,132,0.2)"}, // 0:帯広
-        {s: "rgba(54,162,235,1)", f: "rgba(54,162,235,0.2)"}, // 1:北海道
-        {s: "rgba(75,192,192,1)", f: "rgba(75,192,192,0.2)"}, // 2:全国
-        {s: "rgba(255,159,64,1)", f: "rgba(255,159,64,0.1)"}, // 3:中1
-        {s: "rgba(153,102,255,1)", f: "rgba(153,102,255,0.1)"},// 4:中2
-        {s: "rgba(76,175,80,1)", f: "rgba(76,175,80,0.1)"}    // 5:中3
-    ];
+    const cv = document.getElementById("rc");
+    const ctx = cv.getContext("2d");
+    const h = D[g].h.slice(0, 9); // 9種目
+    
+    const cols = [
+        {s: "rgba(255,99,132,1)", f: "rgba(255,99,132,0.2)"}, // 0:帯広
+        {s: "rgba(54,162,235,1)", f: "rgba(54,162,235,0.2)"}, // 1:北海道
+        {s: "rgba(75,192,192,1)", f: "rgba(75,192,192,0.2)"}, // 2:全国
+        {s: "rgba(255,159,64,1)", f: "rgba(255,159,64,0.1)"}, // 3:中1
+        {s: "rgba(153,102,255,1)", f: "rgba(153,102,255,0.1)"},// 4:中2
+        {s: "rgba(76,175,80,1)", f: "rgba(76,175,80,0.1)"}    // 5:中3
+    ];
 
-    // 保存されている全学年データを取得
-    const allData = JSON.parse(localStorage.getItem("y-" + g) || '{}');
-    const dataSets = [];
-    
-    // 1-3. 統計データ
-    ["帯広市", "北海道", "全国"].forEach(rg => {
-        dataSets.push(h.map((x, i) => CS(A[g][rg][i], x, g)));
-    });
+    const allData = JSON.parse(localStorage.getItem("y-" + g) || '{}');
+    const dataSets = [];
+    
+    // 1-3. 統計データ
+    ["帯広市", "北海道", "全国"].forEach(rg => {
+        dataSets.push(h.map((x, i) => CS(A[g][rg][i], x, g)));
+    });
 
-    // 4-6. 自分の各学年データ
-    ["1", "2", "3"].forEach(grKey => {
-        if (allData[grKey] && allData[grKey].some(v => v !== "")) {
-            // 空文字でないデータがある場合のみ計算してセット
-            dataSets.push(h.map((x, i) => CS(parseFloat(allData[grKey][i]) || 0, x, g)));
-        } else {
-            dataSets.push(null);
-        }
-    });
+    // 4-6. 自分の各学年データ（ここが修正の核心部分です）
+    ["1", "2", "3"].forEach(grKey => {
+        // その学年のデータが一つでも入力されているかチェック
+        if (allData[grKey] && allData[grKey].some(v => v !== "" && v !== null && parseFloat(v) !== 0)) {
+            dataSets.push(h.map((x, i) => {
+                const rawValue = allData[grKey][i];
+                // 【重要】値が空、または0の場合は、高得点計算(CS)を避けて0点とする
+                if (rawValue === "" || rawValue === null || parseFloat(rawValue) === 0) {
+                    return 0;
+                }
+                return CS(parseFloat(rawValue), x, g);
+            }));
+        } else {
+            // データが全くない学年はグラフを描画しない
+            dataSets.push(null);
+        }
+    });
 
-    ctx.clearRect(0, 0, cv.width, cv.height);
-    
-    const cX = cv.width / 2;
-    const cY = cv.height / 2;
-    const rad = 220; // 半径
-    const as = (Math.PI * 2) / h.length;
+    // --- 以下、描画処理（変更なしですが、関数として完結させるため記載） ---
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    const cX = cv.width / 2;
+    const cY = cv.height / 2;
+    const rad = 220; 
+    const as = (Math.PI * 2) / h.length;
 
-    // 背景（円と軸）の描画
-    ctx.strokeStyle = "#e0e0e0";
-    ctx.lineWidth = 1;
-    for (let i = 1; i <= 10; i++) {
-        ctx.beginPath(); ctx.arc(cX, cY, (rad / 10) * i, 0, Math.PI * 2); ctx.stroke();
-    }
-    h.forEach((lb, i) => {
-        const a = as * i - Math.PI / 2;
-        ctx.beginPath(); ctx.moveTo(cX, cY); ctx.lineTo(cX + Math.cos(a) * rad, cY + Math.sin(a) * rad); ctx.stroke();
-        
-        ctx.fillStyle = "#333"; 
-        ctx.textAlign = "center";
-        ctx.font = "bold 13px Arial"; // 少し小さくして確実に枠内に収める
+    // 背景（目盛り）描画
+    ctx.strokeStyle = "#e0e0e0";
+    ctx.lineWidth = 1;
+    for (let i = 1; i <= 10; i++) {
+        ctx.beginPath(); ctx.arc(cX, cY, (rad / 10) * i, 0, Math.PI * 2); ctx.stroke();
+    }
+    
+    // 軸とラベル描画
+    h.forEach((lb, i) => {
+        const a = as * i - Math.PI / 2;
+        ctx.beginPath(); ctx.moveTo(cX, cY); ctx.lineTo(cX + Math.cos(a) * rad, cY + Math.sin(a) * rad); ctx.stroke();
+        
+        ctx.fillStyle = "#333"; 
+        ctx.textAlign = "center";
+        ctx.font = "bold 13px Arial";
 
-        // --- 名前を強制的にフルネームに変換 ---
-        let fullLabel = lb;
-        if (lb.includes("持")) fullLabel = "持久走";
-        else if (lb.includes("シ")) fullLabel = "20mシャトルラン";
-        else if (lb.includes("握")) fullLabel = "握力";
-        else if (lb.includes("上")) fullLabel = "上体起こし";
-        else if (lb.includes("長")) fullLabel = "長座体前屈";
-        else if (lb.includes("反")) fullLabel = "反復横とび";
-        else if (lb.includes("立")) fullLabel = "立ち幅とび";
-        else if (lb.includes("ハ")) fullLabel = "ハンドボール投";
-        else if (lb.includes("50")) fullLabel = "50m走";
+        let fullLabel = lb;
+        if (lb.includes("持")) fullLabel = "持久走";
+        else if (lb.includes("シ")) fullLabel = "20mシャトルラン";
+        else if (lb.includes("握")) fullLabel = "握力";
+        else if (lb.includes("上")) fullLabel = "上体起こし";
+        else if (lb.includes("長")) fullLabel = "長座体前屈";
+        else if (lb.includes("反")) fullLabel = "反復横とび";
+        else if (lb.includes("立")) fullLabel = "立ち幅とび";
+        else if (lb.includes("ハ")) fullLabel = "ハンドボール投";
+        else if (lb.includes("50")) fullLabel = "50m走";
 
-        // 描画位置の調整（35 → 25 に少し内側へ寄せ、上下位置も微調整）
-        const offset = 25; 
-        let x = cX + Math.cos(a) * (rad + offset);
-        let y = cY + Math.sin(a) * (rad + offset);
+        const offset = 25; 
+        let x = cX + Math.cos(a) * (rad + offset);
+        let y = cY + Math.sin(a) * (rad + offset);
+        if (Math.abs(Math.sin(a)) > 0.9) y += (Math.sin(a) > 0) ? 10 : -5;
+        ctx.fillText(fullLabel, x, y);
+    });
 
-        // 文字の位置が上下に来る場合、少しだけy軸をずらすと読みやすくなります
-        if (Math.abs(Math.sin(a)) > 0.9) {
-            y += (Math.sin(a) > 0) ? 10 : -5;
-        }
+    // データのポリゴン描画
+    const currentGr = document.getElementById("grade").value;
+    dataSets.forEach((scs, ri) => {
+        if (!scs || (typeof radarVisible !== 'undefined' && !radarVisible[ri])) return;
+        
+        const c = cols[ri];
+        const isSelf = ri >= 3;
+        const isActive = isSelf && (ri - 2).toString() === currentGr;
+        
+        ctx.beginPath();
+        ctx.setLineDash(isSelf && !isActive ? [5, 5] : []);
+        ctx.strokeStyle = c.s;
+        ctx.fillStyle = c.f;
+        ctx.lineWidth = isActive ? 3 : 2;
 
-        ctx.fillText(fullLabel, x, y);
-    });
+        scs.forEach((sc, i) => {
+            const a = as * i - Math.PI / 2;
+            const r = (rad / 10) * sc;
+            const x = cX + Math.cos(a) * r;
+            const y = cY + Math.sin(a) * r;
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+    });
 
-    // データ描画
-    const currentGr = document.getElementById("grade").value;
-    dataSets.forEach((scs, ri) => {
-        if (!scs || !radarVisible[ri]) return;
-        
-        const c = cols[ri];
-        // 選択中の学年（自分データ）なら実線、それ以外（過去学年）は点線
-        const isSelf = ri >= 3;
-        const isActive = isSelf && (ri - 2).toString() === currentGr;
-        
-        ctx.beginPath();
-        ctx.setLineDash(isSelf && !isActive ? [5, 5] : []);
-        ctx.strokeStyle = c.s;
-        ctx.fillStyle = c.f;
-        ctx.lineWidth = isActive ? 3 : 2;
-
-        scs.forEach((sc, i) => {
-            const a = as * i - Math.PI / 2;
-            const r = (rad / 10) * sc;
-            const x = cX + Math.cos(a) * r;
-            const y = cY + Math.sin(a) * r;
-            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        });
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-    });
-
-    // --- 凡例ボタンの描画（修正版） ---
-    const regs = ["帯広", "北海道", "全国", "中1", "中2", "中3"];
-    ctx.setLineDash([]);
-    
-    // 凡例の開始位置と間隔を定義
-    const startX = cX - 270; // 左端の開始位置
-    const itemWidth = 90;    // 1項目あたりの幅
-
-    regs.forEach((rg, i) => {
-        const lX = startX + i * itemWidth;
-        const lY = cv.height - 20;
-        
-        // 四角いアイコン
-        ctx.fillStyle = radarVisible[i] ? cols[i].s : "#ccc";
-        ctx.fillRect(lX, lY - 10, 15, 10);
-        
-        // テキスト
-        ctx.fillStyle = "#333";
-        ctx.textAlign = "left";
-        ctx.font = "bold 12px Arial";
-        ctx.fillText(rg, lX + 20, lY); // アイコンの右側にテキストを表示
-    });
-
-    // --- 凡例クリックイベント（修正版） ---
-    cv.onclick = e => {
-        const rect = cv.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        // クリックされた高さが凡例エリア（下部40px以内）かチェック
-        if (y > cv.height - 40) {
-            // クリックされた位置から、どの項目（0〜5）かを計算
-            const idx = Math.floor((x - startX) / itemWidth);
-            
-            if (idx >= 0 && idx < 6) {
-                radarVisible[idx] = !radarVisible[idx];
-                RR(g); // 再描画
-            }
-        }
-    };
+    // 凡例描画
+    const regs = ["帯広", "北海道", "全国", "中1", "中2", "中3"];
+    ctx.setLineDash([]);
+    const startX = cX - 270;
+    const itemWidth = 90;
+    regs.forEach((rg, i) => {
+        const lX = startX + i * itemWidth;
+        const lY = cv.height - 20;
+        ctx.fillStyle = (typeof radarVisible !== 'undefined' && radarVisible[i]) ? cols[i].s : "#ccc";
+        ctx.fillRect(lX, lY - 10, 15, 10);
+        ctx.fillStyle = "#333";
+        ctx.textAlign = "left";
+        ctx.font = "bold 12px Arial";
+        ctx.fillText(rg, lX + 20, lY);
+    });
 }
 
 
