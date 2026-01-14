@@ -8,10 +8,10 @@
 </head>
 <body>
     <h1 style="letter-spacing: 4px; font-family: 'Helvetica Neue', Arial, sans-serif;">
-    📠　体力テスト分析システム
-    <span style="display: block; font-size: 0.5em; font-weight: normal; letter-spacing: 1px; opacity: 0.8; margin-top: 5px;">
-        Physical Analysis System 2025
-    </span>
+    📠　体力テスト分析システム
+    <span style="display: block; font-size: 0.5em; font-weight: normal; letter-spacing: 1px; opacity: 0.8; margin-top: 5px;">
+        Physical Analysis System 2025
+    </span>
 </h1>
     
     <div class="card no-print" style="text-align:center">
@@ -44,13 +44,13 @@
         </select>
     </div>
     
-    <div class="card print-target">
-    <h2 style="color:#2b6cb0; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 2px;">
-        📈 個人測定ログ
-        <span style="display: block; font-size: 0.4em; font-weight: normal; opacity: 0.7; margin-top: 4px;">MY PERFORMANCE RECORD</span>
-    </h2>
-    <div id="table"></div>
-</div>
+    <div class="card">
+        <h2 style="color:#2b6cb0; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 2px;">
+    📈 個人測定ログ
+    <span style="display: block; font-size: 0.4em; font-weight: normal; opacity: 0.7; margin-top: 4px;">MY PERFORMANCE RECORD</span>
+</h2>
+        <div id="table"></div>
+    </div>
     
     <div class="card no-print" style="text-align:center">
         <button class="btn" style="background:linear-gradient(135deg,#2c5282,#2b6cb0)" onclick="toggleRadar()">📊 レーダーチャート</button>
@@ -58,137 +58,137 @@
         <button class="btn" style="background:linear-gradient(135deg,#FF5722,#FF7043)" onclick="toggleTracking()">📈 種目別トラッキング</button>
     </div>
     
-    <div id="radar" class="card radar-section">
-    <h3 style="text-align:center;color:#2b6cb0;margin-bottom:20px">📊 レーダーチャート</h3>
-    <div style="display:flex;justify-content:center">
-        <canvas id="rc" width="600" height="600"></canvas>
-    </div>
-</div>
+    <div id="radar" style="display:none" class="card">
+        <h3 style="text-align:center;color:#2b6cb0;margin-bottom:20px">📊 レーダーチャート</h3>
+        <div style="display:flex;justify-content:center">
+            <canvas id="rc" width="600" height="600"></canvas>
+        </div>
+    </div>
     
 <div id="correlation" style="display:none" class="card">
-    <h3 style="text-align:center;color:#9c27b0;margin-bottom:30px">🎮 体力レーダー図鑑 × 目標達成シミュレーター</h3>
-    
-    <div style="background:linear-gradient(135deg,#667eea,#764ba2);padding:20px;border-radius:15px;margin-bottom:30px;color:white">
-        <h4 style="margin:0 0 20px 0;font-size:20px;text-align:center">🏆 あなたの体力タイプ図鑑</h4>
-        
-        <div id="fitnessPokedex"></div>
-        
-        <div id="totalRank" style="margin-top:20px;padding:15px;background:rgba(255,255,255,0.2);border-radius:12px;text-align:center;font-size:18px;font-weight:bold"></div>
-    </div>
-    
-    <div style="background:#f5f5f5;padding:30px;border-radius:15px">
-        <h4 style="margin:0 0 20px 0;font-size:22px;text-align:center;color:#9c27b0">🎯 目標達成シミュレーター</h4>
-        <div style="text-align:center;margin-bottom:25px">
-            <button class="btn" style="background:linear-gradient(135deg,#FFD700,#FFA500)" onclick="setGoal('rankA')">総合A評価を目指す</button>
-            <button class="btn" style="background:linear-gradient(135deg,#4CAF50,#66BB6A)" onclick="setGoal('rankB')">総合B評価を目指す</button>
-            <button class="btn" style="background:linear-gradient(135deg,#2196F3,#42A5F5)" onclick="setGoal('rankC')">総合C評価を目指す</button>
-            <button class="btn" style="background:linear-gradient(135deg,#9C27B0,#BA68C8)" onclick="setGoal('rankD')">総合D評価を目指す</button>
-        </div>
-        <div id="goalSimulator"></div>
-    </div>
+    <h3 style="text-align:center;color:#9c27b0;margin-bottom:30px">🎮 体力レーダー図鑑 × 目標達成シミュレーター</h3>
+    
+    <div style="background:linear-gradient(135deg,#667eea,#764ba2);padding:20px;border-radius:15px;margin-bottom:30px;color:white">
+        <h4 style="margin:0 0 20px 0;font-size:20px;text-align:center">🏆 あなたの体力タイプ図鑑</h4>
+        
+        <div id="fitnessPokedex"></div>
+        
+        <div id="totalRank" style="margin-top:20px;padding:15px;background:rgba(255,255,255,0.2);border-radius:12px;text-align:center;font-size:18px;font-weight:bold"></div>
+    </div>
+    
+    <div style="background:#f5f5f5;padding:30px;border-radius:15px">
+        <h4 style="margin:0 0 20px 0;font-size:22px;text-align:center;color:#9c27b0">🎯 目標達成シミュレーター</h4>
+        <div style="text-align:center;margin-bottom:25px">
+            <button class="btn" style="background:linear-gradient(135deg,#FFD700,#FFA500)" onclick="setGoal('rankA')">総合A評価を目指す</button>
+            <button class="btn" style="background:linear-gradient(135deg,#4CAF50,#66BB6A)" onclick="setGoal('rankB')">総合B評価を目指す</button>
+            <button class="btn" style="background:linear-gradient(135deg,#2196F3,#42A5F5)" onclick="setGoal('rankC')">総合C評価を目指す</button>
+            <button class="btn" style="background:linear-gradient(135deg,#9C27B0,#BA68C8)" onclick="setGoal('rankD')">総合D評価を目指す</button>
+        </div>
+        <div id="goalSimulator"></div>
+    </div>
 </div>
-        
+        
    <div id="tracking" style="display:none" class="card">
-        <h3 style="text-align:center;color:#FF5722;margin-bottom:30px">📈 種目別トラッキング</h3>
-        <div style="background:linear-gradient(135deg,#FF5722,#FF7043);padding:30px;border-radius:15px;margin-bottom:30px;color:white">
-            <h4 style="margin:0 0 25px 0;font-size:22px;text-align:center">📝 新しい記録を追加</h4>
-            <div style="background:rgba(255,255,255,0.15);padding:25px;border-radius:12px;backdrop-filter:blur(10px)">
-    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px; margin-bottom:15px">
-        <div>
-            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">学年</label>
-            <select id="trackingViewGrade" onchange="updateTrackingView()" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;background:white;box-sizing:border-box">
-                <option value="1">中1</option>
-                <option value="2" selected>中2</option>
-                <option value="3">中3</option>
-            </select>
-        </div>
-        <div>
-            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">種目</label>
-            <select id="trackingEvent" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;background:white;box-sizing:border-box">
-                <option value="0">握力</option>
-                <option value="1">上体起こし</option>
-                <option value="2">長座体前屈</option>
-                <option value="3">反復横とび</option>
-                <option value="4">持久走</option>
-                <option value="5">20mシャトルラン</option>
-                <option value="6">50m走</option>
-                <option value="7">立ち幅跳び</option>
-                <option value="8">ハンドボール投げ</option>
-            </select>
-        </div>
-        <div>
-            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">測定値</label>
-            <input type="number" id="trackingValue" step="0.01" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;font-weight:bold;box-sizing:border-box" placeholder="数値">
-        </div>
-    </div>
+        <h3 style="text-align:center;color:#FF5722;margin-bottom:30px">📈 種目別トラッキング</h3>
+        <div style="background:linear-gradient(135deg,#FF5722,#FF7043);padding:30px;border-radius:15px;margin-bottom:30px;color:white">
+            <h4 style="margin:0 0 25px 0;font-size:22px;text-align:center">📝 新しい記録を追加</h4>
+            <div style="background:rgba(255,255,255,0.15);padding:25px;border-radius:12px;backdrop-filter:blur(10px)">
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px; margin-bottom:15px">
+        <div>
+            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">学年</label>
+            <select id="trackingViewGrade" onchange="updateTrackingView()" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;background:white;box-sizing:border-box">
+                <option value="1">中1</option>
+                <option value="2" selected>中2</option>
+                <option value="3">中3</option>
+            </select>
+        </div>
+        <div>
+            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">種目</label>
+            <select id="trackingEvent" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;background:white;box-sizing:border-box">
+                <option value="0">握力</option>
+                <option value="1">上体起こし</option>
+                <option value="2">長座体前屈</option>
+                <option value="3">反復横とび</option>
+                <option value="4">持久走</option>
+                <option value="5">20mシャトルラン</option>
+                <option value="6">50m走</option>
+                <option value="7">立ち幅跳び</option>
+                <option value="8">ハンドボール投げ</option>
+            </select>
+        </div>
+        <div>
+            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">測定値</label>
+            <input type="number" id="trackingValue" step="0.01" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;font-weight:bold;box-sizing:border-box" placeholder="数値">
+        </div>
+    </div>
 
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px">
-        <div>
-            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">単元名（任意）</label>
-            <input type="text" id="trackingUnit" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box" placeholder="例: バスケットボール">
-        </div>
-        <div>
-            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">日付</label>
-            <input type="date" id="trackingDate" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box">
-        </div>
-    </div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px">
+        <div>
+            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">単元名（任意）</label>
+            <input type="text" id="trackingUnit" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box" placeholder="例: バスケットボール">
+        </div>
+        <div>
+            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">日付</label>
+            <input type="date" id="trackingDate" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box">
+        </div>
+    </div>
 
-    <div style="margin-bottom:20px">
-        <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">メモ（任意）</label>
-        <input type="text" id="trackingMemo" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box" placeholder="メモを入力">
-    </div>
+    <div style="margin-bottom:20px">
+        <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">メモ（任意）</label>
+        <input type="text" id="trackingMemo" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box" placeholder="メモを入力">
+    </div>
 
-    <div style="text-align:center">
-        <button class="btn" style="background:linear-gradient(135deg,#4CAF50,#66BB6A);font-size:16px;padding:12px 40px" onclick="addTrackingRecord()">➕ 記録を追加</button>
-    </div>
+    <div style="text-align:center">
+        <button class="btn" style="background:linear-gradient(135deg,#4CAF50,#66BB6A);font-size:16px;padding:12px 40px" onclick="addTrackingRecord()">➕ 記録を追加</button>
+    </div>
 </div>
-        </div>
-        <div style="background:#f5f5f5;padding:30px;border-radius:15px;margin-bottom:30px">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-                <h4 style="margin:0;font-size:20px;color:#FF5722">📊 変容グラフ</h4>
-                <div>
-                    <label style="margin-right:10px;color:#666">表示種目:</label>
-                    <select id="trackingViewEvent" onchange="updateTrackingView()" style="padding:8px;border-radius:8px;border:2px solid #e0e0e0">
-                        <option value="0">握力</option>
-                        <option value="1">上体起こし</option>
-                        <option value="2">長座体前屈</option>
-                        <option value="3">反復横とび</option>
-                        <option value="4">持久走</option>
-                        <option value="5">20mシャトルラン</option>
-                        <option value="6">50m走</option>
-                        <option value="7">立ち幅跳び</option>
-                        <option value="8">ハンドボール投げ</option>
-                    </select>
+        </div>
+        <div style="background:#f5f5f5;padding:30px;border-radius:15px;margin-bottom:30px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                <h4 style="margin:0;font-size:20px;color:#FF5722">📊 変容グラフ</h4>
+                <div>
+                    <label style="margin-right:10px;color:#666">表示種目:</label>
+                    <select id="trackingViewEvent" onchange="updateTrackingView()" style="padding:8px;border-radius:8px;border:2px solid #e0e0e0">
+                        <option value="0">握力</option>
+                        <option value="1">上体起こし</option>
+                        <option value="2">長座体前屈</option>
+                        <option value="3">反復横とび</option>
+                        <option value="4">持久走</option>
+                        <option value="5">20mシャトルラン</option>
+                        <option value="6">50m走</option>
+                        <option value="7">立ち幅跳び</option>
+                        <option value="8">ハンドボール投げ</option>
+                    </select>
 
-                </div>
-            </div>
-            <div style="background:white;padding:20px;border-radius:12px;margin-bottom:20px">
-                <canvas id="trackingGraph" width="1000" height="400"></canvas>
-            </div>
-            <div id="trackingStats" style="background:white;padding:20px;border-radius:12px"></div>
-        </div>
-        <div style="background:#f5f5f5;padding:30px;border-radius:15px">
-            <h4 style="margin:0 0 20px 0;font-size:20px;color:#FF5722">📝 記録一覧</h4>
-            <div id="trackingList" style="background:white;border-radius:12px;overflow:hidden"></div>
-        </div>
-    </div>
+                </div>
+            </div>
+            <div style="background:white;padding:20px;border-radius:12px;margin-bottom:20px">
+                <canvas id="trackingGraph" width="1000" height="400"></canvas>
+            </div>
+            <div id="trackingStats" style="background:white;padding:20px;border-radius:12px"></div>
+        </div>
+        <div style="background:#f5f5f5;padding:30px;border-radius:15px">
+            <h4 style="margin:0 0 20px 0;font-size:20px;color:#FF5722">📝 記録一覧</h4>
+            <div id="trackingList" style="background:white;border-radius:12px;overflow:hidden"></div>
+        </div>
+    </div>
     
     <div class="card no-print">
         <h2 style="color:#2b6cb0; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 2px; line-height: 1.2;">
-    ⭐ 項目別得点表
-    <span style="display: block; font-size: 0.4em; font-weight: normal; letter-spacing: 1px; opacity: 0.7; margin-top: 4px;">
-        SCORE METRICS
-    </span>
+    ⭐ 項目別得点表
+    <span style="display: block; font-size: 0.4em; font-weight: normal; letter-spacing: 1px; opacity: 0.7; margin-top: 4px;">
+        SCORE METRICS
+    </span>
 </h2>
         <div id="score"></div>
     </div>
     
     <div class="card no-print">
         <h2 style="color:#2b6cb0; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 2px; line-height: 1.2;">
-    🏆 総合評価基準表
-    <span style="display: block; font-size: 0.4em; font-weight: normal; letter-spacing: 1px; opacity: 0.7; margin-top: 4px;">
-        Scoring Benchmarks
-    </span>
+    🏆 総合評価基準表
+    <span style="display: block; font-size: 0.4em; font-weight: normal; letter-spacing: 1px; opacity: 0.7; margin-top: 4px;">
+        Scoring Benchmarks
+    </span>
 </h2>
         <div id="eval"></div>
     </div>
@@ -201,119 +201,119 @@
                 <button onclick="closeSetupGuide()" style="background:none;border:none;font-size:30px;cursor:pointer;color:#666">✕</button>
             </div>
             <div id="setupContent" style="padding: 10px;">
-    <h2 style="color: #2b6cb0; text-align: center; margin-bottom: 30px; font-size: 26px; border-bottom: 3px solid #2b6cb0; pb: 10px;">🏫 初回セットアップ手順</h2>
-    
-    <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 30px; align-items: start;">
-        
-        <div>
-            <div style="background: #f0f7ff; padding: 20px; border-radius: 12px; border-left: 8px solid #2b6cb0; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <p style="margin:0 0 12px 0; font-size:18px;"><strong>1. 専用プログラムをコピーする</strong></p>
-                <p style="font-size: 14px; color: #555; margin-bottom: 15px; line-height: 1.6;">集計用のプログラムコードをコピーします。この後の手順でスプレッドシートに貼り付けます。</p>
-                <button onclick="copyGsCode()" style="width:100%; padding:15px; background:#2b6cb0; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px; transition: 0.3s;">📋 プログラムをコピー</button>
-                
-                <textarea id="gsCodeSource" style="display:none;">function doPost(e) {
-  try {
-    var data = JSON.parse(e.postData.contents);
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheetName = data.grade + "年-" + data.class + "組-" + data.session + "回目";
-    var sheet = ss.getSheetByName(sheetName);
+    <h2 style="color: #2b6cb0; text-align: center; margin-bottom: 30px; font-size: 26px; border-bottom: 3px solid #2b6cb0; pb: 10px;">🏫 初回セットアップ手順</h2>
+    
+    <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 30px; align-items: start;">
+        
+        <div>
+            <div style="background: #f0f7ff; padding: 20px; border-radius: 12px; border-left: 8px solid #2b6cb0; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <p style="margin:0 0 12px 0; font-size:18px;"><strong>1. 専用プログラムをコピーする</strong></p>
+                <p style="font-size: 14px; color: #555; margin-bottom: 15px; line-height: 1.6;">集計用のプログラムコードをコピーします。この後の手順でスプレッドシートに貼り付けます。</p>
+                <button onclick="copyGsCode()" style="width:100%; padding:15px; background:#2b6cb0; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px; transition: 0.3s;">📋 プログラムをコピー</button>
+                
+                <textarea id="gsCodeSource" style="display:none;">function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheetName = data.grade + "年-" + data.class + "組-" + data.session + "回目";
+    var sheet = ss.getSheetByName(sheetName);
 
-    if (!sheet) {
-      sheet = ss.insertSheet(sheetName);
-      sheet.appendRow(['出席番号', '氏名', '性別', '学年', '組', '回', '握力', '上体', '長座', '反復', '持久', 'シャトル', '50m', '立ち幅', '投', '日時']);
-    }
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName);
+      sheet.appendRow(['出席番号', '氏名', '性別', '学年', '組', '回', '握力', '上体', '長座', '反復', '持久', 'シャトル', '50m', '立ち幅', '投', '日時']);
+    }
 
-    // ★★★ ここで全角を半角に強制変換（出席番号） ★★★
-    var sId = data.studentId ? String(data.studentId).replace(/[０-９]/g, function(s) {
-      return String.fromCharCode(s.charCodeAt(0) - 65248);
-    }) : "";
+    // ★★★ ここで全角を半角に強制変換（出席番号） ★★★
+    var sId = data.studentId ? String(data.studentId).replace(/[０-９]/g, function(s) {
+      return String.fromCharCode(s.charCodeAt(0) - 65248);
+    }) : "";
 
-    var rows = sheet.getDataRange().getValues();
-    var rowIndex = -1;
-    for (var i = 1; i < rows.length; i++) {
-      if (rows[i][0] == sId && rows[i][1] == data.name) {
-        rowIndex = i + 1;
-        break;
-      }
-    }
+    var rows = sheet.getDataRange().getValues();
+    var rowIndex = -1;
+    for (var i = 1; i < rows.length; i++) {
+      if (rows[i][0] == sId && rows[i][1] == data.name) {
+        rowIndex = i + 1;
+        break;
+      }
+    }
 
-    var rowData = [
-      sId, // 半角に変換された番号
-      data.name || "",
-      (data.gender === 'male' || data.gender === '男' || data.gender === '男子') ? '男子' : '女子',
-      data.grade || "",
-      data.class || "",
-      data.session || "",
-      data.grip || "",
-      data.situp || "",
-      data.forward || "",
-      data.sidestep || "",
-      data.endurance || "",
-      data.shuttle || "",
-      data.sprint50 || "",
-      data.jump || "",
-      data.throw || "",
-      new Date()
-    ];
+    var rowData = [
+      sId, // 半角に変換された番号
+      data.name || "",
+      (data.gender === 'male' || data.gender === '男' || data.gender === '男子') ? '男子' : '女子',
+      data.grade || "",
+      data.class || "",
+      data.session || "",
+      data.grip || "",
+      data.situp || "",
+      data.forward || "",
+      data.sidestep || "",
+      data.endurance || "",
+      data.shuttle || "",
+      data.sprint50 || "",
+      data.jump || "",
+      data.throw || "",
+      new Date()
+    ];
 
-    if (rowIndex > 0) {
-      sheet.getRange(rowIndex, 1, 1, rowData.length).setValues([rowData]);
-    } else {
-      sheet.appendRow(rowData);
-    }
+    if (rowIndex > 0) {
+      sheet.getRange(rowIndex, 1, 1, rowData.length).setValues([rowData]);
+    } else {
+      sheet.appendRow(rowData);
+    }
 
-    return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
-  } catch (f) {
-    return ContentService.createTextOutput("Error: " + f.toString()).setMimeType(ContentService.MimeType.TEXT);
-  }
+    return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
+  } catch (f) {
+    return ContentService.createTextOutput("Error: " + f.toString()).setMimeType(ContentService.MimeType.TEXT);
+  }
 }
-                </textarea>
-            </div>
+                </textarea>
+            </div>
 
-            <div style="background: #fdfaea; padding: 20px; border-radius: 12px; border-left: 8px solid #f6ad55; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <p style="margin:0 0 12px 0; font-size:18px;"><strong>2. スプレッドシートの設定</strong></p>
-                <ol style="font-size: 15px; margin:0; padding-left:22px; line-height:1.8; color:#333;">
-                    <li><a href="https://sheets.new/" target="_blank" style="color:#2b6cb0; font-weight:bold; text-decoration: underline;">新規スプレッドシート</a>を作成します。</li>
-                    <li>上のメニューから<b>「拡張機能」➔「Apps Script」</b>を開く。</li>
-                    <li>元からあるコードを全て消して、コピーしたコードを<b>貼り付け</b>。</li>
-                    <li>右上の青い<b>「デプロイ」➔「新しいデプロイ」</b>をクリック。</li>
-                    <li>種類（歯車）から<b>「ウェブアプリ」</b>を選択。</li>
-                    <li>設定を以下にしてデプロイを押してください。
-                        <ul style="margin:8px 0; padding-left:20px; color:#c53030; list-style-type: '● ';">
-                            <li>次のユーザーとして実行：<b>自分</b></li>
-                            <li>アクセスできるユーザー：<b>全員</b></li>
-                        </ul>
-                    </li>
-                </ol>
-            </div>
+            <div style="background: #fdfaea; padding: 20px; border-radius: 12px; border-left: 8px solid #f6ad55; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <p style="margin:0 0 12px 0; font-size:18px;"><strong>2. スプレッドシートの設定</strong></p>
+                <ol style="font-size: 15px; margin:0; padding-left:22px; line-height:1.8; color:#333;">
+                    <li><a href="https://sheets.new/" target="_blank" style="color:#2b6cb0; font-weight:bold; text-decoration: underline;">新規スプレッドシート</a>を作成します。</li>
+                    <li>上のメニューから<b>「拡張機能」➔「Apps Script」</b>を開く。</li>
+                    <li>元からあるコードを全て消して、コピーしたコードを<b>貼り付け</b>。</li>
+                    <li>右上の青い<b>「デプロイ」➔「新しいデプロイ」</b>をクリック。</li>
+                    <li>種類（歯車）から<b>「ウェブアプリ」</b>を選択。</li>
+                    <li>設定を以下にしてデプロイを押してください。
+                        <ul style="margin:8px 0; padding-left:20px; color:#c53030; list-style-type: '● ';">
+                            <li>次のユーザーとして実行：<b>自分</b></li>
+                            <li>アクセスできるユーザー：<b>全員</b></li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
 
-            <div style="padding: 18px; background: #fff; border: 2px dashed #f6ad55; border-radius: 12px; font-size: 14px; color: #444; line-height: 1.6;">
-                <p style="font-weight: bold; margin:0 0 8px 0; color:#d69e2e; font-size: 16px;">⚠️ 「承認」画面が出た場合の対処：</p>
-                1. 自分のアカウントを選択。<br>
-                2. 警告画面で左下の<b>「詳細を表示(Advanced)」</b>をクリック。<br>
-                3. 一番下の<b>「（プロジェクト名）に移動(安全ではない)」</b>をクリック。<br>
-                4. 最後に「許可」を押せば完了です。
-            </div>
-        </div>
+            <div style="padding: 18px; background: #fff; border: 2px dashed #f6ad55; border-radius: 12px; font-size: 14px; color: #444; line-height: 1.6;">
+                <p style="font-weight: bold; margin:0 0 8px 0; color:#d69e2e; font-size: 16px;">⚠️ 「承認」画面が出た場合の対処：</p>
+                1. 自分のアカウントを選択。<br>
+                2. 警告画面で左下の<b>「詳細を表示(Advanced)」</b>をクリック。<br>
+                3. 一番下の<b>「（プロジェクト名）に移動(安全ではない)」</b>をクリック。<br>
+                4. 最後に「許可」を押せば完了です。
+            </div>
+        </div>
 
-        <div style="position: sticky; top: 0;">
-            <div style="background: #fff5f0; padding: 25px; border-radius: 12px; border: 3px solid #FF5722; box-shadow: 0 6px 12px rgba(0,0,0,0.1);">
-                <p style="margin:0 0 15px 0; font-size:18px;"><strong>3. URLの登録と保存</strong></p>
-                <p style="font-size: 14px; margin-bottom: 15px; line-height: 1.6;">最後に、スプレッドシートで発行された<b>「ウェブアプリURL」</b>をここに貼り付けて保存してください。</p>
-                
-                <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/..." style="width:100%; padding:15px; margin-bottom:15px; border: 2px solid #ccc; border-radius: 8px; box-sizing:border-box; font-size:14px;">
-                
-                <button onclick="saveGasUrl()" style="width:100%; padding:15px; background:#FF5722; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:16px;">💾 設定を保存して配布URLを作成</button>
-                
-                <div id="studentUrlArea" style="display:none; margin-top: 25px; padding-top: 20px; border-top: 2px dashed #FF5722;">
-                    <p style="font-size: 15px; font-weight:bold; color:#2d3748; margin-bottom:10px;">✅ 準備完了！生徒に配布するURL：</p>
-                    <input type="text" id="studentDistUrlInput" readonly style="width:100%; padding:12px; font-size:12px; background: #f8f8f8; border: 1px solid #ccc; margin-bottom: 15px; box-sizing:border-box; color: #555;">
-                    <button onclick="copyStudentUrl()" style="width:100%; padding:15px; background:#4CAF50; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:16px;">📋 配布URLをコピー</button>
-                    <p style="font-size: 12px; color: #666; margin-top: 10px; text-align: center;">このURLを生徒の端末で開かせてください。</p>
-                </div>
-            </div>
-        </div>
-    </div>
+        <div style="position: sticky; top: 0;">
+            <div style="background: #fff5f0; padding: 25px; border-radius: 12px; border: 3px solid #FF5722; box-shadow: 0 6px 12px rgba(0,0,0,0.1);">
+                <p style="margin:0 0 15px 0; font-size:18px;"><strong>3. URLの登録と保存</strong></p>
+                <p style="font-size: 14px; margin-bottom: 15px; line-height: 1.6;">最後に、スプレッドシートで発行された<b>「ウェブアプリURL」</b>をここに貼り付けて保存してください。</p>
+                
+                <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/..." style="width:100%; padding:15px; margin-bottom:15px; border: 2px solid #ccc; border-radius: 8px; box-sizing:border-box; font-size:14px;">
+                
+                <button onclick="saveGasUrl()" style="width:100%; padding:15px; background:#FF5722; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:16px;">💾 設定を保存して配布URLを作成</button>
+                
+                <div id="studentUrlArea" style="display:none; margin-top: 25px; padding-top: 20px; border-top: 2px dashed #FF5722;">
+                    <p style="font-size: 15px; font-weight:bold; color:#2d3748; margin-bottom:10px;">✅ 準備完了！生徒に配布するURL：</p>
+                    <input type="text" id="studentDistUrlInput" readonly style="width:100%; padding:12px; font-size:12px; background: #f8f8f8; border: 1px solid #ccc; margin-bottom: 15px; box-sizing:border-box; color: #555;">
+                    <button onclick="copyStudentUrl()" style="width:100%; padding:15px; background:#4CAF50; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:16px;">📋 配布URLをコピー</button>
+                    <p style="font-size: 12px; color: #666; margin-top: 10px; text-align: center;">このURLを生徒の端末で開かせてください。</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
             </div>
         </div>
