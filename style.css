@@ -349,3 +349,49 @@ input[type="number"] {
         padding: 10px !important;
     }
 }
+
+/* --- 初回セットアップ画面のレイアウト修正（決定版） --- */
+@media screen and (min-width: 641px) {
+    /* 親コンテナの横並びを解除して縦に並べる */
+    #setupContent > div[style*="display: flex"] {
+        display: flex !important;
+        flex-direction: column !important; /* 縦並びに変更 */
+        align-items: center !important;    /* 中央寄せ */
+        gap: 20px !important;
+        max-width: 100% !important;
+    }
+
+    /* 1番(青)と2番(黄)のカード：幅を少し広げる */
+    #setupContent > div:nth-child(2) > div {
+        width: 100% !important;
+        max-width: 700px !important; /* 青・黄のカード幅 */
+        margin: 0 auto !important;
+    }
+
+    /* 3番(オレンジ)のカード：幅を絞り、stickyを解除 */
+    #setupContent > div:nth-child(2) > div:nth-last-child(1) {
+        width: 100% !important;
+        max-width: 500px !important; /* オレンジのカード幅 */
+        position: static !important; /* sticky(固定)を解除 */
+        margin: 0 auto !important;
+    }
+
+    /* オレンジカード内の入力欄とボタンの幅を整える */
+    #gasUrlInput, 
+    #setupContent .btn-save, 
+    #studentUrlArea button {
+        width: 90% !important;
+        display: block !important;
+        margin: 10px auto !important;
+    }
+}
+
+/* スマホではすべて幅いっぱいに */
+@media screen and (max-width: 640px) {
+    #setupContent > div[style*="display: flex"] {
+        flex-direction: column !important;
+    }
+    #setupContent > div > div {
+        max-width: 100% !important;
+    }
+}
