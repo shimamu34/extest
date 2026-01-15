@@ -290,72 +290,75 @@ input[type="number"] {
     height: auto !important;
 }
 
-/* PC・横画面用：グラフが収まる最適な幅に調整 */
+/* PC・横画面用：グラフの視認性を最大化し、カード間の余白を統一 */
 @media screen and (min-width: 641px) {
-    /* 全体のコンテナ：950pxから1100pxに微調整してグラフの「逃げ道」を作る */
+    /* 全体のコンテナ：1200pxに広げてグラフの右端までしっかり表示 */
     .card {
-        margin: 20px auto !important;
-        max-width: 1100px !important; 
-        width: 92%;
+        margin: 15px auto !important; /* カード間の上下余白を15pxで統一 */
+        max-width: 1200px !important; 
+        width: 95%;
         float: none !important;
-        padding: 25px 35px !important; /* 左右の余白をしっかり確保 */
+        padding: 25px 35px !important;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* 影を少し滑らかに */
     }
 
-    /* 種目別トラッキング：2列レイアウト */
+    /* 種目別トラッキング：2列レイアウトを中央に配置 */
     .tracking-top-bar {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
-        gap: 15px 30px !important;
-        margin-bottom: 20px;
-        max-width: 1000px; /* 入力欄は広がりすぎないよう中央に寄せる */
-        margin-left: auto;
-        margin-right: auto;
+        gap: 15px 40px !important; /* 左右の項目間を少し広げて見やすく */
+        margin: 0 auto 20px auto;
+        max-width: 1000px;
     }
 
     .t-field {
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 8px;
     }
 
     .t-field label {
         color: white !important;
         font-size: 14px !important;
         font-weight: bold !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
 
+    /* メモ欄を2列分に広げる */
     .t-field:last-of-type {
         grid-column: span 2;
     }
 
-    /* グラフ描画エリア：親要素からはみ出ないよう厳格に制限 */
+    /* グラフエリアの最適化 */
     #trackingGraph {
         width: 100% !important;
         max-width: 100% !important;
-        height: 450px !important;
+        height: 480px !important; /* 高さを少し出して変化を見やすく */
         display: block;
-        box-sizing: border-box; /* パディングを含めたサイズ計算にする */
     }
 
-    /* グラフを包む白いボックス */
+    /* グラフを包むエリアの余白を調整して、はみ出しを防止 */
     #tracking div[style*="background:white; padding:15px"] {
-        padding: 25px !important;
+        padding: 30px !important;
         border-radius: 15px;
-        overflow: visible; /* グラフの端の数字が見えるようにする */
+        margin: 10px 0;
     }
 
-    /* 表の文字を中央に固定 */
+    /* 表のスタイル */
     td, th {
         text-align: center !important;
-        padding: 12px 8px !important;
+        padding: 12px 10px !important;
     }
 }
 
-/* スマホ用：縦一列 */
+/* スマホ用：カード間の余白も詰める */
 @media screen and (max-width: 640px) {
+    .card {
+        margin: 10px auto !important;
+        width: 96%;
+    }
     .tracking-top-bar {
         display: flex !important;
         flex-direction: column !important;
     }
-    .card { width: 96%; }
 }
