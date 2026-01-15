@@ -345,62 +345,64 @@ input[type="number"] {
         gap: 20px;
     }
 }
-/* --- 種目別トラッキング：入力エリアのグリッド配置 --- */
+/* --- 種目別トラッキングの完璧なレイアウト --- */
 @media screen and (min-width: 641px) {
-    /* 薄いオレンジのエリアを左半分に */
-    #tracking div[style*="background:rgba(255,255,255,0.15)"] {
-        max-width: 55% !important;
+    /* 左半分に寄せる */
+    .tracking-input-container {
+        max-width: 550px !important;
         margin-left: 0 !important;
         margin-right: auto !important;
-        padding: 20px !important;
         display: flex !important;
         flex-direction: column !important;
         gap: 15px !important;
     }
 
-    /* 1行目：学年・種目・測定値（3カラム） */
-    #tracking div[style*="justify-content: center"]:first-of-type {
+    /* 1行目：3分割 */
+    .tracking-row-triple {
         display: grid !important;
-        grid-template-columns: 1fr 1.5fr 1fr !important;
+        grid-template-columns: 1fr 1fr 1fr !important;
         gap: 10px !important;
-        width: 100% !important;
     }
 
-    /* 2行目：単元名・日付（2カラム） */
-    #tracking div[style*="grid-template-columns: 1fr 1fr"] {
+    /* 2行目：2分割 */
+    .tracking-row-double {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
         gap: 10px !important;
+    }
+
+    /* 3行目：全幅 */
+    .tracking-row-full {
         width: 100% !important;
     }
 
-    /* メモ欄（3行目）とボタン（4行目） */
-    #tracking #trackingMemo {
-        width: 100% !important;
-    }
-
-    /* 共通設定：ラベルを上に、入力を下に */
-    #tracking label {
+    /* 入力パーツの共通スタイル */
+    .tracking-input-container label {
         display: block !important;
         color: white !important;
         font-size: 12px !important;
-        margin-bottom: 4px !important;
+        margin-bottom: 5px !important;
+        font-weight: bold !important;
         text-align: left !important;
     }
 
-    #tracking input, #tracking select {
+    .tracking-input-container input, 
+    .tracking-input-container select {
         width: 100% !important;
-        max-width: none !important;
-        height: 35px !important;
-        border-radius: 6px !important;
+        height: 38px !important;
         border: none !important;
-        padding: 0 8px !important;
+        border-radius: 6px !important;
+        padding: 0 10px !important;
+        box-sizing: border-box !important;
+        background: white !important;
     }
 
-    /* ボタン */
-    #tracking button[onclick="addTrackingRecord()"] {
+    /* ボタンを太く、押しやすく */
+    .btn-add-record {
         width: 100% !important;
+        background: #4CAF50 !important;
+        font-size: 16px !important;
         padding: 12px !important;
-        margin-top: 5px !important;
+        margin-top: 10px !important;
     }
 }
