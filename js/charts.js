@@ -452,27 +452,30 @@ function updateTrackingStats(records, eventName) {
 }
 
 function updateTrackingList(allRecords, eventName, eventIdx, viewGrade) {
-    let html = '<table style="width:100%;border-collapse:collapse">';
-    html += '<tr style="background:#FF5722;color:white"><th style="padding:12px">No</th><th>日付</th><th>測定値</th><th>メモ</th><th>操作</th></tr>';
-    
-    allRecords.forEach((r, i) => {
-        // ★修正：選択中の学年以外のデータは表示しない
-        if (String(r.grade) !== String(viewGrade)) return;
-        
-        html += `<tr style="border-bottom:1px solid #f0f0f0">
-            <td style="padding:12px;text-align:center;font-weight:bold">${i + 1}</td>
-            <td style="padding:12px;text-align:center">${r.date}</td>
-            <td style="padding:12px;text-align:center;font-weight:bold;color:#FF5722">${r.value}</td>
-            <td style="padding:12px;text-align:center">${r.memo || '-'}</td>
-            <td style="padding:12px;text-align:center">
-                <button class="btn" style="background:#f44336;padding:6px 12px;font-size:12px" 
-                onclick="deleteTrackingRecord(${eventIdx}, ${i})">削除</button>
-            </td>
-        </tr>`;
-    });
-    
-    html += '</table>';
-    document.getElementById("trackingList").innerHTML = html;
+    let html = '<table style="width:100%;border-collapse:collapse">';
+    html += '<tr style="background:#FF5722;color:white"><th style="padding:12px">No</th><th>日付</th><th>測定値</th><th>メモ</th><th>操作</th></tr>';
+    
+    // ★追加：表示用のカウンターを1から開始するように定義
+    let displayNo = 1; 
+    
+    allRecords.forEach((r, i) => {
+        // 選択中の学年以外のデータはスキップ
+        if (String(r.grade) !== String(viewGrade)) return;
+        
+        html += `<tr style="border-bottom:1px solid #f0f0f0">
+            <td style="padding:12px;text-align:center;font-weight:bold">${displayNo++}</td>
+            <td style="padding:12px;text-align:center">${r.date}</td>
+            <td style="padding:12px;text-align:center;font-weight:bold;color:#FF5722">${r.value}</td>
+            <td style="padding:12px;text-align:center">${r.memo || '-'}</td>
+            <td style="padding:12px;text-align:center">
+                <button class="btn" style="background:#f44336;padding:6px 12px;font-size:12px" 
+                onclick="deleteTrackingRecord(${eventIdx}, ${i})">削除</button>
+            </td>
+        </tr>`;
+    });
+    
+    html += '</table>';
+    document.getElementById("trackingList").innerHTML = html;
 }
 
 function deleteTrackingRecord(eventIdx, recordIdx) {
