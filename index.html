@@ -78,12 +78,12 @@
     
     <div style="background:#f5f5f5;padding:30px;border-radius:15px">
         <h4 style="margin:0 0 20px 0;font-size:22px;text-align:center;color:#9c27b0">🎯 目標達成シミュレーター</h4>
-        <div style="text-align:center;margin-bottom:25px">
-            <button class="btn" style="background:linear-gradient(135deg,#FFD700,#FFA500)" onclick="setGoal('rankA')">総合A評価を目指す</button>
-            <button class="btn" style="background:linear-gradient(135deg,#4CAF50,#66BB6A)" onclick="setGoal('rankB')">総合B評価を目指す</button>
-            <button class="btn" style="background:linear-gradient(135deg,#2196F3,#42A5F5)" onclick="setGoal('rankC')">総合C評価を目指す</button>
-            <button class="btn" style="background:linear-gradient(135deg,#9C27B0,#BA68C8)" onclick="setGoal('rankD')">総合D評価を目指す</button>
-        </div>
+        <div style="text-align:center; margin-bottom:25px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+    <button class="btn" style="background:linear-gradient(135deg,#FFD700,#FFA500); padding: 12px 24px; font-size: 16px; min-width: 180px;" onclick="setGoal('rankA')">総合A評価を目指す</button>
+    <button class="btn" style="background:linear-gradient(135deg,#4CAF50,#66BB6A); padding: 12px 24px; font-size: 16px; min-width: 180px;" onclick="setGoal('rankB')">総合B評価を目指す</button>
+    <button class="btn" style="background:linear-gradient(135deg,#2196F3,#42A5F5); padding: 12px 24px; font-size: 16px; min-width: 180px;" onclick="setGoal('rankC')">総合C評価を目指す</button>
+    <button class="btn" style="background:linear-gradient(135deg,#9C27B0,#BA68C8); padding: 12px 24px; font-size: 16px; min-width: 180px;" onclick="setGoal('rankD')">総合D評価を目指す</button>
+</div>
         <div id="goalSimulator"></div>
     </div>
 </div>
