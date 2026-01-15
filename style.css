@@ -345,23 +345,24 @@ input[type="number"] {
         gap: 20px;
     }
 }
-/* --- 種目別トラッキングの入力エリアをコンパクトにする --- */
+/* --- 種目別トラッキングの入力欄を左半分に寄せる --- */
 @media screen and (min-width: 641px) {
-    #tracking .card > div:first-of-type {
-        max-width: 600px !important; /* オレンジの背景自体の幅を絞る */
-        margin: 0 auto 20px auto !important; /* 中央に寄せる */
-        padding: 20px !important;
+    /* オレンジの枠線の中にある、入力欄のまとまりを調整 */
+    #tracking div[style*="background:rgba(255,255,255,0.15)"] {
+        max-width: 50% !important; /* 幅を50%（左半分）に制限 */
+        margin-left: 0 !important;   /* 左に寄せる */
+        margin-right: auto !important;
     }
 
+    /* 入力欄（学年・種目・数値）の横並びを解除して縦に並べる（密度を上げるため） */
     #tracking div[style*="display: flex"] {
-        justify-content: space-around !important; /* 項目をバランスよく配置 */
-        gap: 10px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 15px !important;
     }
 
-    /* 各入力ボックスのラベルと中身を縦に揃えて密度を上げる */
-    #tracking label {
-        display: block !important;
-        text-align: left !important;
-        margin-bottom: 5px !important;
+    /* 「記録を追加」ボタンも左半分の幅に合わせる */
+    #tracking button[onclick="addTrackingRecord()"] {
+        max-width: 100% !important;
     }
 }
