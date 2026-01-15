@@ -350,52 +350,49 @@ input[type="number"] {
     }
 }
 
-/* --- 初回セットアップ画面のレイアウト修正（カード拡大版） --- */
+/* --- 初回セットアップ画面のレイアウト修正（限界まで拡大版） --- */
 @media screen and (min-width: 641px) {
-    /* 1. 親コンテナ：左右の隙間を詰め、全体幅を広げる */
+    /* 1. HTMLに直書きされた 1000px の制限を強制解除し、枠いっぱいにする */
     #setupContent > div[style*="display: flex"] {
         display: flex !important;
         flex-direction: row !important;
         justify-content: center !important; 
         align-items: flex-start !important;
-        gap: 15px !important; /* 隙間をさらに狭く(20px→15px) */
-        max-width: 1100px !important; /* 全体幅を拡大(950px→1100px) */
+        gap: 10px !important; /* 隙間を極限まで狭く */
+        width: 98% !important; /* 親の制限を無視して98%まで広げる */
+        max-width: none !important; /* 1000pxの壁を破壊 */
         margin: 0 auto !important;
         padding: 0 !important;
     }
 
-    /* 2. 左側カラム（1番・2番） */
+    /* 2. 左側カラム（1番・2番）：横幅の「％」で指定して確実に広げる */
     #setupContent > div[style*="display: flex"] > div:first-child {
         flex: 1 !important;
+        width: 48% !important; /* 画面の約半分を占有 */
         display: flex !important;
         flex-direction: column !important;
-        gap: 15px !important; /* 縦の隙間も詰める */
-        max-width: 530px !important; /* 1枚ずつの幅を大きく(450px→530px) */
+        gap: 15px !important;
     }
 
-    /* 3. 右側カラム（3番） */
+    /* 3. 右側カラム（3番）：左と同じ幅にする */
     #setupContent > div[style*="display: flex"] > div:last-child {
         flex: 1 !important;
-        max-width: 530px !important; /* 右側も同様に大きく(450px→530px) */
+        width: 48% !important; /* 画面の約半分を占有 */
         position: static !important;
         margin-top: 0 !important;
     }
 
-    /* 4. 各カード内の余白を微調整して大きく見せる */
-    #setupContent .card, 
+    /* 4. 白い外枠（モーダル）自体の横幅も広げる */
+    #setupModal > div {
+        max-width: 1100px !important; /* モーダル自体を1100pxまで拡張 */
+        width: 95% !important;
+        padding: 20px !important; /* 外側の余白を削って中身を広げる */
+    }
+
+    /* 各カードの横幅を100%に固定 */
     #setupContent > div[style*="display: flex"] > div > div {
         width: 100% !important;
         margin: 0 !important;
-        padding: 25px !important; /* 内側の余白を増やしてリッチに */
-    }
-}
-
-/* スマホ用設定は維持 */
-@media screen and (max-width: 640px) {
-    #setupContent > div[style*="display: flex"] {
-        flex-direction: column !important;
-    }
-    #setupContent > div > div {
-        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 }
