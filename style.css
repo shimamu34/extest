@@ -113,90 +113,54 @@ input[type="number"] {
     margin: 5px 0; /* セクション間のボタン欄の余白を縮小 */
 }
 
-/* --- 【重要】モバイル(縦画面)用最適化スタイル（修正版） --- */
+/* --- 【重要】モバイル(縦画面)用最適化スタイル（決定版） --- */
 @media screen and (max-width: 640px) {
-    /* 1. テーブルを「カード形式」にする設定は残しつつ、中身を左寄せに戻す */
-    .mobile-card-table table, 
-    .mobile-card-table thead, 
-    .mobile-card-table tbody, 
-    .mobile-card-table th, 
+    /* 1. 記録一覧（表）をカード形式にするための最小限の設定 */
     .mobile-card-table tr {
         display: block;
-    }
-
-    .mobile-card-table thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-
-    .mobile-card-table tr {
-        margin-bottom: 10px;
-        border: 1px solid #2b6cb0;
+        margin-bottom: 15px;
+        border: 2px solid #2b6cb0;
         border-radius: 12px;
-        overflow: hidden;
     }
 
-    /* 【ここが重要：修正ポイント】右寄りの原因を排除 */
+    /* 2. 右寄りの原因を完全に排除し、バランスよく配置 */
     .mobile-card-table td {
+        display: flex !important;
+        justify-content: space-between !important; /* ラベルと値を左右に振り分け */
+        align-items: center;
+        padding: 10px 15px !important;
         border: none;
         border-bottom: 1px solid #f0f0f0;
-        position: relative;
-        padding-left: 10px !important; /* 50%を解除し、左端に寄せる */
-        text-align: left !important;  /* 右寄せを解除 */
-        min-height: 36px;
-        display: block;               /* flexを解除して標準的な配置に */
-        font-size: 14px;
+        text-align: left !important;
+        padding-left: 10px !important; /* 透明な壁(50%)を完全に消去 */
     }
 
-    /* 2. 入力欄（グリッド）をスマホで縦1列に強制する */
-    #setupContent div[style*="display: grid"],
-    #tracking div[style*="display: grid"],
-    #tracking div[style*="display:grid"] {
-        display: grid !important;
-        grid-template-columns: 1fr !important; /* 強制的に1列にする */
-        gap: 15px !important;
-    }
-
-    /* 3. モバイル表示での不要なラベル(before)を非表示にする */
-    /* これが残っていると「日付」などの文字が重なってしまいます */
-    #setupContent td:before, #setupContent div:before,
-    #tracking td:before, #tracking div:before {
-        content: none !important;
-    }
-
-    .mobile-card-table td:first-child {
-        background: #2b6cb0;
-        color: white;
+    /* 3. モバイル用ラベル(before)の設定（ここをスッキリさせる） */
+    .mobile-card-table td:before {
+        content: attr(data-label);
         font-weight: bold;
-        text-align: center !important;
-        padding-left: 10px !important;
-        min-height: 30px;
+        color: #666;
+        margin-right: 10px;
     }
 
-    /* スクロールが必要なテーブル用 */
-    .scroll-container {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+    /* 4. セットアップ画面や入力欄などの「グリッド」の崩れを直す */
+    #setupContent div[style*="display: grid"],
+    #tracking div[style*="display: grid"] {
+        display: flex !important; /* gridをやめてflexで縦に並べる */
+        flex-direction: column !important;
+        gap: 15px !important;
+        width: 100% !important;
     }
-    .scroll-container table { min-width: 800px; }
 
-    /* ボタンの調整 */
-    .btn {
-        width: auto;
-        min-width: 90px;
-        margin: 3px;
-        padding: 8px 12px; 
-        font-size: 12px;
+    /* 5. グリッド内の余計なラベルを消去 */
+    #setupContent td:before, #tracking td:before {
+        display: none !important;
     }
-    
-    .button-group, .controls {
-        text-align: center;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 3px;
+
+    /* 6. 入力欄やボタンを横いっぱいに広げて押しやすくする */
+    #tracking input, #tracking select, .btn {
+        width: 100% !important;
+        margin: 5px 0 !important;
     }
 }
 
