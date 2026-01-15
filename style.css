@@ -335,3 +335,43 @@ input[type="number"] {
         padding-left: 0 !important;
     }
 }
+/* 種目別トラッキングの横並び設定 */
+@media screen and (min-width: 800px) {
+    .tracking-container {
+        display: flex;
+        gap: 20px;
+        align-items: stretch;
+    }
+
+    .tracking-form-side {
+        flex: 0 0 300px; /* 左側の入力欄を300pxに固定 */
+    }
+
+    .tracking-graph-side {
+        flex: 1; /* 右側のグラフが残りの幅をすべて使う */
+    }
+
+    /* 入力欄を縦にきれいに並べる */
+    .form-row {
+        margin-bottom: 10px;
+    }
+    .form-row label {
+        display: block;
+        font-size: 12px;
+        margin-bottom: 4px;
+        font-weight: bold;
+    }
+    .form-row input, .form-row select {
+        width: 100% !important;
+        max-width: none !important;
+    }
+}
+
+/* スマホでは縦並びに戻す */
+@media screen and (max-width: 799px) {
+    .tracking-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+}
