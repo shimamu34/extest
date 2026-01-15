@@ -350,51 +350,51 @@ input[type="number"] {
     }
 }
 
-/* --- 初回セットアップ画面のレイアウト修正（完成版） --- */
+/* --- 初回セットアップ画面のレイアウト修正（L字レイアウト版） --- */
 @media screen and (min-width: 641px) {
-    /* 1. 左右のカラムを包む親コンテナを中央寄せにする */
+    /* 1. 親コンテナ：1番・2番（左側）と3番（右側）の横並びを制御 */
     #setupContent > div[style*="display: flex"] {
         display: flex !important;
+        flex-direction: row !important; /* 横並び */
         justify-content: center !important; 
         align-items: flex-start !important;
-        gap: 30px !important; 
-        max-width: 1000px !important; /* 少し余裕を持たせる */
+        gap: 20px !important; 
+        max-width: 950px !important;
         margin: 0 auto !important;
-        padding: 0 20px !important;
     }
 
-    /* 2. 左側カラム（青と黄色のカードが入っている親） */
+    /* 2. 左側カラム（1番と2番が入る場所） */
     #setupContent > div[style*="display: flex"] > div:first-child {
-        flex: 1.3 !important; /* 左側をしっかり広く */
-        max-width: 550px !important;
+        flex: 1 !important;
         display: flex !important;
-        flex-direction: column !important;
+        flex-direction: column !important; /* 1番の下に2番を置く */
         gap: 20px !important;
+        max-width: 450px !important;
     }
 
-    /* 左側の個別カード自体の幅を100%にする */
-    #setupContent > div[style*="display: flex"] > div:first-child > div {
+    /* 3. 右側カラム（3番：オレンジの場所） */
+    #setupContent > div[style*="display: flex"] > div:last-child {
+        flex: 1 !important;
+        max-width: 450px !important;
+        position: static !important; /* stickyを解除して1番の横に固定 */
+        margin-top: 0 !important;
+    }
+
+    /* 4. 各カード内の調整：高さを揃えやすくする */
+    #setupContent > div[style*="display: flex"] > div > div {
         width: 100% !important;
         margin: 0 !important;
-    }
-
-    /* 3. 右側カラム（オレンジのカード） */
-    #setupContent > div[style*="display: flex"] > div:last-child {
-        flex: 0.7 !important; /* 右側をスリムに */
-        max-width: 350px !important;
-        position: static !important; /* 浮いているのを解除 */
-        margin-top: 0 !important;
+        min-height: 250px; /* 1番と3番の高さをある程度揃える */
     }
 }
 
-/* スマホでは縦一列に戻す */
+/* スマホでは使いやすさ優先で縦一列 */
 @media screen and (max-width: 640px) {
     #setupContent > div[style*="display: flex"] {
         flex-direction: column !important;
-        align-items: center !important;
     }
     #setupContent > div > div {
-        width: 100% !important;
         max-width: 100% !important;
+        min-height: auto !important;
     }
 }
