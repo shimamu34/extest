@@ -350,52 +350,54 @@ input[type="number"] {
     }
 }
 
-/* --- 初回セットアップ画面の最終調整（左右対称・隙間最小化） --- */
+/* --- 初回セットアップ画面の最終調整（左右完全対称版） --- */
 @media screen and (min-width: 641px) {
-    /* 1. 全体を包む白い枠自体の幅とパディングを調整 */
+    /* 1. 外枠（モーダル）のパディングを左右均等に固定 */
     #setupModal > div {
         max-width: 1100px !important;
         width: 95% !important;
-        padding: 30px 20px !important; /* 上下左右の余白を均一に */
+        padding: 30px 20px !important; 
         margin: 40px auto !important;
+        display: block !important;
     }
 
-    /* 2. 親コンテナ：左右の比率を完全に均等にし、隙間を極限まで詰める */
+    /* 2. 親コンテナ：左右のカラムを「均等に」配置する */
     #setupContent > div[style*="display: flex"] {
         display: flex !important;
         flex-direction: row !important;
-        justify-content: center !important; /* 真ん中に寄せる */
+        justify-content: center !important; /* 中央寄せを徹底 */
         align-items: flex-start !important;
-        gap: 5px !important; /* カード間の隙間を5pxまで縮小 */
-        width: 100% !important; /* 枠いっぱいに広げる */
+        gap: 5px !important;
+        width: 100% !important;
         max-width: none !important;
         margin: 0 !important;
         padding: 0 !important;
     }
 
-    /* 3. 左カラム（1番・2番）と右カラム（3番）：幅を完全に同一にする */
+    /* 3. 左カラムと右カラム：幅を50%から「隙間分」だけ引いて完全に揃える */
     #setupContent > div[style*="display: flex"] > div:first-child,
     #setupContent > div[style*="display: flex"] > div:last-child {
-        flex: 1 !important; /* 左右に同じ重みを与える */
-        width: 50% !important; /* 完全に半分ずつ */
-        max-width: 520px !important; /* 巨大化しすぎないよう微調整 */
+        flex: 0 0 calc(50% - 3px) !important; /* 伸び縮みさせず、正確に半分(マイナス隙間)にする */
+        width: calc(50% - 3px) !important;
         display: flex !important;
         flex-direction: column !important;
-        gap: 5px !important; /* 縦方向の隙間も5pxに */
+        gap: 5px !important;
+        margin: 0 !important; /* 余計なマージンを排除 */
+        padding: 0 !important;
     }
 
-    /* 右側の位置固定を完全に排除 */
+    /* 右側の特殊なスタイル（sticky等）を完全に上書きして無効化 */
     #setupContent > div[style*="display: flex"] > div:last-child {
         position: static !important;
-        margin: 0 !important;
+        transform: none !important;
     }
 
-    /* 4. 各カード本体：中身が崩れない範囲で横幅100%を維持 */
+    /* 4. カード本体：各カードがカラムの幅100%を使い切るようにする */
     #setupContent .card, 
     #setupContent > div[style*="display: flex"] > div > div {
         width: 100% !important;
         margin: 0 !important;
         box-sizing: border-box !important;
-        padding: 20px !important; /* カード内部の余白を少し詰め、表を大きく見せる */
+        padding: 20px !important;
     }
 }
