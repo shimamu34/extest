@@ -518,9 +518,7 @@ const types = [
             
             document.getElementById("totalRank").innerHTML = totalHtml;
             
-            // 初期状態のシミュレーター表示
-            document.getElementById("goalSimulator").innerHTML = '<div style="text-align:center;color:#666;padding:40px">上のボタンから目標を選んでください</div>';
-        }
+            
 
 function setGoal(goalType) {
             const g = document.getElementById("gender").value;
