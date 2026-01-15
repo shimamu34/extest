@@ -253,27 +253,24 @@ function updateTrackingView() {
     const records = allRecords.filter(r => String(r.grade) === String(viewGrade));
     const h = D[g].h;
 
-    // --- ヘッダー部分のレイアウト修正 ---
-    const trackingArea = document.getElementById("tracking");
-    // 既存の「変容グラフ」というタイトルがHTML側にある場合は、JSで上書きするか、HTML側を調整します。
-    // ここでは統計表示エリア(trackingStats)より上の部分を整理する想定です。
-
+    // --- ①タイトルセンター・②種目選択を右端へ（大きく）の構造を反映 ---
+    // HTML側のタイトルを直接書き換える、またはヘッダーを生成する処理
     const canvas = document.getElementById("trackingGraph");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     if (records.length === 0) {
         ctx.fillStyle = '#666';
-        ctx.font = '18px Arial';
+        ctx.font = 'bold 24px Arial'; // 文字を大きく (18px -> 24px)
         ctx.textAlign = 'center';
         ctx.fillText(`中${viewGrade}年の記録がありません`, canvas.width/2, 200);
-        document.getElementById("trackingStats").innerHTML = '<div style="text-align:center;color:#666;padding:20px;background:#f5f5f5;border-radius:8px">データがありません</div>';
+        document.getElementById("trackingStats").innerHTML = '<div style="text-align:center;color:#666;padding:40px;background:#f5f5f5;border-radius:12px;font-size:20px;">データが登録されていません</div>';
         document.getElementById("trackingList").innerHTML = '';
         return;
     }
     
     drawTrackingGraph(records, h[eventIdx]);
-    updateTrackingStats(records, h[eventIdx]); // 下記の修正版が呼ばれます
+    updateTrackingStats(records, h[eventIdx]); 
     updateTrackingList(allRecords, h[eventIdx], eventIdx, viewGrade);
 }
 
@@ -367,54 +364,50 @@ function updateTrackingStats(records, eventName) {
     const max = Math.max(...records.map(r => r.value));
     const maxRecord = records.find(r => r.value === max);
     
-    // 伸びの色判定（50m走や持久走は数値が低いほうが良いため、種目名で判定）
     const isLowerBetter = eventName.includes("50m") || eventName.includes("持久");
     let isImproved = isLowerBetter ? diff < 0 : diff > 0;
-    
     const diffColor = isImproved ? '#d9534f' : (diff === 0 ? '#666' : '#0275d8');
     const diffIcon = isImproved ? '📈' : (diff === 0 ? '➡️' : '📉');
-    
-    // 数値の符号調整
     const diffDisplay = (diff > 0 ? "+" : "") + diff.toFixed(1);
 
     let html = `
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px;">
-            <div style="background:#fff; padding:15px; border-radius:10px; text-align:center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #eee;">
-                <div style="color:#888; font-size:11px; margin-bottom:5px; font-weight:bold;">初回記録</div>
-                <div style="font-size:20px; font-weight:bold; color:#333;">${first.value}</div>
-                <div style="color:#bbb; font-size:10px;">${first.date}</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px;">
+            <div style="background:#fff; padding:20px; border-radius:12px; text-align:center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #eee;">
+                <div style="color:#666; font-size:16px; margin-bottom:10px; font-weight:bold;">初回記録</div>
+                <div style="font-size:32px; font-weight:bold; color:#333;">${first.value}</div>
+                <div style="color:#999; font-size:14px;">${first.date}</div>
             </div>
-            <div style="background:#fff; padding:15px; border-radius:10px; text-align:center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #eee;">
-                <div style="color:#888; font-size:11px; margin-bottom:5px; font-weight:bold;">最新記録</div>
-                <div style="font-size:20px; font-weight:bold; color:#FF5722;">${last.value}</div>
-                <div style="color:#bbb; font-size:10px;">${last.date}</div>
+            <div style="background:#fff; padding:20px; border-radius:12px; text-align:center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #eee;">
+                <div style="color:#666; font-size:16px; margin-bottom:10px; font-weight:bold;">最新記録</div>
+                <div style="font-size:32px; font-weight:bold; color:#FF5722;">${last.value}</div>
+                <div style="color:#999; font-size:14px;">${last.date}</div>
             </div>
-            <div style="background:#fff; padding:15px; border-radius:10px; text-align:center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #eee; border-top: 4px solid ${diffColor};">
-                <div style="color:#888; font-size:11px; margin-bottom:5px; font-weight:bold;">伸び ${diffIcon}</div>
-                <div style="font-size:20px; font-weight:bold; color:${diffColor}">${diffDisplay}</div>
-                <div style="color:${diffColor}; font-size:10px; font-weight:bold;">${diffPercent}%</div>
+            <div style="background:#fff; padding:20px; border-radius:12px; text-align:center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid ${diffColor}; border-top: 8px solid ${diffColor};">
+                <div style="color:#666; font-size:16px; margin-bottom:10px; font-weight:bold;">伸び ${diffIcon}</div>
+                <div style="font-size:32px; font-weight:bold; color:${diffColor}">${diffDisplay}</div>
+                <div style="color:${diffColor}; font-size:16px; font-weight:bold;">(${diffPercent}%)</div>
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-            <div style="background:#f8f9fa; padding:15px; border-radius:10px; border-left: 5px solid #6c757d;">
-                <div style="color:#444; font-size:13px; font-weight:bold; margin-bottom:10px; display:flex; align-items:center;">
-                    <span style="margin-right:5px;">📊</span> 統計情報
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div style="background:#fdfdfd; padding:25px; border-radius:12px; border-left: 8px solid #6c757d; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <div style="color:#333; font-size:22px; font-weight:bold; margin-bottom:15px; display:flex; align-items:center;">
+                    <span style="margin-right:10px;">📊</span> 統計詳細
                 </div>
-                <div style="font-size:13px; line-height:1.8; color: #555;">
-                    <div style="display:flex; justify-content:space-between;"><span>測定回数</span> <b>${records.length}回</b></div>
-                    <div style="display:flex; justify-content:space-between;"><span>平均値</span> <b>${avg}</b></div>
-                    <div style="display:flex; justify-content:space-between;"><span>最高記録</span> <b>${max}</b></div>
-                    <div style="font-size:10px; color:#999; text-align:right;">(${maxRecord.date})</div>
+                <div style="font-size:20px; line-height:2.0; color: #444;">
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px dashed #ccc;"><span>測定回数</span> <b>${records.length} 回</b></div>
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px dashed #ccc;"><span>期間内平均</span> <b>${avg}</b></div>
+                    <div style="display:flex; justify-content:space-between;"><span>自己ベスト</span> <b>${max}</b></div>
+                    <div style="font-size:16px; color:#888; text-align:right;">(達成日: ${maxRecord.date})</div>
                 </div>
             </div>
-            <div style="background:#eef7ff; padding:15px; border-radius:10px; border-left: 5px solid #0275d8;">
-                <div style="color:#0275d8; font-size:13px; font-weight:bold; margin-bottom:10px; display:flex; align-items:center;">
-                    <span style="margin-right:5px;">💡</span> 分析コメント
+            <div style="background:#eef7ff; padding:25px; border-radius:12px; border-left: 8px solid #0275d8; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <div style="color:#0275d8; font-size:22px; font-weight:bold; margin-bottom:15px; display:flex; align-items:center;">
+                    <span style="margin-right:10px;">💡</span> 分析コメント
                 </div>
-                <div style="font-size:13px; line-height:1.6; color:#01438d; font-weight: 500;">
+                <div style="font-size:19px; line-height:1.7; color:#01438d; font-weight: bold;">
                     ${isImproved ? 
-                        '素晴らしい向上です！トレーニングの成果がしっかり出ていますね。この調子を維持しましょう！' : 
+                        '素晴らしい向上です！日頃のトレーニングの成果が明確に数値として表れています。この調子で次の目標も突破しましょう！' : 
                         (diff === 0 ? '記録が安定しています。さらなる向上を目指して、練習メニューに変化をつけてみるのも良いかもしれません。' : 
                         '今回は少し記録を落としましたが、体調や環境の影響もあります。次の測定でリベンジしましょう！')}
                 </div>
