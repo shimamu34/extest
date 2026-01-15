@@ -93,7 +93,7 @@
         <div style="background:linear-gradient(135deg,#FF5722,#FF7043);padding:30px;border-radius:15px;margin-bottom:30px;color:white">
             <h4 style="margin:0 0 25px 0;font-size:22px;text-align:center">📝 新しい記録を追加</h4>
             <div style="background:rgba(255,255,255,0.15);padding:25px;border-radius:12px;backdrop-filter:blur(10px)">
-    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px; margin-bottom:15px">
+    <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;">
         <div>
             <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">学年</label>
             <select id="trackingViewGrade" onchange="updateTrackingView()" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;background:white;box-sizing:border-box">
@@ -122,7 +122,7 @@
         </div>
     </div>
 
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px">
+    <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;">
         <div>
             <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">単元名（任意）</label>
             <input type="text" id="trackingUnit" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box" placeholder="例: バスケットボール">
@@ -203,7 +203,7 @@
             <div id="setupContent" style="padding: 10px;">
     <h2 style="color: #2b6cb0; text-align: center; margin-bottom: 30px; font-size: 26px; border-bottom: 3px solid #2b6cb0; pb: 10px;">🏫 初回セットアップ手順</h2>
     
-    <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 30px; align-items: start;">
+    <div style="display: flex; justify-content: center; gap: 30px; align-items: start; max-width: 1000px; margin: 0 auto;">
         
         <div>
             <div style="background: #f0f7ff; padding: 20px; border-radius: 12px; border-left: 8px solid #2b6cb0; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
