@@ -295,13 +295,20 @@ input[type="number"] {
 @media screen and (min-width: 641px) {
     /* カード本体：上下の間隔を15pxから8pxに短縮 */
     .card {
-        margin: 8px auto !important; /* ← ここでカード同士の隙間を狭くします */
+        margin: 4px auto !important; /* ← ここでカード同士の隙間を狭くします */
         max-width: 1200px !important; 
         width: 95%;
         float: none !important;
-        padding: 15px 35px !important; /* 上下の内側余白も25pxから15pxに縮小 */
+        padding: 10px 30px !important; /* 上下の内側余白も25pxから15pxに縮小 */
     }
 
+/* ボタン類が入っているカードなど、中身が少ないカードの余白 */
+    .card[style*="text-align:center"], 
+    .card[style*="text-align: center"] {
+        padding: 8px 12px !important;
+    }
+}
+    
     /* 種目別トラッキング：入力エリアのレイアウト */
     .tracking-top-bar {
         display: grid !important;
@@ -346,8 +353,8 @@ input[type="number"] {
 /* スマホ用：さらにコンパクトに */
 @media screen and (max-width: 640px) {
     .card {
-        margin: 5px auto !important;
-        padding: 10px !important;
+        margin: 3px auto !important;
+        padding: 8px !important;
     }
 }
 
