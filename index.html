@@ -7,61 +7,24 @@
     <link rel="stylesheet" href="style.css">
   
   <style>
-    /* 1. 数値入力欄の最適化（既存） */
+    /* 全ての数値入力欄の「高さ」を固定してスピンボックスを大きくする */
     input[type="number"] {
-        height: 28px !important;
-        padding: 0 2px !important;
-        font-size: 15px !important;
+        height: 36px !important;    /* 高さを出すと、中の矢印も連動して大きくなります */
+        font-size: 16px !important; /* 文字も少し大きくして視認性をアップ */
+        padding: 2px 4px !important;
         box-sizing: border-box !important;
     }
+
+    /* 持久走の「分：秒」の入力欄も全く同じ高さに指定 */
     #i4_min, #i4_sec {
-        width: 45px !important;
-        height: 28px !important;
+        height: 36px !important;
+        width: 50px !important;      /* 矢印が数字に被らないよう少し広げる */
     }
+
+    /* テーブルのセルの余白を調整して、背が高くなった入力欄を収める */
     #table td {
-        padding: 4px 2px !important;
-        height: auto !important;
-    }
-    
-    /* 2. シミュレーターの余白カット（既存） */
-    #goalSimulator table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        font-size: 14px; 
-    }
-    #goalSimulator th, #goalSimulator td {
-        padding: 5px 4px !important;
-        border-bottom: 1px solid #eee;
-    }
-    #goalSimulator { padding: 5px !important; }
-
-    /* 3. 【重要】目標達成ボタンを「2列×2段」で固定し、他への干渉を防ぐ */
-    /* 親要素（箱）の指定 */
-    #correlation div:has(> button[onclick^="setGoal"]) {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-        gap: 10px !important;
-        max-width: 500px !important;
-        margin: 0 auto 25px auto !important;
-        text-align: center !important;
-    }
-
-    /* ボタン自体の指定：CSSファイルの「.btn」設定を強制上書き */
-    #correlation .btn[onclick^="setGoal"] {
-        /* calcを使って「絶対に横に2つしか並ばない幅」を死守します */
-        width: calc(50% - 15px) !important; 
-        min-width: 140px !important;
-        height: 65px !important;
-        margin: 0 !important;
-        font-size: 16px !important;
-        font-weight: bold !important;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        line-height: 1.2 !important;
-        border-radius: 12px !important;
+        padding: 5px 2px !important;
+        vertical-align: middle;
     }
 </style>
   
