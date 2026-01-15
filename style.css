@@ -350,38 +350,51 @@ input[type="number"] {
     }
 }
 
-/* --- 初回セットアップ画面のレイアウト修正（決定版） --- */
+/* --- 初回セットアップ画面のレイアウト修正（完成版） --- */
 @media screen and (min-width: 641px) {
-    /* 左右に分ける親要素の調整 */
+    /* 1. 左右のカラムを包む親コンテナを中央寄せにする */
     #setupContent > div[style*="display: flex"] {
         display: flex !important;
-        justify-content: center !important; /* 全体を中央寄せ */
+        justify-content: center !important; 
         align-items: flex-start !important;
-        gap: 40px !important; /* 左右のカードの間の溝 */
-        max-width: 900px !important; /* 全体の横幅を制限 */
+        gap: 30px !important; 
+        max-width: 1000px !important; /* 少し余裕を持たせる */
         margin: 0 auto !important;
+        padding: 0 20px !important;
     }
 
-    /* 左側のカラム（ステップ1と2を包むdiv） */
+    /* 2. 左側カラム（青と黄色のカードが入っている親） */
     #setupContent > div[style*="display: flex"] > div:first-child {
-        flex: 1.2 !important; /* 1.2の比率で少し広く */
-        max-width: 500px !important;
+        flex: 1.3 !important; /* 左側をしっかり広く */
+        max-width: 550px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
     }
 
-    /* 右側のカラム（ステップ3を包むdiv） */
+    /* 左側の個別カード自体の幅を100%にする */
+    #setupContent > div[style*="display: flex"] > div:first-child > div {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    /* 3. 右側カラム（オレンジのカード） */
     #setupContent > div[style*="display: flex"] > div:last-child {
-        flex: 0.8 !important; /* 0.8の比率で少し狭く */
+        flex: 0.7 !important; /* 右側をスリムに */
         max-width: 350px !important;
-        position: static !important; /* stickyを解除して高さを揃える */
+        position: static !important; /* 浮いているのを解除 */
+        margin-top: 0 !important;
     }
 }
 
-/* スマホではすべて幅いっぱいに */
+/* スマホでは縦一列に戻す */
 @media screen and (max-width: 640px) {
     #setupContent > div[style*="display: flex"] {
         flex-direction: column !important;
+        align-items: center !important;
     }
     #setupContent > div > div {
+        width: 100% !important;
         max-width: 100% !important;
     }
 }
