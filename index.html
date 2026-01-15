@@ -89,40 +89,89 @@
 </div>
         
   <div id="tracking" style="display:none" class="card">
-    <h3 style="text-align:center;color:#FF5722;margin-bottom:15px">📈 種目別トラッキング</h3>
-    
-    <div style="background:#FF5722; padding:10px 15px; border-radius:12px; margin-bottom:15px;">
-        <div class="tracking-top-bar">
-            <div class="t-field"><label>学年</label><select id="trackingViewGrade" onchange="updateTrackingView()"><option value="1">中1</option><option value="2" selected>中2</option><option value="3">中3</option></select></div>
-            <div class="t-field"><label>種目</label><select id="trackingEvent"><option value="0">握力</option><option value="1">上体起こし</option><option value="2">長座体前屈</option><option value="3">反復横とび</option><option value="4">持久走</option><option value="5">20mシャトルラン</option><option value="6">50m走</option><option value="7">立ち幅跳び</option><option value="8">ハンドボール投げ</option></select></div>
-            <div class="t-field"><label>測定値</label><input type="number" id="trackingValue" step="0.01" placeholder="数値"></div>
-            <div class="t-field"><label>単元</label><input type="text" id="trackingUnit" placeholder="例: バスケ"></div>
-            <div class="t-field"><label>日付</label><input type="date" id="trackingDate"></div>
-            <div class="t-field" style="flex-grow: 2;"><label>メモ</label><input type="text" id="trackingMemo" placeholder="備考"></div>
-            <button class="btn" style="background:#4CAF50; padding:8px 15px; align-self: flex-end;" onclick="addTrackingRecord()">＋ 追加</button>
-        </div>
-    </div>
+        <h3 style="text-align:center;color:#FF5722;margin-bottom:30px">📈 種目別トラッキング</h3>
+        <div style="background:linear-gradient(135deg,#FF5722,#FF7043);padding:30px;border-radius:15px;margin-bottom:30px;color:white">
+            <h4 style="margin:0 0 25px 0;font-size:22px;text-align:center">📝 新しい記録を追加</h4>
+            <div style="background:rgba(255,255,255,0.15);padding:25px;border-radius:12px;backdrop-filter:blur(10px)">
+    <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;">
+        <div>
+            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">学年</label>
+            <select id="trackingViewGrade" onchange="updateTrackingView()" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;background:white;box-sizing:border-box">
+                <option value="1">中1</option>
+                <option value="2" selected>中2</option>
+                <option value="3">中3</option>
+            </select>
+        </div>
+        <div>
+            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">種目</label>
+            <select id="trackingEvent" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;background:white;box-sizing:border-box">
+                <option value="0">握力</option>
+                <option value="1">上体起こし</option>
+                <option value="2">長座体前屈</option>
+                <option value="3">反復横とび</option>
+                <option value="4">持久走</option>
+                <option value="5">20mシャトルラン</option>
+                <option value="6">50m走</option>
+                <option value="7">立ち幅跳び</option>
+                <option value="8">ハンドボール投げ</option>
+            </select>
+        </div>
+        <div>
+            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">測定値</label>
+            <input type="number" id="trackingValue" step="0.01" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;font-weight:bold;box-sizing:border-box" placeholder="数値">
+        </div>
+    </div>
 
-    <div style="background:#FFE0B2; padding:20px; border-radius:15px; min-height:350px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h4 style="margin:0; color:#E65100;">📊 変容グラフ</h4>
-            <select id="trackingViewEvent" onchange="updateTrackingView()" style="padding:5px; border-radius:5px;"><option value="0">握力</option><option value="1">上体起こし</option><option value="2">長座体前屈</option><option value="3">反復横とび</option><option value="4">持久走</option><option value="5">20mシャトルラン</option><option value="6">50m走</option><option value="7">立ち幅跳び</option><option value="8">ハンドボール投げ</option></select>
-        </div>
-        <div style="background:white; padding:15px; border-radius:10px;">
-            <canvas id="trackingGraph" style="width:100%; height:300px;"></canvas>
-        </div>
-    </div>
-    
-    </div>
+    <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;">
+        <div>
+            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">単元名（任意）</label>
+            <input type="text" id="trackingUnit" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box" placeholder="例: バスケットボール">
+        </div>
+        <div>
+            <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">日付</label>
+            <input type="date" id="trackingDate" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box">
+        </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+        <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">メモ（任意）</label>
+        <input type="text" id="trackingMemo" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;box-sizing:border-box" placeholder="メモを入力">
+    </div>
+
+    <div style="text-align:center">
+        <button class="btn" style="background:linear-gradient(135deg,#4CAF50,#66BB6A);font-size:16px;padding:12px 40px" onclick="addTrackingRecord()">➕ 記録を追加</button>
+    </div>
+</div>
+        </div>
+        <div style="background:#f5f5f5;padding:30px;border-radius:15px;margin-bottom:30px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                <h4 style="margin:0;font-size:20px;color:#FF5722">📊 変容グラフ</h4>
+                <div>
+                    <label style="margin-right:10px;color:#666">表示種目:</label>
+                    <select id="trackingViewEvent" onchange="updateTrackingView()" style="padding:8px;border-radius:8px;border:2px solid #e0e0e0">
+                        <option value="0">握力</option>
+                        <option value="1">上体起こし</option>
+                        <option value="2">長座体前屈</option>
+                        <option value="3">反復横とび</option>
+                        <option value="4">持久走</option>
+                        <option value="5">20mシャトルラン</option>
+                        <option value="6">50m走</option>
+                        <option value="7">立ち幅跳び</option>
+                        <option value="8">ハンドボール投げ</option>
+                    </select>
+
+                </div>
+            </div>
+            <div style="background:white;padding:20px;border-radius:12px;margin-bottom:20px">
+                <canvas id="trackingGraph" width="1000" height="400"></canvas>
+            </div>
             <div id="trackingStats" style="background:white;padding:20px;border-radius:12px"></div>
         </div>
-        <div id="trackingStats" style="background:white; padding:15px; border-radius:12px; margin-top:15px;"></div>
-    
-    <div style="background:#f5f5f5; padding:20px; border-radius:15px; margin-top:15px;">
-        <h4 style="margin:0 0 10px 0; font-size:18px; color:#FF5722">📝 記録一覧</h4>
-        <div id="trackingList" style="background:white; border-radius:12px; overflow:hidden"></div>
-    </div>
-</div>
+        <div style="background:#f5f5f5;padding:30px;border-radius:15px">
+            <h4 style="margin:0 0 20px 0;font-size:20px;color:#FF5722">📝 記録一覧</h4>
+            <div id="trackingList" style="background:white;border-radius:12px;overflow:hidden"></div>
+        </div>
+    </div>
     
     <div class="card no-print">
         <h2 style="color:#2b6cb0; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 2px; line-height: 1.2;">
