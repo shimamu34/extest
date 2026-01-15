@@ -345,64 +345,46 @@ input[type="number"] {
         gap: 20px;
     }
 }
-/* --- 種目別トラッキングの完璧なレイアウト --- */
+/* 種目別トラッキング：ヘッダー横一列レイアウト */
 @media screen and (min-width: 641px) {
-    /* 左半分に寄せる */
-    .tracking-input-container {
-        max-width: 550px !important;
-        margin-left: 0 !important;
-        margin-right: auto !important;
+    .tracking-top-bar {
         display: flex !important;
-        flex-direction: column !important;
-        gap: 15px !important;
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+    
+    .t-field {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 0;
     }
 
-    /* 1行目：3分割 */
-    .tracking-row-triple {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr 1fr !important;
-        gap: 10px !important;
+    .t-field label {
+        color: white !important;
+        font-size: 11px !important;
+        font-weight: bold !important;
+        margin-bottom: 3px !important;
+        white-space: nowrap;
     }
 
-    /* 2行目：2分割 */
-    .tracking-row-double {
+    .t-field input, .t-field select {
+        width: 100% !important;
+        height: 32px !important;
+        font-size: 13px !important;
+        border: none !important;
+        border-radius: 4px !important;
+        padding: 0 5px !important;
+    }
+}
+
+/* スマホでは2列に折り返す（使いやすさ重視） */
+@media screen and (max-width: 640px) {
+    .tracking-top-bar {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
         gap: 10px !important;
-    }
-
-    /* 3行目：全幅 */
-    .tracking-row-full {
-        width: 100% !important;
-    }
-
-    /* 入力パーツの共通スタイル */
-    .tracking-input-container label {
-        display: block !important;
-        color: white !important;
-        font-size: 12px !important;
-        margin-bottom: 5px !important;
-        font-weight: bold !important;
-        text-align: left !important;
-    }
-
-    .tracking-input-container input, 
-    .tracking-input-container select {
-        width: 100% !important;
-        height: 38px !important;
-        border: none !important;
-        border-radius: 6px !important;
-        padding: 0 10px !important;
-        box-sizing: border-box !important;
-        background: white !important;
-    }
-
-    /* ボタンを太く、押しやすく */
-    .btn-add-record {
-        width: 100% !important;
-        background: #4CAF50 !important;
-        font-size: 16px !important;
-        padding: 12px !important;
-        margin-top: 10px !important;
     }
 }
