@@ -90,22 +90,22 @@
         
   <div id="tracking" style="display:none" class="card">
     <div style="background:linear-gradient(135deg,#FF5722,#FF7043); padding:15px; border-radius:30px; margin-bottom:20px; color:white;">
-        <h4 style="margin:0 0 12px 0; font-size:20px; text-align:center; letter-spacing: 1px;">新しい記録を追加</h4>
+        <h4 style="margin:0 0 12px 0; font-size:18px; text-align:center; letter-spacing: 1px;">新しい記録を追加</h4>
         
         <div style="background:rgba(255,255,255,0.25); padding:15px; border-radius:25px; backdrop-filter:blur(10px)">
             
-            <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                 <div style="flex: 1;">
-                    <label style="display:block; margin-bottom:5px; font-size:12px; font-weight:bold; text-align:center;">学年</label>
-                    <select id="trackingViewGrade" onchange="updateTrackingView()" style="width:100%; height:40px; border-radius:10px; border:none; font-size:15px; background:white; text-align:center; text-align-last:center;">
+                    <label style="display:block; margin-bottom:2px; font-size:11px; font-weight:bold; text-align:center;">学年</label>
+                    <select id="trackingViewGrade" onchange="updateTrackingView()" style="width:100%; padding:8px 0; border-radius:10px; border:none; font-size:14px; background:white; text-align:center; text-align-last:center;">
                         <option value="1">中1</option>
                         <option value="2" selected>中2</option>
                         <option value="3">中3</option>
                     </select>
                 </div>
                 <div style="flex: 2;">
-                    <label style="display:block; margin-bottom:5px; font-size:12px; font-weight:bold; text-align:center;">種目</label>
-                    <select id="trackingEvent" style="width:100%; height:40px; border-radius:10px; border:none; font-size:15px; background:white; text-align:center; text-align-last:center;">
+                    <label style="display:block; margin-bottom:2px; font-size:11px; font-weight:bold; text-align:center;">種目</label>
+                    <select id="trackingEvent" style="width:100%; padding:8px 0; border-radius:10px; border:none; font-size:14px; background:white; text-align:center; text-align-last:center;">
                         <option value="0">握力</option>
                         <option value="1">上体起こし</option>
                         <option value="2">長座体前屈</option>
@@ -117,30 +117,30 @@
                         <option value="8">ハンドボール投げ</option>
                     </select>
                 </div>
-                <div style="flex: 2.5;">
-                    <label style="display:block; margin-bottom:5px; font-size:12px; font-weight:bold; text-align:center;">測定値</label>
-                    <input type="number" id="trackingValue" step="0.01" style="width:100%; height:40px; border-radius:10px; border:none; font-size:15px; font-weight:bold; text-align:center; box-sizing: border-box;" placeholder="数値">
+                <div style="flex: 1.5; flex-grow: 1;">
+                    <label style="display:block; margin-bottom:2px; font-size:11px; font-weight:bold; text-align:center;">測定値</label>
+                    <input type="number" id="trackingValue" step="0.01" style="width:100%; padding:8px 0; border-radius:10px; border:none; font-size:14px; font-weight:bold; text-align:center;" placeholder="数値">
                 </div>
             </div>
 
-            <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                 <div style="flex: 3;">
-                    <label style="display:block; margin-bottom:5px; font-size:12px; font-weight:bold; text-align:center;">単元名(任意)</label>
-                    <input type="text" id="trackingUnit" style="width:100%; height:40px; border-radius:10px; border:none; font-size:15px; text-align:center; box-sizing: border-box;" placeholder="例: バスケットボール">
+                    <label style="display:block; margin-bottom:2px; font-size:11px; font-weight:bold; text-align:center;">単元名(任意)</label>
+                    <input type="text" id="trackingUnit" style="width:100%; padding:8px 0; border-radius:10px; border:none; font-size:14px; text-align:center;" placeholder="例: バスケットボール">
                 </div>
-                <div style="flex: 2.5;">
-                    <label style="display:block; margin-bottom:5px; font-size:12px; font-weight:bold; text-align:center;">日付</label>
-                    <input type="date" id="trackingDate" style="width:100%; height:40px; border-radius:10px; border:none; font-size:14px; text-align:center; padding-left: 15%; box-sizing: border-box;">
+                <div style="flex: 1.5; flex-grow: 1;">
+                    <label style="display:block; margin-bottom:2px; font-size:11px; font-weight:bold; text-align:center;">日付</label>
+                    <input type="date" id="trackingDate" style="width:100%; padding:8px 0; border-radius:10px; border:none; font-size:14px; text-align:center; display: block;">
                 </div>
             </div>
 
             <div style="margin-bottom:15px;">
-                <label style="display:block; margin-bottom:5px; font-size:12px; font-weight:bold; text-align:center;">メモ(任意)</label>
-                <input type="text" id="trackingMemo" style="width:100%; height:40px; border-radius:10px; border:none; font-size:15px; text-align:center; box-sizing: border-box;" placeholder="運動して感じたことや気づいたことなど">
+                <label style="display:block; margin-bottom:2px; font-size:11px; font-weight:bold; text-align:center;">メモ(任意)</label>
+                <input type="text" id="trackingMemo" style="width:100%; padding:8px 0; border-radius:10px; border:none; font-size:14px; text-align:center;" placeholder="気づいたことなど">
             </div>
 
             <div style="text-align:center">
-                <button class="btn" style="background:#68a047; color:white; font-size:18px; padding:10px 60px; border:none; border-radius:12px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 0 #4a7332;" onclick="addTrackingRecord()">
+                <button class="btn" style="background:#68a047; color:white; font-size:16px; padding:8px 50px; border:none; border-radius:12px; font-weight:bold; cursor:pointer; box-shadow: 0 4px 0 #4a7332;" onclick="addTrackingRecord()">
                     記録を追加
                 </button>
             </div>
