@@ -380,11 +380,27 @@ input[type="number"] {
         gap: 10px !important;
     }
 }
-/* --- グラフエリアの最終微調整 --- */
+/* --- グラフエリアの高さと余白をしっかり確保 --- */
 #trackingGraph {
     width: 100% !important;
-    height: 300px !important; /* グラフの高さを固定して安定させる */
+    /* 高さを300pxから500pxにアップして縦長にする */
+    height: 500px !important; 
     display: block;
+    margin: 10px 0;
+}
+
+/* 薄いオレンジの背景エリア自体の最小高さを設定 */
+#tracking div[style*="background:#FFE0B2"] {
+    min-height: 600px !important; 
+    display: flex;
+    flex-direction: column;
+}
+
+/* グラフを囲む白い枠も広げる */
+#tracking div[style*="background:white; padding:15px"] {
+    flex-grow: 1;
+    display: flex;
+    align-items: center; /* グラフを中央に */
 }
 
 /* 記録一覧テーブルの文字サイズ調整（PC用） */
