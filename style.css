@@ -352,37 +352,27 @@ input[type="number"] {
 
 /* --- 初回セットアップ画面のレイアウト修正（決定版） --- */
 @media screen and (min-width: 641px) {
-    /* 親コンテナの横並びを解除して縦に並べる */
+    /* 左右に分ける親要素の調整 */
     #setupContent > div[style*="display: flex"] {
         display: flex !important;
-        flex-direction: column !important; /* 縦並びに変更 */
-        align-items: center !important;    /* 中央寄せ */
-        gap: 20px !important;
-        max-width: 100% !important;
-    }
-
-    /* 1番(青)と2番(黄)のカード：幅を少し広げる */
-    #setupContent > div:nth-child(2) > div {
-        width: 100% !important;
-        max-width: 700px !important; /* 青・黄のカード幅 */
+        justify-content: center !important; /* 全体を中央寄せ */
+        align-items: flex-start !important;
+        gap: 40px !important; /* 左右のカードの間の溝 */
+        max-width: 900px !important; /* 全体の横幅を制限 */
         margin: 0 auto !important;
     }
 
-    /* 3番(オレンジ)のカード：幅を絞り、stickyを解除 */
-    #setupContent > div:nth-child(2) > div:nth-last-child(1) {
-        width: 100% !important;
-        max-width: 500px !important; /* オレンジのカード幅 */
-        position: static !important; /* sticky(固定)を解除 */
-        margin: 0 auto !important;
+    /* 左側のカラム（ステップ1と2を包むdiv） */
+    #setupContent > div[style*="display: flex"] > div:first-child {
+        flex: 1.2 !important; /* 1.2の比率で少し広く */
+        max-width: 500px !important;
     }
 
-    /* オレンジカード内の入力欄とボタンの幅を整える */
-    #gasUrlInput, 
-    #setupContent .btn-save, 
-    #studentUrlArea button {
-        width: 90% !important;
-        display: block !important;
-        margin: 10px auto !important;
+    /* 右側のカラム（ステップ3を包むdiv） */
+    #setupContent > div[style*="display: flex"] > div:last-child {
+        flex: 0.8 !important; /* 0.8の比率で少し狭く */
+        max-width: 350px !important;
+        position: static !important; /* stickyを解除して高さを揃える */
     }
 }
 
