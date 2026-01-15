@@ -443,3 +443,23 @@ input[type="number"] {
 #setupContent ol ul li:last-child {
     margin-bottom: 0 !important;
 }
+
+/* --- 目標達成シミュレーターのボタンを大きくする --- */
+#goalSimulator + div button.btn,
+#correlation .btn {
+    padding: 12px 20px !important;  /* 上下左右の余白を広げる */
+    font-size: 15px !important;     /* 文字を一回り大きく */
+    min-width: 160px;               /* ボタンの最小横幅を確保 */
+    margin: 8px !important;         /* ボタン同士の間隔を広げる */
+    border-radius: 12px !important; /* 角の丸みを少し強調 */
+}
+
+/* スマホでの表示を最適化 */
+@media screen and (max-width: 640px) {
+    #correlation .btn {
+        width: 80% !important;      /* スマホでは横幅いっぱいに近く */
+        font-size: 16px !important;
+        margin: 5px auto !important;
+        display: block;             /* 縦に並べて押しやすくする */
+    }
+}
