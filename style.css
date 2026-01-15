@@ -290,50 +290,76 @@ input[type="number"] {
     height: auto !important;
 }
 
-/* PC・横画面用：すべての要素を中央に集め、右寄りを防ぐ決定版 */
+/* PC・横画面用：表の幅を適切に絞り、2列レイアウトを再現 */
 @media screen and (min-width: 641px) {
-    /* 全体のコンテナを中央固定 */
+    /* 全体のコンテナ：幅を950pxに制限して「間延び」を解消 */
     .card {
-        margin: 10px auto !important;
-        max-width: 100% !important; /* ←ここを 900px から 100% に変える */
-        width: 95%;               /* ←画面端に少し余白を作るために追加 */
+        margin: 20px auto !important;
+        max-width: 950px !important; 
+        width: 95%;
         float: none !important;
-    }
-    }
-
-    /* セットアップ画面内の子要素の幅を調整 */
-    #setupContent > div > div {
-        flex: 1;
-        min-width: 300px;
+        padding: 20px 30px !important;
     }
 
+    /* 種目別トラッキング：入力エリアを2列グリッドに戻す */
+    .tracking-top-bar {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important; /* 左右2列 */
+        gap: 15px 25px !important;
+        margin-bottom: 20px;
+    }
 
-    #tracking div > div {
-    /* 1つの入力項目の幅を適切なサイズに制限し、左右に自動余白を入れる */
-    flex: 0 1 180px !important; 
-    margin: 0 10px !important; /* 項目間の適度な距離 */
-}
+    .t-field {
+        display: flex;
+        flex-direction: column; /* ラベルを上、入力を下に */
+        gap: 5px;
+    }
 
-/* 入力エリア全体を中央に寄せ、最大幅を制限する */
-#tracking .card > div {
-    max-width: 700px; /* ここで「入力エリア全体の広がり」を抑えます */
-    margin-left: auto;
-    margin-right: auto;
-}
+    .t-field label {
+        color: white !important;
+        font-size: 13px !important;
+        font-weight: bold !important;
+        text-align: left;
+    }
 
-    /* 表の文字が右に寄るのを防ぐ */
+    /* メモ欄だけは2列分（横いっぱい）に広げる */
+    .t-field:last-of-type {
+        grid-column: span 2;
+    }
+
+    .t-field input, .t-field select {
+        width: 100% !important;
+        height: 38px !important;
+        font-size: 15px !important;
+        border-radius: 6px !important;
+        border: none !important;
+        padding: 0 10px !important;
+    }
+
+    /* セットアップ画面などの他のグリッド要素も整える */
+    #setupContent > div {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 20px;
+    }
+
+    /* 表の文字を中央に固定 */
     td, th {
         text-align: center !important;
-        padding-left: 0 !important;
+        padding: 10px 5px !important;
     }
 }
 
-
-/* スマホでは縦並びに戻す */
-@media screen and (max-width: 799px) {
-    .tracking-container {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
+/* スマホ用：縦一列に並べる */
+@media screen and (max-width: 640px) {
+    .tracking-top-bar {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+    
+    .card {
+        width: 98%;
+        margin: 5px auto !important;
     }
 }
