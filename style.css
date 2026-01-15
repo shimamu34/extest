@@ -401,3 +401,5 @@ input[type="number"] {
         padding: 20px !important;
     }
 }
+
+#rc { cursor: pointer; }
