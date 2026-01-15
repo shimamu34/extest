@@ -7,20 +7,48 @@
     <link rel="stylesheet" href="style.css">
   
   <style>
-    /* 入力欄の基本サイズ調整 */
-    input[type="number"] {
-        height: 28px !important;
-        padding: 0 2px !important;
-        font-size: 15px !important;
-        box-sizing: border-box !important;
+    /* 1. 基本の入力欄サイズ（既存） */
+    input[type="number"] { height: 28px !important; font-size: 15px !important; }
+    #i4_min, #i4_sec { width: 45px !important; }
+    #table td { padding: 4px 2px !important; }
+
+    /* 2. ① 初回セットアップガイドのレイアウト修復 */
+    #setupContent {
+        text-align: left !important; /* 右寄りを強制解除 */
     }
-    #i4_min, #i4_sec {
-        width: 45px !important;
-        height: 28px !important;
+    #setupContent div[style*="display: grid"],
+    #setupContent div[style*="display:grid"] {
+        display: grid !important;
+        /* タブレット・PCは2列、スマホは1列に自動切替 */
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+        gap: 30px !important;
     }
-    #table td {
-        padding: 4px 2px !important;
-        height: auto !important;
+
+    /* 3. ② 種目別トラッキングの入力欄を整列させる */
+    #tracking div[style*="display: grid"],
+    #tracking div[style*="display:grid"] {
+        display: grid !important;
+        /* 画面幅に合わせて「3列 → 2列 → 1列」と柔軟に変化 */
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+        gap: 15px !important;
+        text-align: left !important;
+    }
+    
+    /* モバイルCSSの残骸（擬似ラベル）を非表示にする */
+    #tracking td:before, #tracking div:before { content: none !important; }
+
+    #tracking label {
+        display: block !important;
+        text-align: left !important;
+        margin-bottom: 5px !important;
+        color: white !important;
+    }
+
+    #tracking input, #tracking select {
+        width: 100% !important;
+        max-width: none !important;
+        height: 38px !important; /* 押しやすい高さ */
+        text-align: left !important;
     }
 </style>
   
