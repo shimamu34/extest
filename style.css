@@ -403,3 +403,29 @@ input[type="number"] {
 }
 
 #rc { cursor: pointer; }
+
+/* --- 初回セットアップ：スプレッドシート設定カードの行間調整 --- */
+
+/* 2. スプレッドシートの設定 のリスト全体 */
+#setupContent ol {
+    line-height: 1.4 !important; /* 行の高さを少し詰め、1.8を上書き */
+}
+
+/* 各リスト項目（1.〜6.）の間の余白 */
+#setupContent ol > li {
+    margin-bottom: 8px !important; /* 項目間に少しだけ隙間を作る */
+}
+
+/* 最後の項目（6番目）と、その中の赤い丸リストの調整 */
+#setupContent ol > li:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* 赤い丸の箇条書き（自分/全員）の調整 */
+#setupContent ol ul {
+    margin: 4px 0 !important; /* 赤い丸リスト自体の上下余白を詰める */
+}
+
+#setupContent ol ul li {
+    margin-bottom: 2px !important; /* 「自分」と「全員」の間の距離を最小限に */
+}
