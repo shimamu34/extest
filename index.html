@@ -7,48 +7,59 @@
     <link rel="stylesheet" href="style.css">
   
   <style>
-    /* 1. 基本の入力欄サイズ（既存） */
-    input[type="number"] { height: 28px !important; font-size: 15px !important; }
-    #i4_min, #i4_sec { width: 45px !important; }
-    #table td { padding: 4px 2px !important; }
+    /* 全画面共通：右寄りと余白を強制リセット */
+    #setupModal *, #tracking * {
+        text-align: left !important;
+        padding-left: 0 !important;
+        position: static !important;
+        display: block;
+    }
 
-    /* 2. ① 初回セットアップガイドのレイアウト修復 */
+    /* ① 初回セットアップのレイアウト固定 */
     #setupContent {
-        text-align: left !important; /* 右寄りを強制解除 */
+        padding: 20px !important;
     }
-    #setupContent div[style*="display: grid"],
-    #setupContent div[style*="display:grid"] {
-        display: grid !important;
-        /* タブレット・PCは2列、スマホは1列に自動切替 */
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
-        gap: 30px !important;
+    #setupContent h2 { text-align: center !important; width: 100%; }
+
+    @media screen and (min-width: 769px) {
+        /* PC・タブレット横のみ2列 */
+        #setupContent > div:nth-child(2) {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 30px !important;
+        }
     }
 
-    /* 3. ② 種目別トラッキングの入力欄を整列させる */
-    #tracking div[style*="display: grid"],
-    #tracking div[style*="display:grid"] {
+    /* ② トラッキング（種目別）の入力欄を横に並べる */
+    #tracking .card div[style*="display: grid"],
+    #tracking .card div[style*="display:grid"] {
         display: grid !important;
-        /* 画面幅に合わせて「3列 → 2列 → 1列」と柔軟に変化 */
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
         gap: 15px !important;
-        text-align: left !important;
+        width: 100% !important;
     }
-    
-    /* モバイルCSSの残骸（擬似ラベル）を非表示にする */
-    #tracking td:before, #tracking div:before { content: none !important; }
 
+    /* 入力欄とラベルの見た目を整える */
     #tracking label {
-        display: block !important;
-        text-align: left !important;
-        margin-bottom: 5px !important;
         color: white !important;
+        margin-bottom: 5px !important;
+        font-size: 14px !important;
+        font-weight: bold !important;
     }
-
     #tracking input, #tracking select {
         width: 100% !important;
-        max-width: none !important;
-        height: 38px !important; /* 押しやすい高さ */
-        text-align: left !important;
+        height: 40px !important;
+        background: white !important;
+        border-radius: 8px !important;
+        border: none !important;
+        padding: 5px 10px !important;
+    }
+
+    /* 不要な「モバイル用ラベル」を消し去る */
+    #setupContent :before, #tracking :before,
+    #setupContent :after, #tracking :after {
+        content: none !important;
+        display: none !important;
     }
 </style>
   
