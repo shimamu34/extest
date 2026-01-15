@@ -86,6 +86,7 @@ th {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     display: inline-block;
     transition: transform 0.1s;
+    margin: 0 5px !important;
 }
 
 .btn:active {
