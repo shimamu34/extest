@@ -271,3 +271,51 @@ input[type="number"] {
         margin: 0 auto;
     }
 }
+
+/* --- HTMLから移設した機能 --- */
+input[type="number"] {
+    height: 28px !important;
+    padding: 0 2px !important;
+    font-size: 15px !important;
+    box-sizing: border-box !important;
+}
+
+#i4_min, #i4_sec {
+    width: 45px !important;
+    height: 28px !important;
+}
+
+#table td {
+    padding: 4px 2px !important;
+    height: auto !important;
+}
+
+/* --- 【追加】PC・横画面でバランスよく整列させる設定 --- */
+@media screen and (min-width: 641px) {
+    /* 1. 初回設定画面を左右2列に */
+    #setupContent {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 30px !important;
+        align-items: flex-start !important;
+    }
+    #setupContent > div { flex: 1; }
+
+    /* 2. 入力欄（学年・種目・数値）を横1列にバランスよく */
+    #tracking .card > div {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: flex-end !important;
+        gap: 15px !important;
+    }
+    #tracking .card > div > div {
+        flex: 1; /* 均等な幅にする */
+    }
+    
+    /* 入力欄の横幅を固定せず、親の幅に合わせる */
+    #tracking select, #tracking input[type="number"]:not(#i4_min):not(#i4_sec) {
+        width: 100% !important;
+        max-width: none !important;
+    }
+}
