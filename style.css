@@ -404,39 +404,34 @@ input[type="number"] {
 
 #rc { cursor: pointer; }
 
-/* --- 初回セットアップ：黄色カード内（2.スプレッドシートの設定）の完全修正 --- */
+/* --- 初回セットアップ：黄色カード内の余白を極限まで削る --- */
 
-/* 1. リスト全体の行間を詰め、下の余白をリセット */
+/* 1. 黄色い背景の親要素自体のpadding-bottomを強制的に0にする */
+#setupContent div[style*="background"] {
+    padding-bottom: 0px !important;
+}
+
+/* 2. リスト全体の高さを抑え、下の余白を完全に消す */
 #setupContent ol {
-    line-height: 1.4 !important;
+    line-height: 1.3 !important;
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;
 }
 
-/* 2. 各項目の間隔（1〜6） */
-#setupContent ol > li {
-    margin-bottom: 6px !important;
+/* 3. 6番目の項目（赤いリストを包んでいるli）自体の下の余白を消す */
+#setupContent ol > li:nth-child(6),
+#setupContent ol > li:last-child {
+    margin-bottom: 0 !important;
+    padding-bottom: 5px !important; /* ここで微調整 */
 }
 
-/* 3. 「全員」が入っている赤いポチのリスト(ul)の余白を上下ともゼロにする */
+/* 4. 「全員」の赤い丸リスト(ul)の下に勝手につく余白を完全に殺す */
 #setupContent ol ul {
-    margin-top: 2px !important;
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;
 }
 
-/* 4. 「全員」自体の下の隙間を消す */
+/* 5. 「全員」の項目自体の下の余白も消す */
 #setupContent ol ul li:last-child {
     margin-bottom: 0 !important;
-}
-
-/* 5. 「全員」の親である 6番目のli 自体の下の隙間を消す */
-#setupContent ol > li:nth-child(6) {
-    margin-bottom: 0 !important;
-}
-
-/* 6. 黄色い背景のカード自体の下の余白を極限まで詰める */
-#setupContent div[style*="background: #fdfaea"],
-#setupContent div[style*="background:#fdfaea"] {
-    padding-bottom: 5px !important; /* 20pxから5pxへ大幅短縮 */
 }
