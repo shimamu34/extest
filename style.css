@@ -295,8 +295,10 @@ input[type="number"] {
     /* 全体のコンテナを中央固定 */
     .card {
         margin: 10px auto !important;
-        max-width: 900px !important;
+        max-width: 100% !important; /* ←ここを 900px から 100% に変える */
+        width: 95%;               /* ←画面端に少し余白を作るために追加 */
         float: none !important;
+    }
     }
 
     /* セットアップ画面内の子要素の幅を調整 */
