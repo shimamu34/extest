@@ -282,8 +282,8 @@ function updateTrackingView() {
                 <span style="font-weight: bold; color: #666;">表示種目:</span>
                 <select id="trackingViewEvent" onchange="updateTrackingView()" 
     style="font-size: 18px; padding: 8px 12px; border-radius: 8px; border: 2px solid #FF5722; background: white; font-weight: bold; text-align: center; text-align-last: center;">
-                    ${h.map((name, i) => `<option value="${i}" ${i === eventIdx ? 'selected' : ''}>${name}</option>`).join('')}
-                </select>
+    ${h.slice(0, 9).map((name, i) => `<option value="${i}" ${i === eventIdx ? 'selected' : ''}>${name}</option>`).join('')}
+</select>
             </div>
         </div>
     `;
