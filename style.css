@@ -380,3 +380,16 @@ input[type="number"] {
         gap: 10px !important;
     }
 }
+/* --- グラフエリアの最終微調整 --- */
+#trackingGraph {
+    width: 100% !important;
+    height: 300px !important; /* グラフの高さを固定して安定させる */
+    display: block;
+}
+
+/* 記録一覧テーブルの文字サイズ調整（PC用） */
+@media screen and (min-width: 641px) {
+    #trackingList table {
+        font-size: 14px;
+    }
+}
