@@ -316,10 +316,18 @@ input[type="number"] {
         grid-template-columns: none !important; /* gridの設定を無効化 */
     }
 
-    /* 各入力項目の幅を固定して間延びを防ぐ */
     #tracking div > div {
-        flex: 0 1 200px !important; 
-    }
+    /* 1つの入力項目の幅を適切なサイズに制限し、左右に自動余白を入れる */
+    flex: 0 1 180px !important; 
+    margin: 0 10px !important; /* 項目間の適度な距離 */
+}
+
+/* 入力エリア全体を中央に寄せ、最大幅を制限する */
+#tracking .card > div {
+    max-width: 700px; /* ここで「入力エリア全体の広がり」を抑えます */
+    margin-left: auto;
+    margin-right: auto;
+}
 
     /* 表の文字が右に寄るのを防ぐ */
     td, th {
