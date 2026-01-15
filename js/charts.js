@@ -244,7 +244,7 @@ function addTrackingRecord() {
 }
 
 function updateTrackingView() {
-    const eventIdx = parseInt(document.getElementById("trackingViewEvent").value);
+    const eventIdx = parseInt(document.getElementById("trackingViewEvent")?.value || 0);
     const g = document.getElementById("gender").value;
     const viewGrade = document.getElementById("trackingViewGrade").value;
     const key = `tracking-${g}`;
@@ -253,31 +253,42 @@ function updateTrackingView() {
     const records = allRecords.filter(r => String(r.grade) === String(viewGrade));
     const h = D[g].h;
 
-    // --- ①タイトルセンター・②種目選択を右端へ（大きく）の構造を強制適用 ---
-    // 親要素を取得して、レイアウトを整える
-    const trackingSection = document.getElementById("tracking");
-    // タイトルと選択ボックスがあるエリアを特定し、デザインを上書き（存在しない場合は新規作成）
-    let header = trackingSection.querySelector(".tracking-header");
-    if (!header) {
-        header = document.createElement("div");
-        header.className = "tracking-header";
-        trackingSection.insertBefore(header, trackingSection.firstChild);
+    // --- ① 変な場所に表示されている「古い要素」を特定して隠す ---
+    // IDが重複している場合や、意図しない場所にある要素を非表示にします
+    const allEvents = document.querySelectorAll('#trackingViewEvent');
+    if (allEvents.length > 1) {
+        allEvents[0].style.display = 'none'; // 古い方を隠す
+        allEvents[0].id = 'old-tracking-event'; // IDの重複を避ける
     }
     
+    // --- ② グラフの直前に「新しいヘッダー」を正しく配置する ---
+    const canvas = document.getElementById("trackingGraph");
+    const trackingSection = document.getElementById("tracking");
+    
+    let header = document.getElementById("dynamicTrackingHeader");
+    if (!header) {
+        header = document.createElement("div");
+        header.id = "dynamicTrackingHeader";
+        // グラフCanvasのすぐ上に挿入
+        canvas.parentNode.insertBefore(header, canvas);
+    }
+    
+    // デザインの適用（中央タイトル ＆ 右寄せ種目選択）
     header.innerHTML = `
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; padding: 10px; border-bottom: 2px solid #eee;">
-            <div style="flex: 1;"></div> <h2 style="flex: 2; text-align: center; font-size: 32px; margin: 0; color: #333;">📊 変容グラフ</h2>
-            <div style="flex: 1; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 15px;">
-                <label style="font-weight: bold; font-size: 18px;">表示種目:</label>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 12px; border-bottom: 4px solid #FF5722; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <div style="flex: 1;"></div> 
+            <h2 style="flex: 2; text-align: center; font-size: 28px; margin: 0; color: #333; font-weight: bold;">📊 変容グラフ</h2>
+            <div style="flex: 1; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 10px;">
+                <span style="font-weight: bold; color: #666;">表示種目:</span>
                 <select id="trackingViewEvent" onchange="updateTrackingView()" 
-                    style="font-size: 22px; padding: 10px 15px; border-radius: 10px; border: 2px solid #FF5722; background: white; cursor: pointer;">
+                    style="font-size: 18px; padding: 8px 12px; border-radius: 8px; border: 2px solid #FF5722; background: white; font-weight: bold;">
                     ${h.map((name, i) => `<option value="${i}" ${i === eventIdx ? 'selected' : ''}>${name}</option>`).join('')}
                 </select>
             </div>
         </div>
     `;
 
-    const canvas = document.getElementById("trackingGraph");
+    // --- ③ 描画処理 ---
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
