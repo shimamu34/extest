@@ -115,14 +115,17 @@ input[type="number"] {
 
 /* --- 【重要】モバイル(縦画面)用最適化スタイル --- */
 @media screen and (max-width: 640px) {
-    .mobile-card-table table, 
-    .mobile-card-table thead, 
-    .mobile-card-table tbody, 
-    .mobile-card-table th, 
-    .mobile-card-table td, 
-    .mobile-card-table tr {
-        display: block;
-    }
+    /* これを削除またはコメントアウト */
+    /*
+.mobile-card-table table, 
+.mobile-card-table thead, 
+.mobile-card-table tbody, 
+.mobile-card-table th, 
+.mobile-card-table td, 
+.mobile-card-table tr {
+    display: block;
+}
+    */
 
     .mobile-card-table thead tr {
         position: absolute;
@@ -136,7 +139,9 @@ input[type="number"] {
         border-radius: 12px;
         overflow: hidden;
     }
-
+    
+/* これを削除またはコメントアウト */
+    /*
     .mobile-card-table td {
         border: none;
         border-bottom: 1px solid #f0f0f0;
@@ -149,6 +154,7 @@ input[type="number"] {
         justify-content: flex-end;
         font-size: 14px;
     }
+*/
 
     .mobile-card-table td:first-child {
         background: #2b6cb0;
