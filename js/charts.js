@@ -253,15 +253,37 @@ function updateTrackingView() {
     const records = allRecords.filter(r => String(r.grade) === String(viewGrade));
     const h = D[g].h;
 
-    // --- ①タイトルセンター・②種目選択を右端へ（大きく）の構造を反映 ---
-    // HTML側のタイトルを直接書き換える、またはヘッダーを生成する処理
+    // --- ①タイトルセンター・②種目選択を右端へ（大きく）の構造を強制適用 ---
+    // 親要素を取得して、レイアウトを整える
+    const trackingSection = document.getElementById("tracking");
+    // タイトルと選択ボックスがあるエリアを特定し、デザインを上書き（存在しない場合は新規作成）
+    let header = trackingSection.querySelector(".tracking-header");
+    if (!header) {
+        header = document.createElement("div");
+        header.className = "tracking-header";
+        trackingSection.insertBefore(header, trackingSection.firstChild);
+    }
+    
+    header.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; padding: 10px; border-bottom: 2px solid #eee;">
+            <div style="flex: 1;"></div> <h2 style="flex: 2; text-align: center; font-size: 32px; margin: 0; color: #333;">📊 変容グラフ</h2>
+            <div style="flex: 1; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 15px;">
+                <label style="font-weight: bold; font-size: 18px;">表示種目:</label>
+                <select id="trackingViewEvent" onchange="updateTrackingView()" 
+                    style="font-size: 22px; padding: 10px 15px; border-radius: 10px; border: 2px solid #FF5722; background: white; cursor: pointer;">
+                    ${h.map((name, i) => `<option value="${i}" ${i === eventIdx ? 'selected' : ''}>${name}</option>`).join('')}
+                </select>
+            </div>
+        </div>
+    `;
+
     const canvas = document.getElementById("trackingGraph");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     if (records.length === 0) {
         ctx.fillStyle = '#666';
-        ctx.font = 'bold 24px Arial'; // 文字を大きく (18px -> 24px)
+        ctx.font = 'bold 24px Arial'; 
         ctx.textAlign = 'center';
         ctx.fillText(`中${viewGrade}年の記録がありません`, canvas.width/2, 200);
         document.getElementById("trackingStats").innerHTML = '<div style="text-align:center;color:#666;padding:40px;background:#f5f5f5;border-radius:12px;font-size:20px;">データが登録されていません</div>';
