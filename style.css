@@ -305,3 +305,57 @@ input[type="number"] {
         margin: 0 auto;
     }
 }
+
+/* --- レイアウト崩れ修正（決定版） --- */
+
+/* 1. セットアップガイド：画面幅に応じて2列と1列を切り替え */
+#setupContent {
+    text-align: left !important;
+}
+@media screen and (min-width: 769px) {
+    /* PC・タブレット横: 2列 */
+    #setupContent div[style*="display: grid"] {
+        display: grid !important;
+        grid-template-columns: 1.1fr 0.9fr !important;
+        gap: 30px !important;
+    }
+}
+@media screen and (max-width: 768px) {
+    /* タブレット縦・スマホ: 縦1列 */
+    #setupContent div[style*="display: grid"] {
+        display: block !important;
+    }
+    #setupContent div[style*="display: grid"] > div {
+        margin-bottom: 20px;
+    }
+}
+
+/* 2. 種目別トラッキング：入力欄を整列させる */
+#tracking .card div[style*="display: grid"],
+#tracking .card div[style*="display:grid"] {
+    display: grid !important;
+    /* 画面幅に合わせて自動で列数を調整（重要） */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+    gap: 15px !important;
+    text-align: left !important;
+}
+
+/* モバイル用CSSの干渉（右寄せ・擬似ラベル）を完全に消す */
+#tracking div:before, #tracking div:after {
+    content: none !important;
+}
+
+#tracking label {
+    display: block !important;
+    text-align: left !important;
+    margin-bottom: 5px !important;
+    color: white !important;
+}
+
+#tracking input, #tracking select {
+    width: 100% !important;
+    max-width: none !important;
+    height: 38px !important;
+    text-align: left !important;
+    display: block !important;
+}
