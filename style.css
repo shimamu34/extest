@@ -307,14 +307,6 @@ input[type="number"] {
         min-width: 300px;
     }
 
-    /* 入力エリアの各項目を中央寄せにする */
-    #tracking div[style*="display: flex"],
-    #tracking div[style*="display: grid"] {
-        display: flex !important;
-        justify-content: center !important;
-        gap: 15px !important;
-        grid-template-columns: none !important; /* gridの設定を無効化 */
-    }
 
     #tracking div > div {
     /* 1つの入力項目の幅を適切なサイズに制限し、左右に自動余白を入れる */
