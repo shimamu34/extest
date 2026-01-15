@@ -1,4 +1,4 @@
-// app.js
+/ app.js
 
 // グローバル変数
 var radarVisible = radarVisible || [true, true, true, true, true, true];
@@ -518,7 +518,7 @@ const types = [
             
             document.getElementById("totalRank").innerHTML = totalHtml;
             
-            
+        }
 
 function setGoal(goalType) {
             const g = document.getElementById("gender").value;
