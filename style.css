@@ -345,24 +345,48 @@ input[type="number"] {
         gap: 20px;
     }
 }
-/* --- 種目別トラッキングの入力欄を左半分に寄せる --- */
+/* --- 種目別トラッキング：入力エリアを左半分にコンパクト配置 --- */
 @media screen and (min-width: 641px) {
-    /* オレンジの枠線の中にある、入力欄のまとまりを調整 */
+    /* 1. 薄いオレンジのエリアを左50%に絞る */
     #tracking div[style*="background:rgba(255,255,255,0.15)"] {
-        max-width: 50% !important; /* 幅を50%（左半分）に制限 */
-        margin-left: 0 !important;   /* 左に寄せる */
+        max-width: 50% !important;
+        margin-left: 0 !important;
         margin-right: auto !important;
+        padding: 20px !important;
+        display: block !important; /* 横並びを防ぐ */
     }
 
-    /* 入力欄（学年・種目・数値）の横並びを解除して縦に並べる（密度を上げるため） */
-    #tracking div[style*="display: flex"] {
-        flex-direction: column !important;
+    /* 2. 入力項目（学年、種目など）を1列の縦並びにする */
+    #tracking .form-row, 
+    #tracking div[style*="display: flex"],
+    #tracking div[style*="display:grid"] {
+        display: flex !important;
+        flex-direction: column !important; /* 縦並び */
         align-items: flex-start !important;
-        gap: 15px !important;
+        width: 100% !important;
+        gap: 5px !important;
+        margin-bottom: 12px !important;
     }
 
-    /* 「記録を追加」ボタンも左半分の幅に合わせる */
+    /* 3. 各入力欄の幅をフルサイズにして揃える */
+    #tracking input, 
+    #tracking select {
+        width: 100% !important;
+        max-width: none !important;
+        height: 38px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 4. ラベルの文字を白く、小さくして見やすくする */
+    #tracking label {
+        color: white !important;
+        font-size: 13px !important;
+        font-weight: bold !important;
+    }
+
+    /* 5. 「記録を追加」ボタンの配置調整 */
     #tracking button[onclick="addTrackingRecord()"] {
-        max-width: 100% !important;
+        width: 100% !important;
+        margin-top: 10px !important;
     }
 }
