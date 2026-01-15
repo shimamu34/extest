@@ -5,64 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>中学体力テスト記録システム</title>
     <link rel="stylesheet" href="style.css">
-  
-  <style>
-    /* 全画面共通：右寄りと余白を強制リセット */
-    #setupModal *, #tracking * {
-        text-align: left !important;
-        padding-left: 0 !important;
-        position: static !important;
-        display: block;
-    }
+  
+  <style>
+    /* 1. 全ての入力欄を「少し低め」かつ「スピンボタンが太く見える」バランスにする */
+    input[type="number"] {
+        height: 28px !important;    /* 縦幅を抑えてスッキリさせます */
+        padding: 0 2px !important;  /* 内部の上下余白を削り、スピンボタンを枠一杯に広げます */
+        font-size: 15px !important;
+        box-sizing: border-box !important;
+    }
 
-    /* ① 初回セットアップのレイアウト固定 */
-    #setupContent {
-        padding: 20px !important;
-    }
-    #setupContent h2 { text-align: center !important; width: 100%; }
+    /* 2. 持久走（分・秒）の見た目を整える */
+    #i4_min, #i4_sec {
+        width: 45px !important;     /* 横幅を少しだけ広げて数字を見やすく */
+        height: 28px !important;
+    }
 
-    @media screen and (min-width: 769px) {
-        /* PC・タブレット横のみ2列 */
-        #setupContent > div:nth-child(2) {
-            display: grid !important;
-            grid-template-columns: 1fr 1fr !important;
-            gap: 30px !important;
-        }
-    }
-
-    /* ② トラッキング（種目別）の入力欄を横に並べる */
-    #tracking .card div[style*="display: grid"],
-    #tracking .card div[style*="display:grid"] {
-        display: grid !important;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
-        gap: 15px !important;
-        width: 100% !important;
-    }
-
-    /* 入力欄とラベルの見た目を整える */
-    #tracking label {
-        color: white !important;
-        margin-bottom: 5px !important;
-        font-size: 14px !important;
-        font-weight: bold !important;
-    }
-    #tracking input, #tracking select {
-        width: 100% !important;
-        height: 40px !important;
-        background: white !important;
-        border-radius: 8px !important;
-        border: none !important;
-        padding: 5px 10px !important;
-    }
-
-    /* 不要な「モバイル用ラベル」を消し去る */
-    #setupContent :before, #tracking :before,
-    #setupContent :after, #tracking :after {
-        content: none !important;
-        display: none !important;
-    }
+    /* 3. テーブルの1行の高さも抑える */
+    #table td {
+        padding: 4px 2px !important;
+        height: auto !important;
+    }
 </style>
-  
+  
 </head>
 <body>
     <h1 style="letter-spacing: 4px; font-family: 'Helvetica Neue', Arial, sans-serif;">
@@ -151,7 +116,7 @@
         <div style="background:linear-gradient(135deg,#FF5722,#FF7043);padding:30px;border-radius:15px;margin-bottom:30px;color:white">
             <h4 style="margin:0 0 25px 0;font-size:22px;text-align:center">📝 新しい記録を追加</h4>
             <div style="background:rgba(255,255,255,0.15);padding:25px;border-radius:12px;backdrop-filter:blur(10px)">
-    <div style="all: unset; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; width: 100%; margin-bottom: 20px;">
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px; margin-bottom:15px">
         <div>
             <label style="display:block;margin-bottom:8px;font-weight:bold;font-size:12px">学年</label>
             <select id="trackingViewGrade" onchange="updateTrackingView()" style="width:100%;padding:10px;border-radius:8px;border:none;font-size:14px;background:white;box-sizing:border-box">
@@ -261,7 +226,7 @@
             <div id="setupContent" style="padding: 10px;">
     <h2 style="color: #2b6cb0; text-align: center; margin-bottom: 30px; font-size: 26px; border-bottom: 3px solid #2b6cb0; pb: 10px;">🏫 初回セットアップ手順</h2>
     
-    <div style="all: unset; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; width: 100%; text-align: left;">
+    <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 30px; align-items: start;">
         
         <div>
             <div style="background: #f0f7ff; padding: 20px; border-radius: 12px; border-left: 8px solid #2b6cb0; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
