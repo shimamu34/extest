@@ -7,24 +7,24 @@
     <link rel="stylesheet" href="style.css">
   
   <style>
-    /* 全ての数値入力欄の「高さ」を固定してスピンボックスを大きくする */
+    /* 1. 全ての入力欄を「少し低め」かつ「スピンボタンが太く見える」バランスにする */
     input[type="number"] {
-        height: 36px !important;    /* 高さを出すと、中の矢印も連動して大きくなります */
-        font-size: 16px !important; /* 文字も少し大きくして視認性をアップ */
-        padding: 2px 4px !important;
+        height: 28px !important;    /* 縦幅を抑えてスッキリさせます */
+        padding: 0 2px !important;  /* 内部の上下余白を削り、スピンボタンを枠一杯に広げます */
+        font-size: 15px !important;
         box-sizing: border-box !important;
     }
 
-    /* 持久走の「分：秒」の入力欄も全く同じ高さに指定 */
+    /* 2. 持久走（分・秒）の見た目を整える */
     #i4_min, #i4_sec {
-        height: 36px !important;
-        width: 50px !important;      /* 矢印が数字に被らないよう少し広げる */
+        width: 45px !important;     /* 横幅を少しだけ広げて数字を見やすく */
+        height: 28px !important;
     }
 
-    /* テーブルのセルの余白を調整して、背が高くなった入力欄を収める */
+    /* 3. テーブルの1行の高さも抑える */
     #table td {
-        padding: 5px 2px !important;
-        vertical-align: middle;
+        padding: 4px 2px !important;
+        height: auto !important;
     }
 </style>
   
