@@ -290,75 +290,62 @@ input[type="number"] {
     height: auto !important;
 }
 
-/* PC・横画面用：グラフの視認性を最大化し、カード間の余白を統一 */
+/* PC・横画面用：カード間隔をタイトにし、一体感を出す */
 @media screen and (min-width: 641px) {
-    /* 全体のコンテナ：1200pxに広げてグラフの右端までしっかり表示 */
+    /* カード本体：上下の間隔を15pxから8pxに短縮 */
     .card {
-        margin: 15px auto !important; /* カード間の上下余白を15pxで統一 */
+        margin: 8px auto !important; /* ← ここでカード同士の隙間を狭くします */
         max-width: 1200px !important; 
         width: 95%;
         float: none !important;
-        padding: 25px 35px !important;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* 影を少し滑らかに */
+        padding: 15px 35px !important; /* 上下の内側余白も25pxから15pxに縮小 */
     }
 
-    /* 種目別トラッキング：2列レイアウトを中央に配置 */
+    /* 種目別トラッキング：入力エリアのレイアウト */
     .tracking-top-bar {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
-        gap: 15px 40px !important; /* 左右の項目間を少し広げて見やすく */
-        margin: 0 auto 20px auto;
+        gap: 12px 40px !important; /* 縦の項目間も少し詰める */
+        margin: 0 auto 10px auto; /* 下のグラフとの距離を縮小 */
         max-width: 1000px;
     }
 
     .t-field {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 4px; /* ラベルと入力欄の距離を最小限に */
     }
 
     .t-field label {
         color: white !important;
-        font-size: 14px !important;
+        font-size: 13px !important;
         font-weight: bold !important;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
 
-    /* メモ欄を2列分に広げる */
-    .t-field:last-of-type {
-        grid-column: span 2;
+    /* グラフエリアの余白調整 */
+    #tracking div[style*="background:white; padding:15px"] {
+        padding: 20px 30px !important; /* 内側の余白を少し詰める */
+        border-radius: 12px;
+        margin: 5px 0; /* グラフの外側余白を最小に */
     }
 
-    /* グラフエリアの最適化 */
     #trackingGraph {
         width: 100% !important;
-        max-width: 100% !important;
-        height: 480px !important; /* 高さを少し出して変化を見やすく */
+        height: 420px !important; /* 隙間を詰めた分、グラフの高さは維持 */
         display: block;
     }
 
-    /* グラフを包むエリアの余白を調整して、はみ出しを防止 */
-    #tracking div[style*="background:white; padding:15px"] {
-        padding: 30px !important;
-        border-radius: 15px;
-        margin: 10px 0;
-    }
-
-    /* 表のスタイル */
+    /* 表のパディングも少しだけタイトに */
     td, th {
         text-align: center !important;
-        padding: 12px 10px !important;
+        padding: 8px 10px !important;
     }
 }
 
-/* スマホ用：カード間の余白も詰める */
+/* スマホ用：さらにコンパクトに */
 @media screen and (max-width: 640px) {
     .card {
-        margin: 10px auto !important;
-        width: 96%;
-    }
-    .tracking-top-bar {
-        display: flex !important;
-        flex-direction: column !important;
+        margin: 5px auto !important;
+        padding: 10px !important;
     }
 }
