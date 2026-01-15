@@ -290,36 +290,38 @@ input[type="number"] {
     height: auto !important;
 }
 
-/* --- 【修正版】PC・横画面でバランスよく整列させる設定 --- */
+/* PC・横画面用：すべての要素を中央に集め、右寄りを防ぐ決定版 */
 @media screen and (min-width: 641px) {
-    /* 1. 初回設定画面：広がりすぎないよう中央に寄せる */
-    #setupContent {
+    /* 全体のコンテナを中央固定 */
+    .card {
+        margin: 10px auto !important;
+        max-width: 900px !important;
+        float: none !important;
+    }
+
+    /* セットアップ画面内の子要素の幅を調整 */
+    #setupContent > div > div {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    /* 入力エリアの各項目を中央寄せにする */
+    #tracking div[style*="display: flex"],
+    #tracking div[style*="display: grid"] {
         display: flex !important;
-        flex-direction: row !important;
-        justify-content: center !important; /* space-betweenからcenterに変更 */
-        gap: 50px !important;
-        max-width: 900px;
-        margin: 0 auto !important;
-        text-align: left !important;
+        justify-content: center !important;
+        gap: 15px !important;
+        grid-template-columns: none !important; /* gridの設定を無効化 */
     }
 
-    /* 2. 入力欄：右端に飛ばさず、中央にコンパクトに並べる */
-    #tracking .card > div {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: center !important; /* 中央寄せに変更 */
-        align-items: flex-end !important;
-        gap: 20px !important;
+    /* 各入力項目の幅を固定して間延びを防ぐ */
+    #tracking div > div {
+        flex: 0 1 200px !important; 
     }
 
-    /* 入力項目ごとの幅を「広げすぎず」適切にする */
-    #tracking .card > div > div {
-        flex: 0 1 auto !important; /* 伸びるのを禁止 */
-        width: 150px !important;    /* 1項目あたりの幅を固定 */
-    }
-
-    /* 数値入力欄だけは少し短く */
-    #tracking input[type="number"] {
-        width: 100% !important;
+    /* 表の文字が右に寄るのを防ぐ */
+    td, th {
+        text-align: center !important;
+        padding-left: 0 !important;
     }
 }
