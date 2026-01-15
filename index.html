@@ -7,56 +7,61 @@
     <link rel="stylesheet" href="style.css">
   
   <style>
-    /* 1. 入力欄・スピンボタンの調整 */
+    /* 1. 数値入力欄の最適化（既存） */
     input[type="number"] {
         height: 28px !important;
         padding: 0 2px !important;
         font-size: 15px !important;
         box-sizing: border-box !important;
     }
-
-    /* 2. 持久走（分・秒）の調整 */
     #i4_min, #i4_sec {
         width: 45px !important;
         height: 28px !important;
     }
-
-    /* 3. テーブルの高さ調整 */
     #table td {
         padding: 4px 2px !important;
         height: auto !important;
     }
-
-    /* 4. シミュレーターの表の余白カット */
+    
+    /* 2. シミュレーターの余白カット（既存） */
     #goalSimulator table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 10px;
-        font-size: 14px;
+        font-size: 14px; 
     }
     #goalSimulator th, #goalSimulator td {
         padding: 5px 4px !important;
         border-bottom: 1px solid #eee;
     }
-    #goalSimulator {
-        padding: 5px !important;
-    }
-    .advice-box {
-        margin-top: 8px !important;
-        padding: 8px !important;
-        font-size: 13px;
+    #goalSimulator { padding: 5px !important; }
+
+    /* 3. 【重要】目標達成ボタンを「2列×2段」で固定し、他への干渉を防ぐ */
+    /* 親要素（箱）の指定 */
+    #correlation div:has(> button[onclick^="setGoal"]) {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 10px !important;
+        max-width: 500px !important;
+        margin: 0 auto 25px auto !important;
+        text-align: center !important;
     }
 
-    /* 5. 目標達成ボタンの設定（影響をシミュレーター内だけに限定） */
+    /* ボタン自体の指定：CSSファイルの「.btn」設定を強制上書き */
     #correlation .btn[onclick^="setGoal"] {
-        width: 90%;
-        margin: 8px auto !important;
-        padding: 15px 20px !important;
-        font-size: 18px !important;
+        /* calcを使って「絶対に横に2つしか並ばない幅」を死守します */
+        width: calc(50% - 15px) !important; 
+        min-width: 140px !important;
+        height: 65px !important;
+        margin: 0 !important;
+        font-size: 16px !important;
         font-weight: bold !important;
-        display: block !important; /* シミュレーターのボタンだけを縦並びに */
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.2 !important;
+        border-radius: 12px !important;
     }
 </style>
   
