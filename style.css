@@ -429,3 +429,21 @@ input[type="number"] {
 #setupContent ol ul li {
     margin-bottom: 2px !important; /* 「自分」と「全員」の間の距離を最小限に */
 }
+
+/* --- 初回セットアップ：黄色カード内（2.スプレッドシートの設定）の余白微調整 --- */
+
+/* 「全員」の下の大きな空白を消す */
+#setupContent ol ul {
+    margin: 4px 0 0 20px !important; /* 上の余白を詰め、下(margin-bottom)を0にします */
+    padding: 0 !important;
+}
+
+/* 「全員」の行自体の余白を詰める */
+#setupContent ol ul li {
+    margin-bottom: 2px !important;
+}
+
+/* 黄色いカード（olを包んでいるdiv）自体の下パディングを調整したい場合 */
+#setupContent div[style*="background: #fdfaea"] {
+    padding-bottom: 10px !important; /* 下側の内余白を半分くらいに */
+}
