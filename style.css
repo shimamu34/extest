@@ -350,49 +350,52 @@ input[type="number"] {
     }
 }
 
-/* --- 初回セットアップ画面のレイアウト修正（限界まで拡大版） --- */
+/* --- 初回セットアップ画面の最終調整（左右対称・隙間最小化） --- */
 @media screen and (min-width: 641px) {
-    /* 1. HTMLに直書きされた 1000px の制限を強制解除し、枠いっぱいにする */
+    /* 1. 全体を包む白い枠自体の幅とパディングを調整 */
+    #setupModal > div {
+        max-width: 1100px !important;
+        width: 95% !important;
+        padding: 30px 20px !important; /* 上下左右の余白を均一に */
+        margin: 40px auto !important;
+    }
+
+    /* 2. 親コンテナ：左右の比率を完全に均等にし、隙間を極限まで詰める */
     #setupContent > div[style*="display: flex"] {
         display: flex !important;
         flex-direction: row !important;
-        justify-content: center !important; 
+        justify-content: center !important; /* 真ん中に寄せる */
         align-items: flex-start !important;
-        gap: 10px !important; /* 隙間を極限まで狭く */
-        width: 98% !important; /* 親の制限を無視して98%まで広げる */
-        max-width: none !important; /* 1000pxの壁を破壊 */
-        margin: 0 auto !important;
+        gap: 5px !important; /* カード間の隙間を5pxまで縮小 */
+        width: 100% !important; /* 枠いっぱいに広げる */
+        max-width: none !important;
+        margin: 0 !important;
         padding: 0 !important;
     }
 
-    /* 2. 左側カラム（1番・2番）：横幅の「％」で指定して確実に広げる */
-    #setupContent > div[style*="display: flex"] > div:first-child {
-        flex: 1 !important;
-        width: 48% !important; /* 画面の約半分を占有 */
+    /* 3. 左カラム（1番・2番）と右カラム（3番）：幅を完全に同一にする */
+    #setupContent > div[style*="display: flex"] > div:first-child,
+    #setupContent > div[style*="display: flex"] > div:last-child {
+        flex: 1 !important; /* 左右に同じ重みを与える */
+        width: 50% !important; /* 完全に半分ずつ */
+        max-width: 520px !important; /* 巨大化しすぎないよう微調整 */
         display: flex !important;
         flex-direction: column !important;
-        gap: 15px !important;
+        gap: 5px !important; /* 縦方向の隙間も5pxに */
     }
 
-    /* 3. 右側カラム（3番）：左と同じ幅にする */
+    /* 右側の位置固定を完全に排除 */
     #setupContent > div[style*="display: flex"] > div:last-child {
-        flex: 1 !important;
-        width: 48% !important; /* 画面の約半分を占有 */
         position: static !important;
-        margin-top: 0 !important;
+        margin: 0 !important;
     }
 
-    /* 4. 白い外枠（モーダル）自体の横幅も広げる */
-    #setupModal > div {
-        max-width: 1100px !important; /* モーダル自体を1100pxまで拡張 */
-        width: 95% !important;
-        padding: 20px !important; /* 外側の余白を削って中身を広げる */
-    }
-
-    /* 各カードの横幅を100%に固定 */
+    /* 4. 各カード本体：中身が崩れない範囲で横幅100%を維持 */
+    #setupContent .card, 
     #setupContent > div[style*="display: flex"] > div > div {
         width: 100% !important;
         margin: 0 !important;
         box-sizing: border-box !important;
+        padding: 20px !important; /* カード内部の余白を少し詰め、表を大きく見せる */
     }
 }
