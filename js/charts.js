@@ -165,17 +165,29 @@ function RR(g) {
         ctx.stroke();
     });
 
-    // 凡例描画
+    // 凡例描画（クリック状態を反映）
     const regs = ["帯広", "北海道", "全国", "中1", "中2", "中3"];
     ctx.setLineDash([]);
     const startX = cX - 270;
     const itemWidth = 90;
+    
     regs.forEach((rg, i) => {
         const lX = startX + i * itemWidth;
         const lY = cv.height - 20;
-        ctx.fillStyle = (typeof radarVisible !== 'undefined' && radarVisible[i]) ? cols[i].s : "#ccc";
-        ctx.fillRect(lX, lY - 10, 15, 10);
-        ctx.fillStyle = "#333";
+        const isVisible = (typeof radarVisible !== 'undefined' && radarVisible[i]);
+
+        if (isVisible) {
+            // 【表示中】本来の色で塗りつぶし
+            ctx.fillStyle = cols[i].s;
+            ctx.fillRect(lX, lY - 10, 15, 10);
+            ctx.fillStyle = "#333";
+        } else {
+            // 【非表示】グレーの枠線だけにする
+            ctx.strokeStyle = "#ccc";
+            ctx.strokeRect(lX, lY - 10, 15, 10);
+            ctx.fillStyle = "#aaa"; // 文字も薄く
+        }
+
         ctx.textAlign = "left";
         ctx.font = "bold 12px Arial";
         ctx.fillText(rg, lX + 20, lY);
