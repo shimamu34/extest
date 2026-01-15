@@ -404,46 +404,39 @@ input[type="number"] {
 
 #rc { cursor: pointer; }
 
-/* --- 初回セットアップ：スプレッドシート設定カードの行間調整 --- */
+/* --- 初回セットアップ：黄色カード内（2.スプレッドシートの設定）の完全修正 --- */
 
-/* 2. スプレッドシートの設定 のリスト全体 */
+/* 1. リスト全体の行間を詰め、下の余白をリセット */
 #setupContent ol {
-    line-height: 1.4 !important; /* 行の高さを少し詰め、1.8を上書き */
+    line-height: 1.4 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
 }
 
-/* 各リスト項目（1.〜6.）の間の余白 */
+/* 2. 各項目の間隔（1〜6） */
 #setupContent ol > li {
-    margin-bottom: 8px !important; /* 項目間に少しだけ隙間を作る */
+    margin-bottom: 6px !important;
 }
 
-/* 最後の項目（6番目）と、その中の赤い丸リストの調整 */
-#setupContent ol > li:last-child {
+/* 3. 「全員」が入っている赤いポチのリスト(ul)の余白を上下ともゼロにする */
+#setupContent ol ul {
+    margin-top: 2px !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* 4. 「全員」自体の下の隙間を消す */
+#setupContent ol ul li:last-child {
     margin-bottom: 0 !important;
 }
 
-/* 赤い丸の箇条書き（自分/全員）の調整 */
-#setupContent ol ul {
-    margin: 4px 0 !important; /* 赤い丸リスト自体の上下余白を詰める */
+/* 5. 「全員」の親である 6番目のli 自体の下の隙間を消す */
+#setupContent ol > li:nth-child(6) {
+    margin-bottom: 0 !important;
 }
 
-#setupContent ol ul li {
-    margin-bottom: 2px !important; /* 「自分」と「全員」の間の距離を最小限に */
-}
-
-/* --- 初回セットアップ：黄色カード内（2.スプレッドシートの設定）の余白微調整 --- */
-
-/* 「全員」の下の大きな空白を消す */
-#setupContent ol ul {
-    margin: 4px 0 0 20px !important; /* 上の余白を詰め、下(margin-bottom)を0にします */
-    padding: 0 !important;
-}
-
-/* 「全員」の行自体の余白を詰める */
-#setupContent ol ul li {
-    margin-bottom: 2px !important;
-}
-
-/* 黄色いカード（olを包んでいるdiv）自体の下パディングを調整したい場合 */
-#setupContent div[style*="background: #fdfaea"] {
-    padding-bottom: 10px !important; /* 下側の内余白を半分くらいに */
+/* 6. 黄色い背景のカード自体の下の余白を極限まで詰める */
+#setupContent div[style*="background: #fdfaea"],
+#setupContent div[style*="background:#fdfaea"] {
+    padding-bottom: 5px !important; /* 20pxから5pxへ大幅短縮 */
 }
