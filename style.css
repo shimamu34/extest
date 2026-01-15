@@ -272,7 +272,7 @@ input[type="number"] {
     }
 }
 
-/* --- HTMLから移設した機能 --- */
+/* --- HTMLから移設した機能（ここは維持） --- */
 input[type="number"] {
     height: 28px !important;
     padding: 0 2px !important;
@@ -290,32 +290,36 @@ input[type="number"] {
     height: auto !important;
 }
 
-/* --- 【追加】PC・横画面でバランスよく整列させる設定 --- */
+/* --- 【修正版】PC・横画面でバランスよく整列させる設定 --- */
 @media screen and (min-width: 641px) {
-    /* 1. 初回設定画面を左右2列に */
+    /* 1. 初回設定画面：広がりすぎないよう中央に寄せる */
     #setupContent {
         display: flex !important;
         flex-direction: row !important;
-        gap: 30px !important;
-        align-items: flex-start !important;
+        justify-content: center !important; /* space-betweenからcenterに変更 */
+        gap: 50px !important;
+        max-width: 900px;
+        margin: 0 auto !important;
+        text-align: left !important;
     }
-    #setupContent > div { flex: 1; }
 
-    /* 2. 入力欄（学年・種目・数値）を横1列にバランスよく */
+    /* 2. 入力欄：右端に飛ばさず、中央にコンパクトに並べる */
     #tracking .card > div {
         display: flex !important;
         flex-direction: row !important;
-        justify-content: space-between !important;
+        justify-content: center !important; /* 中央寄せに変更 */
         align-items: flex-end !important;
-        gap: 15px !important;
+        gap: 20px !important;
     }
+
+    /* 入力項目ごとの幅を「広げすぎず」適切にする */
     #tracking .card > div > div {
-        flex: 1; /* 均等な幅にする */
+        flex: 0 1 auto !important; /* 伸びるのを禁止 */
+        width: 150px !important;    /* 1項目あたりの幅を固定 */
     }
-    
-    /* 入力欄の横幅を固定せず、親の幅に合わせる */
-    #tracking select, #tracking input[type="number"]:not(#i4_min):not(#i4_sec) {
+
+    /* 数値入力欄だけは少し短く */
+    #tracking input[type="number"] {
         width: 100% !important;
-        max-width: none !important;
     }
 }
