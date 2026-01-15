@@ -7,21 +7,17 @@
     <link rel="stylesheet" href="style.css">
   
   <style>
-    /* 1. 全ての入力欄を「少し低め」かつ「スピンボタンが太く見える」バランスにする */
+    /* 入力欄の基本サイズ調整 */
     input[type="number"] {
-        height: 28px !important;    /* 縦幅を抑えてスッキリさせます */
-        padding: 0 2px !important;  /* 内部の上下余白を削り、スピンボタンを枠一杯に広げます */
+        height: 28px !important;
+        padding: 0 2px !important;
         font-size: 15px !important;
         box-sizing: border-box !important;
     }
-
-    /* 2. 持久走（分・秒）の見た目を整える */
     #i4_min, #i4_sec {
-        width: 45px !important;     /* 横幅を少しだけ広げて数字を見やすく */
+        width: 45px !important;
         height: 28px !important;
     }
-
-    /* 3. テーブルの1行の高さも抑える */
     #table td {
         padding: 4px 2px !important;
         height: auto !important;
