@@ -424,20 +424,36 @@ input[type="number"] {
 
 /* カード1枚ずつの設定 */
 .pokedex-card {
-    flex: 0 0 calc(50% - 10px); /* 2列にする設定（そのまま） */
-    box-sizing: border-box;
+    flex: 0 0 calc(50% - 10px) !important; /* 2列維持 */
+    background: rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 20px !important; /* 角丸を少し強調 */
     
-    /* ▼ ここからデザインを追加 ▼ */
-    background: rgba(0, 0, 0, 0.25); /* 総合評価と同じような、少し濃い半透明の背景 */
-    border-radius: 15px;
-    padding: 15px;
-    color: white; /* 文字色を白にする */
-    backdrop-filter: blur(5px); /* 少しぼかしてリッチな質感に */
+    /* ▼ ここを強化：サイズを最大化 ▼ */
+    padding: 25px 20px !important;  /* 上下の余白を増やして高さを出す */
+    min-height: 160px !important;   /* カード自体の高さを確保 */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important; /* 中身を上下に広げる */
+    
+    color: white !important;
+    box-sizing: border-box !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
+    position: relative;
+    overflow: hidden;
 }
 
-/* カード内のすべての文字色を強制的に白にする */
-.pokedex-card * {
-    color: white !important;
+/* 左端のラインも太くして存在感を出す */
+.pokedex-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px; /* 少し太く */
+    background: var(--type-color, #fff);
 }
 
 /* モバイル時：画面が狭すぎる場合は1列にする */
