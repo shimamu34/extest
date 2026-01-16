@@ -439,16 +439,16 @@ const types = [
                 const toNext = nextLevel - type.avg;
                 
                 pokedexHtml += `
-                    <div style="background:rgba(255,255,255,0.15); padding:15px 5px; border-radius:12px; backdrop-filter:blur(10px); box-sizing:border-box; width:100%; display:flex; flex-direction:column; align-items:center;">
-        <div style="font-size:30px; margin-bottom:5px">${type.emoji}</div>
+                    <div style="background:rgba(255,255,255,0.2); padding:20px 10px; border-radius:15px; backdrop-filter:blur(10px); display:flex; flex-direction:column; align-items:center; width:100%; box-sizing:border-box;">
+        <div style="font-size:35px; margin-bottom:5px">${type.emoji}</div>
         <div style="text-align:center">
-            <div style="font-size:12px; font-weight:bold; opacity:0.9;">${type.name}</div>
-            <div style="font-size:18px; font-weight:bold">Lv.${level}</div>
+            <div style="font-size:14px; font-weight:bold; opacity:0.9;">${type.name}</div>
+            <div style="font-size:22px; font-weight:bold">Lv.${level}</div>
         </div>
-        <div style="background:rgba(255,255,255,0.3); height:10px; border-radius:5px; overflow:hidden; margin:8px 0; width:90%">
+        <div style="background:rgba(255,255,255,0.3); height:12px; border-radius:6px; overflow:hidden; margin:10px 0; width:100%;">
             <div style="background:${type.color}; height:100%; width:${progress}%;"></div>
         </div>
-        <div style="font-size:11px; opacity:0.8;">
+        <div style="font-size:12px; opacity:0.8;">
             ${type.avg > 0 ? type.avg.toFixed(1) + '点' : '未入力'}
         </div>
     </div>
