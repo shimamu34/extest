@@ -476,25 +476,25 @@ const types = [
 
 types.forEach(type => {
     // スコアが未定義(undefined)なら0にする
-    const level = type.score !== undefined ? type.score : 0;
-    const percent = Math.min((level / 10) * 100, 100);
+    const level = type.score || 0; // undefined対策
+const percent = (level / 10) * 100;
 
-    pokedexHtml += `
-        <div class="pokedex-card" style="--type-color: ${type.color}">
-            <div class="pokedex-header">
-                <span style="font-size: 24px; margin-right: 10px;">${type.emoji}</span>
-                <div class="type-info">
-                    <div style="font-size: 16px; font-weight: bold;">${type.name}</div>
-                    <div style="font-size: 14px; opacity: 0.9;">Lv.${level} / 10</div>
-                </div>
-            </div>
-            <div class="lv-container">
-                <div class="lv-bar-bg">
-                    <div class="lv-bar-fill" style="width: ${percent}%; background: ${type.color};"></div>
-                </div>
+pokedexHtml += `
+    <div class="pokedex-card" style="--type-color: ${type.color}">
+        <div class="pokedex-header">
+            <span class="type-emoji">${type.emoji}</span>
+            <div class="type-info">
+                <div class="type-name">${type.name}</div>
+                <div class="type-level">Lv.${level} / 10</div>
             </div>
         </div>
-    `;
+        <div class="lv-container">
+            <div class="lv-bar-bg">
+                <div class="lv-bar-fill" style="width: ${percent}%; background: ${type.color};"></div>
+            </div>
+        </div>
+    </div>
+`;
 });
 document.getElementById('fitnessPokedex').innerHTML = pokedexHtml;
     
