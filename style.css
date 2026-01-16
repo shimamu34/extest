@@ -409,47 +409,44 @@ input[type="number"] {
 /* =============================================
     体力タイプ図鑑：2×2 中央揃え確定設定
    ============================================= */
-/* --- 図鑑全体のコンテナ：余白を詰める --- */
+/* 外枠のカード（濃い紫の部分）の余白を詰める */
+#analysis {
+    padding: 15px 10px !important; /* 左右の余白を最小限に */
+}
+
+/* 「あなたの体力タイプ図鑑」の文字サイズアップ */
+#analysis h4 {
+    font-size: 26px !important;
+    font-weight: 800 !important;
+    margin-bottom: 20px !important;
+    text-align: center;
+}
+
+/* 図鑑コンテナ：左右いっぱいに広げる */
 #fitnessPokedex {
     display: flex !important;
     flex-wrap: wrap !important;
     justify-content: space-between !important;
-    gap: 12px !important; 
-    padding: 5px 0 !important; /* 上下の余白を最小限にして詰める */
+    gap: 12px !important; /* カード同士の隙間 */
     width: 100% !important;
+    padding: 0 !important;
 }
 
-/* メインタイトルの拡大設定（HTML側のタグに合わせて調整してください） */
-#analysis h4, .analysis-title { 
-    font-size: 28px !important; /* タイトルを大きく */
-    margin-bottom: 10px !important; /* 下の余白を詰める */
-    font-weight: 900 !important;
-}
-
-/* --- カードのデザイン：中央寄せとサイズ最適化 --- */
+/* カード単体の設定：スクリーンショットのデザインを再現 */
 .pokedex-card {
-    flex: 1 1 calc(50% - 6px) !important;
-    min-width: calc(50% - 6px) !important;
-    box-sizing: border-box !important;
+    flex: 0 0 calc(50% - 6px) !important; /* 2列で左右端まで伸ばす */
     background: rgba(255, 255, 255, 0.12) !important;
-    backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 18px !important;
-    
-    padding: 20px 15px !important; /* 余白を少し詰めて内容を凝縮 */
-    min-height: 170px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important; /* 縦方向も中央に */
-    align-items: center !important;     /* ★横方向を中央寄せ */
-    text-align: center !important;      /* ★文字を中央揃え */
-    
-    color: white !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 16px !important;
+    padding: 20px 15px !important;
+    box-sizing: border-box !important;
     position: relative;
     overflow: hidden;
+    color: white !important;
 }
 
-/* 左端のライン（中央寄せになってもアクセントとして残します） */
+/* 左端のカラーライン（スクショにある細い縦棒） */
 .pokedex-card::before {
     content: "";
     position: absolute;
@@ -458,9 +455,9 @@ input[type="number"] {
     background: var(--type-color, #fff);
 }
 
-/* --- 親要素（濃い紫のカード）の余白を強制的に詰める --- */
-#analysis, .analysis-container {
-    padding: 15px !important; /* スクショの広い余白をカット */
+/* カード内のテキストをすべて白にする */
+.pokedex-card div, .pokedex-card span {
+    color: white !important;
 }
 
 /* モバイル時：画面が狭すぎる場合は1列にする */
