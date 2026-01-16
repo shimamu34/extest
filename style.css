@@ -444,49 +444,34 @@ input[type="number"] {
         letter-spacing: -0.5px;
     }
 }
-/* =============================================
-   図鑑レイアウト決定版（2列＋総合評価中央）
-   ============================================= */
+/* --- 図鑑レイアウト修正：2列中央配置 ＋ 下に総合評価 --- */
 
-/* 1. 親コンテナ：2列にして、画面中央に配置する */
+/* 1. 全体を包むコンテナを中央に固定し、2列にする */
 #fitnessPokedex {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important; /* 横に2列 */
-    gap: 12px !important;
+    grid-template-columns: 1fr 1fr !important; /* 絶対に2列 */
+    gap: 10px !important;
     width: 100% !important;
-    max-width: 800px !important; /* 広がりすぎないよう制限 */
-    margin: 20px auto !important; /* 上下に余白、左右は自動で中央寄せ */
+    max-width: 600px !important; /* 広がりすぎ防止 */
+    margin: 20px auto !important; /* これで中央に寄ります */
     padding: 0 !important;
-    justify-content: center !important;
 }
 
-/* 2. 図鑑カード：幅を親の50%いっぱいに広げる */
+/* 2. カードが右に寄る原因（親の隙間）を埋める */
 #fitnessPokedex > div {
     width: 100% !important;
-    max-width: none !important;
     margin: 0 !important;
     box-sizing: border-box !important;
-    /* 背景色などはJS側で指定されているものを活かすためここでは書かない */
 }
 
-/* 3. 総合評価：2列分をぶち抜いて下にどっしり配置 */
+/* 3. 総合評価を下にどっしり配置 */
 #totalRank {
-    grid-column: 1 / span 2; /* 1列目から2列分つなげる */
     width: 100% !important;
-    max-width: 800px !important;
+    max-width: 600px !important;
     margin: 10px auto !important; /* 中央寄せ */
-    padding: 20px !important;
-    background: rgba(255, 255, 255, 0.15) !important; /* 以前の色合い */
-    border-radius: 15px !important;
-    text-align: center !important;
-    color: white !important;
-    box-sizing: border-box !important;
-}
-
-/* スマホ用の微調整（隙間を少し狭くする） */
-@media screen and (max-width: 600px) {
-    #fitnessPokedex {
-        gap: 8px !important;
-        margin: 10px auto !important;
-    }
+    display: block !important;
+    background: rgba(255,255,255,0.15); /* 以前の色合いを維持 */
+    border-radius: 12px;
+    padding: 20px;
+    box-sizing: border-box;
 }
