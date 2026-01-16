@@ -437,9 +437,9 @@ const types = [
                 const progress = (type.avg / 10) * 100;
                 const nextLevel = Math.ceil(type.avg);
                 const toNext = nextLevel - type.avg;
-                
-                pokedexHtml += `
-                    <div class="pokedex-card" style="background:rgba(255,255,255,0.15); padding:15px; border-radius:12px; backdrop-filter:blur(10px);">
+               
+                pokedexHtml += `
+                    <div class="pokedex-card">
                         <div style="display:flex; align-items:center; margin-bottom:10px">
                             <span style="font-size:30px; margin-right:10px">${type.emoji}</span>
                             <div style="flex:1">
@@ -452,7 +452,6 @@ const types = [
                         </div>
                         <div style="font-size:11px; opacity:0.9">
                             ${type.avg > 0 ? `${type.avg.toFixed(1)}点 / 10.0点` : 'データなし'}
-                            ${toNext > 0 && toNext < 1 ? `<br>(次まで${toNext.toFixed(1)}点)` : ''}
                         </div>
                     </div>
                 `;
