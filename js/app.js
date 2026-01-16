@@ -159,7 +159,7 @@ function updateTimestamp() {
         tsArea = document.createElement("div");
         tsArea.id = "table-timestamp";
         // 右寄せ、等幅フォント(monospace)、行間1.2、太字に設定
-        tsArea.style = "text-align: right; font-size: 11px; color: #444; margin-bottom: 8px; font-family: monospace; line-height: 1.2; font-weight: bold;";
+        tsArea.style = "text-align: right; font-size: 14px; color: #444; margin-bottom: 10px; font-family: monospace; line-height: 1.2; font-weight: 900; letter-spacing: 0.5px;";
         
         const tableContainer = document.getElementById("table");
         if (tableContainer) {
