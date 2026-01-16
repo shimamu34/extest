@@ -99,82 +99,82 @@ function CS(v, h, g) {
 
 // テーブル・評価描画
 function RT() {
-    const g = document.getElementById("gender").value;
-    if (!D[g]) return;
-    const h = D[g].h;
-    
-    const formatTime = (sec) => {
-        const m = Math.floor(sec / 60);
-        const s = Math.round(sec % 60);
-        return `${m}'${s.toString().padStart(2, '0')}"`;
-    };
+    const g = document.getElementById("gender").value;
+    if (!D[g]) return;
+    const h = D[g].h;
+    
+    const formatTime = (sec) => {
+        const m = Math.floor(sec / 60);
+        const s = Math.round(sec % 60);
+        return `${m}'${s.toString().padStart(2, '0')}"`;
+    };
 
-    let s = '<table><tr><th></th>';
-    h.forEach(x => s += `<th>${x}</th>`);
-    s += '</tr>';
-    ["記録", "帯広市", "北海道", "全国"].forEach(r => {
-        s += '<tr><td>' + r + '</td>';
-        h.forEach((x, j) => {
-            if (r === "記録") {
-                if (j === 4) { 
-                    // 改行を排除し、inputの幅を38pxに微調整しました
-                    s += `<td style="padding:2px; min-width:100px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><input type="number" id="i4_min" onchange="U()" placeholder="分" style="width:38px;text-align:center;padding:2px;">:<input type="number" id="i4_sec" onchange="U()" placeholder="秒" style="width:38px;text-align:center;padding:2px;"></div><input type="hidden" id="i4"></td>`;
-                } else if (j < 9) {
-                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width:100%;box-sizing:border-box;"></td>`;
-                } else {
-                    s += `<td id="i9"><div>0</div><div>E</div></td>`;
-                }
-            } else {
-                let v = A[g][r][j];
-                let displayVal = (j === 4) ? formatTime(v) : v;
-                if (j === 9) { 
-                    v = T[g][r]; 
-                    s += `<td>${v}</td>`; 
-                } else { 
-                    const sc = CS(v, x, g); 
-                    s += `<td><div>${displayVal}</div><div style="font-size:0.8em;color:#666">(${sc}点)</div></td>`; 
-                }
-            }
-        });
-        s += '</tr>';
-    });
-    s += '</table>';
- 　　document.getElementById("table").style.position = "relative";
-    document.getElementById("table").innerHTML = '<div id="table-timestamp"></div>' + s;
-    
-    // 表示された直後に時刻を更新する
-    updateTimestamp();
+    let s = '<table><tr><th></th>';
+    h.forEach(x => s += `<th>${x}</th>`);
+    s += '</tr>';
+    ["記録", "帯広市", "北海道", "全国"].forEach(r => {
+        s += '<tr><td>' + r + '</td>';
+        h.forEach((x, j) => {
+            if (r === "記録") {
+                if (j === 4) { 
+                    // 改行を排除し、inputの幅を38pxに微調整しました
+                    s += `<td style="padding:2px; min-width:100px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><input type="number" id="i4_min" onchange="U()" placeholder="分" style="width:38px;text-align:center;padding:2px;">:<input type="number" id="i4_sec" onchange="U()" placeholder="秒" style="width:38px;text-align:center;padding:2px;"></div><input type="hidden" id="i4"></td>`;
+                } else if (j < 9) {
+                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width:100%;box-sizing:border-box;"></td>`;
+                } else {
+                    s += `<td id="i9"><div>0</div><div>E</div></td>`;
+                }
+            } else {
+                let v = A[g][r][j];
+                let displayVal = (j === 4) ? formatTime(v) : v;
+                if (j === 9) { 
+                    v = T[g][r]; 
+                    s += `<td>${v}</td>`; 
+                } else { 
+                    const sc = CS(v, x, g); 
+                    s += `<td><div>${displayVal}</div><div style="font-size:0.8em;color:#666">(${sc}点)</div></td>`; 
+                }
+            }
+        });
+        s += '</tr>';
+    });
+    s += '</table>';
+ 　　document.getElementById("table").style.position = "relative";
+    document.getElementById("table").innerHTML = '<div id="table-timestamp"></div>' + s;
+    
+    // 表示された直後に時刻を更新する
+    updateTimestamp();
 }
 
 // 日時関係
 function updateTimestamp() {
-    const now = new Date();
-    const f = (n) => n.toString().padStart(2, '0');
+    const now = new Date();
+    const f = (n) => n.toString().padStart(2, '0');
 
-    const datePart = `${now.getFullYear()}.${f(now.getMonth() + 1)}.${f(now.getDate())}`;
-    const timePart = `${f(now.getHours())}:${f(now.getMinutes())}:${f(now.getSeconds())}`;
-    
-    const tsArea = document.getElementById("table-timestamp");
-    if (tsArea) {
-        tsArea.style = `
-            position: absolute;   /* 物理的な行数を作らずに浮かせる */
-            right: 0;             /* 表の右端に合わせる */
-            bottom: 100%;         /* 表の真上に配置 */
-            margin-bottom: 4px;   /* 文字を大きくしたので、隙間を少しだけ広げました */
-            
-            text-align: right;
-            font-size: 13px;      /* 文字を大きく調整 */
-            color: #2b6cb0;       /* 青色 */
-            background: transparent;
-            padding: 0px 2px;
-            font-family: monospace;
-            line-height: 1.2;     /* 2段の間隔を少しゆったりめに */
-            font-weight: bold;
-            white-space: nowrap;
-            z-index: 10;
-        `;
-        tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
-    }
+    const datePart = `${now.getFullYear()}.${f(now.getMonth() + 1)}.${f(now.getDate())}`;
+    const timePart = `${f(now.getHours())}:${f(now.getMinutes())}:${f(now.getSeconds())}`;
+    
+    const tsArea = document.getElementById("table-timestamp");
+    if (tsArea) {
+        tsArea.style = `
+            position: absolute;   /* 物理的な行数を作らずに浮かせる */
+            right: 0;             /* 表の右端に合わせる */
+            bottom: 100%;         /* 表の真上に配置 */
+            margin-bottom: 4px;   /* 文字を大きくしたので、隙間を少しだけ広げました */
+            
+            text-align: right;
+            font-size: 13px;      /* 文字を大きく調整 */
+            color: #2b6cb0;       /* 青色 */
+            background: transparent;
+            padding: 0px 2px;
+            font-family: monospace;
+            line-height: 1.2;     /* 2段の間隔を少しゆったりめに */
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 10;
+        `;
+        tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
+    }
 }
 
 function RS() {
@@ -271,7 +271,7 @@ function U() {
     if (highlightEl) highlightEl.classList.add("highlight");
     SI();
     RAnalysis(g);
-    updateTimestamp();
+    updateTimestamp();
     if (typeof updateAllCharts === 'function') updateAllCharts();
 }
 
@@ -473,45 +473,44 @@ const types = [
                 const nextLevel = Math.ceil(type.avg);
                 const toNext = nextLevel - type.avg;
                
-                pokedexHtml += `
-                    <div class="pokedex-card" style="--type-color: ${type.color}">
-<div style="display:flex; align-items:center; margin-bottom:12px; padding-left:4px">
-    <span style="font-size:48px; margin-right:12px; line-height:1">${type.emoji}</span>
-    <div style="text-align:left">
-        <div style="font-size:14px; font-weight:bold; opacity:0.9; margin-bottom:-2px">${type.name}</div>
-        <div style="font-size:34px; font-weight:900; line-height:0.9">Lv.${level}</div>
-    </div>
-</div>
-                        </div>
-                        
-                        <div style="width:100%">
-                            <div style="background:rgba(255,255,255,0.2); height:12px; border-radius:6px; overflow:hidden; margin-bottom:8px">
-                                <div style="background:${type.color}; height:100%; width:${progress}%; transition:width 0.8s ease-out;"></div>
-                            </div>
-                            
-                            <div style="font-size:14px; font-weight:bold; text-align:left; padding-left:2px; line-height:1.3">
-                                <span>${type.avg.toFixed(1)}点 / 10.0点</span>
-                                
-                                ${toNext > 0 && toNext < 1 ? `
-                                    <span style="font-size:12px; opacity:1; font-weight:bold; display:block; color: rgba(255,255,255,0.9);">
-                                        あと${toNext.toFixed(1)}点でLvアップ！
-                                    </span>
-                                ` : ''}
-                            </div>
-                        </div>
-                    </div>
-                `;
+                pokedexHtml += `
+                    <div class="pokedex-card" style="--type-color: ${type.color}">
+                        <div style="display:flex; align-items:center; margin-bottom:12px; padding-left:4px">
+                            <span style="font-size:48px; margin-right:12px; line-height:1">${type.emoji}</span>
+                            <div style="text-align:left">
+                                <div style="font-size:14px; font-weight:bold; opacity:0.9; margin-bottom:-2px">${type.name}</div>
+                                <div style="font-size:34px; font-weight:900; line-height:0.9">Lv.${level}</div>
+                            </div>
+                        </div>
+                        
+                        <div style="width:100%">
+                            <div style="background:rgba(255,255,255,0.2); height:12px; border-radius:6px; overflow:hidden; margin-bottom:8px">
+                                <div style="background:${type.color}; height:100%; width:${progress}%; transition:width 0.8s ease-out;"></div>
+                            </div>
+                            
+                            <div style="font-size:14px; font-weight:bold; text-align:left; padding-left:2px; line-height:1.3">
+                                <span>${type.avg.toFixed(1)}点 / 10.0点</span>
+                                
+                                ${toNext > 0 && toNext < 1 ? `
+                                    <span style="font-size:12px; opacity:1; font-weight:bold; display:block; color: rgba(255,255,255,0.9);">
+                                        あと${toNext.toFixed(1)}点でLvアップ！
+                                    </span>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
             });
             
             document.getElementById("fitnessPokedex").innerHTML = pokedexHtml;
-            // --- ここから追加：もしシミュレーターで目標が設定されていたらタイトルを維持する ---
-            const currentGoalTitle = document.getElementById('goalTargetName');
-            if (currentGoalTitle && currentGoalTitle.innerText === "あなたの体力タイプ図鑑") {
-                // まだ目標ボタンが押されていない場合のみ、デフォルトに戻す（必要に応じて）
-                currentGoalTitle.innerText = "あなたの体力タイプ図鑑";
-            }
-            // --- ここまで追加 ---
-    
+            // --- ここから追加：もしシミュレーターで目標が設定されていたらタイトルを維持する ---
+            const currentGoalTitle = document.getElementById('goalTargetName');
+            if (currentGoalTitle && currentGoalTitle.innerText === "あなたの体力タイプ図鑑") {
+                // まだ目標ボタンが押されていない場合のみ、デフォルトに戻す（必要に応じて）
+                currentGoalTitle.innerText = "あなたの体力タイプ図鑑";
+            }
+            // --- ここまで追加 ---
+    
             // 総合評価
             // 持久系は高い方のみを採用し、合計8種目で計算
 　　　const totalScore = 
@@ -563,134 +562,134 @@ const types = [
         }
 
 function setGoal(goalType) {
-    const g = document.getElementById("gender").value;
-    const h = D[g].h.slice(0, 9);
-    const gr = parseInt(document.getElementById("grade").value);
-    
-    let myScores = [];
-    let myValues = [];
-    for (let i = 0; i < 9; i++) {
-        const inp = document.getElementById(`i${i}`);
-        const v = parseFloat(inp.value);
-        myValues.push(!isNaN(v) ? v : 0);
-        myScores.push(!isNaN(v) ? CS(v, h[i], g) : 0);
-    }
-    
-    // --- 修正ポイント：持久走(index 4)とシャトルラン(index 5)の判定 ---
-    const scoreEndurance = myScores[4] || 0;
-    const scoreShuttle = myScores[5] || 0;
-    
-    // 高い方の得点を選び、低い方を 0 にする（計算から除外する）
-    let adjustedScores = [...myScores];
-    if (scoreEndurance >= scoreShuttle) {
-        adjustedScores[5] = 0; // シャトルランを除外
-    } else {
-        adjustedScores[4] = 0; // 持久走を除外
-    }
-    
-    // 8種目ベースでの合計得点を算出
-    const validScores = adjustedScores.filter(s => s > 0);
-    const totalScore = validScores.reduce((a, b) => a + b, 0);
-    // -----------------------------------------------------------
-    
-    let targetScore = 0;
-    let goalTitle = '';
-    let goalDesc = '';
-    
-    if (goalType === 'rankA') {
-        const aRange = E.find(e => e.s === 'A')[`c${gr}`];
-        targetScore = parseInt(aRange.replace('以上', ''));
-        goalTitle = '🎯 総合A評価を目指す';
-    } else if (goalType === 'rankB') {
-        const bRange = E.find(e => e.s === 'B')[`c${gr}`];
-        targetScore = parseInt(bRange.split('～')[0]);
-        goalTitle = '🎯 総合B評価を目指す';
-    } else if (goalType === 'rankC') {
-        const cRange = E.find(e => e.s === 'C')[`c${gr}`];
-        targetScore = parseInt(cRange.split('～')[0]);
-        goalTitle = '🎯 総合C評価を目指す';
-    } else if (goalType === 'rankD') {
-        const dRange = E.find(e => e.s === 'D')[`c${gr}`];
-        targetScore = parseInt(dRange.split('～')[0]);
-        goalTitle = '🎯 総合D評価を目指す';
-    }
+    const g = document.getElementById("gender").value;
+    const h = D[g].h.slice(0, 9);
+    const gr = parseInt(document.getElementById("grade").value);
+    
+    let myScores = [];
+    let myValues = [];
+    for (let i = 0; i < 9; i++) {
+        const inp = document.getElementById(`i${i}`);
+        const v = parseFloat(inp.value);
+        myValues.push(!isNaN(v) ? v : 0);
+        myScores.push(!isNaN(v) ? CS(v, h[i], g) : 0);
+    }
+    
+    // --- 修正ポイント：持久走(index 4)とシャトルラン(index 5)の判定 ---
+    const scoreEndurance = myScores[4] || 0;
+    const scoreShuttle = myScores[5] || 0;
+    
+    // 高い方の得点を選び、低い方を 0 にする（計算から除外する）
+    let adjustedScores = [...myScores];
+    if (scoreEndurance >= scoreShuttle) {
+        adjustedScores[5] = 0; // シャトルランを除外
+    } else {
+        adjustedScores[4] = 0; // 持久走を除外
+    }
+    
+    // 8種目ベースでの合計得点を算出
+    const validScores = adjustedScores.filter(s => s > 0);
+    const totalScore = validScores.reduce((a, b) => a + b, 0);
+    // -----------------------------------------------------------
+    
+    let targetScore = 0;
+    let goalTitle = '';
+    let goalDesc = '';
+    
+    if (goalType === 'rankA') {
+        const aRange = E.find(e => e.s === 'A')[`c${gr}`];
+        targetScore = parseInt(aRange.replace('以上', ''));
+        goalTitle = '🎯 総合A評価を目指す';
+    } else if (goalType === 'rankB') {
+        const bRange = E.find(e => e.s === 'B')[`c${gr}`];
+        targetScore = parseInt(bRange.split('～')[0]);
+        goalTitle = '🎯 総合B評価を目指す';
+    } else if (goalType === 'rankC') {
+        const cRange = E.find(e => e.s === 'C')[`c${gr}`];
+        targetScore = parseInt(cRange.split('～')[0]);
+        goalTitle = '🎯 総合C評価を目指す';
+    } else if (goalType === 'rankD') {
+        const dRange = E.find(e => e.s === 'D')[`c${gr}`];
+        targetScore = parseInt(dRange.split('～')[0]);
+        goalTitle = '🎯 総合D評価を目指す';
+    }
 
-    //document.getElementById('goalTargetName').innerText = goalTitle.replace('🎯 ', '');
-    goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
-    
-    const pointsNeeded = Math.max(0, targetScore - totalScore);
-    
-    let html = `
-        <div style="background:white;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1)">
-            <h5 style="margin:0 0 20px 0;font-size:20px;color:#9c27b0">${goalTitle}</h5>
-            <div style="background:#f5f5f5;padding:15px;border-radius:8px;margin-bottom:20px">
-                <div style="font-size:16px;color:#666;margin-bottom:10px">${goalDesc}</div>
-                <div style="font-size:24px;font-weight:bold;color:#9c27b0">必要な得点: +${pointsNeeded}点</div>
-            </div>
-    `;
-    
-    if (pointsNeeded > 0) {
-        html += '<div style="margin-top:20px"><h6 style="color:#9c27b0;margin-bottom:15px;font-size:18px">💡 おすすめの伸ばし方</h6>';
-        
-        const improvements = [];
-        h.forEach((header, i) => {
-            // 計算に使われている種目（得点がある種目）のみ提案
-            if (adjustedScores[i] > 0 && adjustedScores[i] < 10) {
-                const potential = 10 - adjustedScores[i];
-                const difficulty = adjustedScores[i] >= 7 ? '難しい' : adjustedScores[i] >= 5 ? '普通' : adjustedScores[i] >= 3 ? '簡単！' : 'とても簡単！';
-                const diffColor = adjustedScores[i] >= 7 ? '#f44336' : adjustedScores[i] >= 5 ? '#FF9800' : adjustedScores[i] >= 3 ? '#4CAF50' : '#2196F3';
-                improvements.push({
-                    name: header, current: adjustedScores[i], potential: potential, difficulty: difficulty, diffColor: diffColor
-                });
-            }
-        });
-        
-        // 未入力の種目（持久走/SRは高い方以外除外された状態）
-        h.forEach((header, i) => {
-            if (myScores[i] === 0) {
-                // 持久走とSRの両方が0の場合は両方提案に出るが、片方入力済なら片方は無視される
-                if (i === 4 && scoreShuttle > 0) return;
-                if (i === 5 && scoreEndurance > 0) return;
-                
-                improvements.push({
-                    name: header, current: 0, potential: 10, difficulty: '未測定', diffColor: '#9E9E9E'
-                });
-            }
-        });
-        
-        improvements.sort((a, b) => (a.current === 0 ? 1 : b.current === 0 ? -1 : b.potential - a.potential));
-        
-        let totalRecommend = 0;
-        let count = 0;
-        improvements.forEach((imp) => {
-            if (count < 5 && totalRecommend < pointsNeeded) {
-                const recommend = imp.current === 0 ? 5 : Math.min(2, imp.potential, pointsNeeded - totalRecommend);
-                if (recommend > 0) {
-                    html += `
-                        <div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;border-left:4px solid ${imp.diffColor}">
-                            <div style="display:flex;justify-content:space-between;align-items:center">
-                                <div>
-                                    <span style="font-weight:bold;font-size:16px">${imp.name}</span>
-                                    <span style="color:#666;margin-left:10px">${imp.current === 0 ? '未測定 → 平均5点を目指す' : `現在${imp.current}点 → ${imp.current + recommend}点`}</span>
-                                </div>
-                                <span style="background:${imp.diffColor};color:white;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:bold">${imp.difficulty}</span>
-                            </div>
-                        </div>
-                    `;
-                    totalRecommend += recommend;
-                    count++;
-                }
-            }
-        });
-        
-        html += `<div style="margin-top:20px;padding:15px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-radius:8px;text-align:center;font-size:16px">
-            ✨ これらを達成すれば目標クリア！頑張りましょう！
-        </div></div>`;
-    } else {
-        html += '<div style="padding:20px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:white;border-radius:8px;text-align:center;font-size:18px">🎉 すでに目標達成しています！素晴らしい！</div>';
-    }
-    
-    html += '</div>';
-    document.getElementById("goalSimulator").innerHTML = html;
-    document.querySelector("#correlation p").style.display = "none";
+    //document.getElementById('goalTargetName').innerText = goalTitle.replace('🎯 ', '');
+    goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
+    
+    const pointsNeeded = Math.max(0, targetScore - totalScore);
+    
+    let html = `
+        <div style="background:white;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1)">
+            <h5 style="margin:0 0 20px 0;font-size:20px;color:#9c27b0">${goalTitle}</h5>
+            <div style="background:#f5f5f5;padding:15px;border-radius:8px;margin-bottom:20px">
+                <div style="font-size:16px;color:#666;margin-bottom:10px">${goalDesc}</div>
+                <div style="font-size:24px;font-weight:bold;color:#9c27b0">必要な得点: +${pointsNeeded}点</div>
+            </div>
+    `;
+    
+    if (pointsNeeded > 0) {
+        html += '<div style="margin-top:20px"><h6 style="color:#9c27b0;margin-bottom:15px;font-size:18px">💡 おすすめの伸ばし方</h6>';
+        
+        const improvements = [];
+        h.forEach((header, i) => {
+            // 計算に使われている種目（得点がある種目）のみ提案
+            if (adjustedScores[i] > 0 && adjustedScores[i] < 10) {
+                const potential = 10 - adjustedScores[i];
+                const difficulty = adjustedScores[i] >= 7 ? '難しい' : adjustedScores[i] >= 5 ? '普通' : adjustedScores[i] >= 3 ? '簡単！' : 'とても簡単！';
+                const diffColor = adjustedScores[i] >= 7 ? '#f44336' : adjustedScores[i] >= 5 ? '#FF9800' : adjustedScores[i] >= 3 ? '#4CAF50' : '#2196F3';
+                improvements.push({
+                    name: header, current: adjustedScores[i], potential: potential, difficulty: difficulty, diffColor: diffColor
+                });
+            }
+        });
+        
+        // 未入力の種目（持久走/SRは高い方以外除外された状態）
+        h.forEach((header, i) => {
+            if (myScores[i] === 0) {
+                // 持久走とSRの両方が0の場合は両方提案に出るが、片方入力済なら片方は無視される
+                if (i === 4 && scoreShuttle > 0) return;
+                if (i === 5 && scoreEndurance > 0) return;
+                
+                improvements.push({
+                    name: header, current: 0, potential: 10, difficulty: '未測定', diffColor: '#9E9E9E'
+                });
+            }
+        });
+        
+        improvements.sort((a, b) => (a.current === 0 ? 1 : b.current === 0 ? -1 : b.potential - a.potential));
+        
+        let totalRecommend = 0;
+        let count = 0;
+        improvements.forEach((imp) => {
+            if (count < 5 && totalRecommend < pointsNeeded) {
+                const recommend = imp.current === 0 ? 5 : Math.min(2, imp.potential, pointsNeeded - totalRecommend);
+                if (recommend > 0) {
+                    html += `
+                        <div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;border-left:4px solid ${imp.diffColor}">
+                            <div style="display:flex;justify-content:space-between;align-items:center">
+                                <div>
+                                    <span style="font-weight:bold;font-size:16px">${imp.name}</span>
+                                    <span style="color:#666;margin-left:10px">${imp.current === 0 ? '未測定 → 平均5点を目指す' : `現在${imp.current}点 → ${imp.current + recommend}点`}</span>
+                                </div>
+                                <span style="background:${imp.diffColor};color:white;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:bold">${imp.difficulty}</span>
+                            </div>
+                        </div>
+                    `;
+                    totalRecommend += recommend;
+                    count++;
+                }
+            }
+        });
+        
+        html += `<div style="margin-top:20px;padding:15px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-radius:8px;text-align:center;font-size:16px">
+            ✨ これらを達成すれば目標クリア！頑張りましょう！
+        </div></div>`;
+    } else {
+        html += '<div style="padding:20px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:white;border-radius:8px;text-align:center;font-size:18px">🎉 すでに目標達成しています！素晴らしい！</div>';
+    }
+    
+    html += '</div>';
+    document.getElementById("goalSimulator").innerHTML = html;
+    document.querySelector("#correlation p").style.display = "none";
 }
