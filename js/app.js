@@ -157,18 +157,18 @@ function updateTimestamp() {
     const tsArea = document.getElementById("table-timestamp");
     if (tsArea) {
         tsArea.style = `
-            position: absolute;   /* 物理的な行数を作らずに「浮かせる」 */
-            right: 0;             /* 表の右端（合計セル）に合わせる */
+            position: absolute;   /* 物理的な行数を作らずに浮かせる */
+            right: 0;             /* 表の右端に合わせる */
             bottom: 100%;         /* 表の真上に配置 */
-            margin-bottom: 2px;   /* 表とのわずかな隙間 */
+            margin-bottom: 4px;   /* 文字を大きくしたので、隙間を少しだけ広げました */
             
             text-align: right;
-            font-size: 11px;
-            color: #4a90e2;      /* 文字色は現在の青色のまま */
-            background: transparent; /* 背景を透明（または white）に */
-            padding: 0px 4px;     /* 背景が透明なので余白を最小限に */
+            font-size: 13px;      /* 文字を大きく調整 */
+            color: #4a90e2;       /* 青色 */
+            background: transparent;
+            padding: 0px 2px;
             font-family: monospace;
-            line-height: 1.1;
+            line-height: 1.2;     /* 2段の間隔を少しゆったりめに */
             font-weight: bold;
             white-space: nowrap;
             z-index: 10;
