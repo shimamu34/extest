@@ -475,12 +475,14 @@ const types = [
                
                 pokedexHtml += `
                     <div class="pokedex-card" style="--type-color: ${type.color}">
-                        <div style="display:flex; align-items:center; margin-bottom:12px; padding-left:4px">
-                            <span style="font-size:48px; margin-right:12px; line-height:1">${type.emoji}</span>
-                            <div style="text-align:left">
-                                <div style="font-size:14px; font-weight:bold; opacity:0.9; margin-bottom:-2px">${type.name}</div>
-                                <div style="font-size:34px; font-weight:900; line-height:0.9">Lv.${level}</div>
-                            </div>
+                        <div style="text-align:center; margin-bottom:15px;">
+    <div style="font-size:40px; margin-bottom:5px;">${type.emoji}</div>
+    
+    <div style="display:flex; justify-content:center; align-items:center; gap:8px;">
+        <span style="font-size:26px; font-weight:bold; opacity:0.9;">${type.name}</span>
+        <span style="font-size:26px; font-weight:900;">Lv.${level}</span>
+    </div>
+</div>
                         </div>
                         
                         <div style="width:100%">
