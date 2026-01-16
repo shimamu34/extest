@@ -165,13 +165,7 @@ input[type="number"] {
     }
 }
 
-/* --- 図鑑 (2列固定) --- */
-#fitnessPokedex {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 8px !important;
-    margin-top: 5px;
-}
+
 
 .notification {
     position: fixed;
@@ -291,64 +285,32 @@ input[type="number"] {
     height: auto !important;
 }
 
-/* PC・横画面用：カード間隔をタイトにし、一体感を出す */
+/* PC・横画面用：レイアウト調整（カッコのミスを修正済み） */
 @media screen and (min-width: 641px) {
-    /* カード本体：上下の間隔を15pxから8pxに短縮 */
     .card {
-        margin: 4px auto !important; /* ← ここでカード同士の隙間を狭くします */
-        max-width: 1200px !important; 
+        margin: 4px auto !important;
         width: 95%;
-        float: none !important;
-        padding: 10px 30px !important; /* 上下の内側余白も25pxから15pxに縮小 */
+        padding: 10px 30px !important;
     }
-
-/* ボタン類が入っているカードなど、中身が少ないカードの余白 */
-    .card[style*="text-align:center"], 
-    .card[style*="text-align: center"] {
-        padding: 8px 12px !important;
-    }
-}
-    
-    /* 種目別トラッキング：入力エリアのレイアウト */
     .tracking-top-bar {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
-        gap: 12px 40px !important; /* 縦の項目間も少し詰める */
-        margin: 0 auto 10px auto; /* 下のグラフとの距離を縮小 */
-        max-width: 1000px;
+        gap: 12px 40px !important;
+        margin: 0 auto 10px auto;
     }
-
     .t-field {
         display: flex;
         flex-direction: column;
-        gap: 4px; /* ラベルと入力欄の距離を最小限に */
+        gap: 4px;
     }
-
-    .t-field label {
-        color: white !important;
-        font-size: 13px !important;
-        font-weight: bold !important;
-    }
-
-    /* グラフエリアの余白調整 */
-    #tracking div[style*="background:white; padding:15px"] {
-        padding: 20px 30px !important; /* 内側の余白を少し詰める */
-        border-radius: 12px;
-        margin: 5px 0; /* グラフの外側余白を最小に */
-    }
-
     #trackingGraph {
         width: 100% !important;
-        height: 420px !important; /* 隙間を詰めた分、グラフの高さは維持 */
-        display: block;
+        height: 420px !important;
     }
-
-    /* 表のパディングも少しだけタイトに */
     td, th {
-        text-align: center !important;
         padding: 8px 10px !important;
     }
-}
+} /* ← ここで正しく閉じる */
 
 /* スマホ用：さらにコンパクトに */
 @media screen and (max-width: 640px) {
@@ -444,32 +406,39 @@ input[type="number"] {
     margin-bottom: 0 !important;
 }
 
-/* --- 図鑑 2×2 固定レイアウト (PC横画面優先) --- */
+/* =============================================
+    体力タイプ図鑑：2×2 中央揃え確定設定
+   ============================================= */
 #fitnessPokedex {
     display: flex !important;
     flex-wrap: wrap !important;
-    justify-content: center !important; /* 全体を中央へ */
+    justify-content: center !important; /* 横方向の中央寄せ */
+    align-items: flex-start !important;
     gap: 16px !important;              /* カード間の隙間 */
     width: 100% !important;
-    max-width: 800px !important;       /* 2枚並びが綺麗に見える幅 */
-    margin: 20px auto !important;      /* 左右中央寄せ */
+    max-width: 800px !important;       /* 2枚並びに最適な幅 */
+    margin: 30px auto !important;      /* 外枠自体の左右中央寄せ */
     padding: 10px !important;
+    clear: both !important;            /* 上の要素からの回り込みを遮断 */
 }
 
-/* カード1枚のサイズ指定 */
+/* カード1枚のサイズを「親要素の半分」に固定 */
 .pokedex-card {
-    /* (100% / 2) から gap(16px) の半分を引いて 2枚ぴったりにする */
-    flex: 0 0 calc(50% - 8px) !important; 
-    max-width: calc(50% - 8px) !important;
-    min-width: 300px !important;       /* 内容が崩れない最小幅 */
+    flex: 0 0 calc(50% - 10px) !important;
+    max-width: calc(50% - 10px) !important;
+    min-width: 320px !important;       /* 崩れない最小幅 */
     background: white !important;
-    border-radius: 12px !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
     margin: 0 !important;
     box-sizing: border-box !important;
+    overflow: hidden !important;
 }
 
-/* 文字サイズなどが干渉してカードが巨大化するのを防ぐ */
-.pokedex-card * {
-    max-width: 100%;
+/* モバイル時：画面が狭すぎる場合は1列にする */
+@media screen and (max-width: 680px) {
+    .pokedex-card {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
 }
