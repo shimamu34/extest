@@ -99,60 +99,47 @@ function CS(v, h, g) {
 
 // テーブル・評価描画
 function RT() {
-    const g = document.getElementById("gender").value;
-    if (!D[g]) return;
-    const h = D[g].h;
-    
-    // 秒数を「分'秒"」に変換するヘルパー関数
-    const formatTime = (sec) => {
-        const m = Math.floor(sec / 60);
-        const s = Math.round(sec % 60);
-        return `${m}'${s.toString().padStart(2, '0')}"`;
-    };
+    const g = document.getElementById("gender").value;
+    if (!D[g]) return;
+    const h = D[g].h;
+    
+    const formatTime = (sec) => {
+        const m = Math.floor(sec / 60);
+        const s = Math.round(sec % 60);
+        return `${m}'${s.toString().padStart(2, '0')}"`;
+    };
 
-    let s = '<table><tr><th></th>';
-    h.forEach(x => s += `<th>${x}</th>`);
-    s += '</tr>';
-    ["記録", "帯広市", "北海道", "全国"].forEach(r => {
-        s += '<tr><td>' + r + '</td>';
-        h.forEach((x, j) => {
-            if (r === "記録") {
-                if (j === 4) { 
-                    s += `<td style="width: 120px; padding: 4px;">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-        <input type="number" id="i4_min" onchange="U()" placeholder="分" 
-               style="width: 50px; text-align: center;"> <span style="font-weight: bold;">:</span>
-        <input type="number" id="i4_sec" onchange="U()" placeholder="秒" 
-               style="width: 50px; text-align: center;">
-    </div>
-    <input type="hidden" id="i4"> 
-</td>`;
-                } else if (j < 9) {
-                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width: 100%; box-sizing: border-box;"></td>`;
-                } else {
-                    s += `<td id="i9"><div>0</div><div>E</div></td>`;
-                }
-            } else {
-                let v = A[g][r][j];
-                // --- 持久走（j === 4）かつ平均値行の表示を変換 ---
-                let displayVal = v;
-                if (j === 4) {
-                    displayVal = formatTime(v);
-                }
-
-                if (j === 9) { 
-                    v = T[g][r]; 
-                    s += `<td>${v}</td>`; 
-                } else { 
-                    const sc = CS(v, x, g); 
-                    s += `<td><div>${displayVal}</div><div style="font-size:0.85em;color:#666">(${sc}点)</div></td>`; 
-                }
-            }
-        });
-        s += '</tr>';
-    });
-    s += '</table>';
-    document.getElementById("table").innerHTML = s;
+    let s = '<table><tr><th></th>';
+    h.forEach(x => s += `<th>${x}</th>`);
+    s += '</tr>';
+    ["記録", "帯広市", "北海道", "全国"].forEach(r => {
+        s += '<tr><td>' + r + '</td>';
+        h.forEach((x, j) => {
+            if (r === "記録") {
+                if (j === 4) { 
+                    // 改行を排除し、inputの幅を38pxに微調整しました
+                    s += `<td style="padding:2px; min-width:100px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><input type="number" id="i4_min" onchange="U()" placeholder="分" style="width:38px;text-align:center;padding:2px;">:<input type="number" id="i4_sec" onchange="U()" placeholder="秒" style="width:38px;text-align:center;padding:2px;"></div><input type="hidden" id="i4"></td>`;
+                } else if (j < 9) {
+                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width:100%;box-sizing:border-box;"></td>`;
+                } else {
+                    s += `<td id="i9"><div>0</div><div>E</div></td>`;
+                }
+            } else {
+                let v = A[g][r][j];
+                let displayVal = (j === 4) ? formatTime(v) : v;
+                if (j === 9) { 
+                    v = T[g][r]; 
+                    s += `<td>${v}</td>`; 
+                } else { 
+                    const sc = CS(v, x, g); 
+                    s += `<td><div>${displayVal}</div><div style="font-size:0.8em;color:#666">(${sc}点)</div></td>`; 
+                }
+            }
+        });
+        s += '</tr>';
+    });
+    s += '</table>';
+    document.getElementById("table").innerHTML = s;
 }
 
 function RS() {
