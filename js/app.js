@@ -142,24 +142,34 @@ function RT() {
     document.getElementById("table").innerHTML = s;
 }
 
-// 日付・時刻（秒まで）を更新する専用の関数
+// ✅ これを新しく貼り付けてください
 function updateTimestamp() {
     const now = new Date();
-    // 2026.1/16 21:03:45 の形式（秒を追加）
-    const dateStr = `${now.getFullYear()}.${now.getMonth() + 1}/${now.getDate()} ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
     
-    // table-timestamp というIDの場所に表示する（なければ作る）
+    // 0埋め用の補助関数
+    const f = (n) => n.toString().padStart(2, '0');
+
+    // 1段目: 西暦.月/日（例: 2026.01/16）
+    const datePart = `${now.getFullYear()}.${f(now.getMonth() + 1)}/${f(now.getDate())}`;
+    // 2段目: 時:分:秒（例: 21:05:08）
+    const timePart = `${f(now.getHours())}:${f(now.getMinutes())}:${f(now.getSeconds())}`;
+    
     let tsArea = document.getElementById("table-timestamp");
     if (!tsArea) {
         tsArea = document.createElement("div");
         tsArea.id = "table-timestamp";
-        tsArea.style = "text-align: right; font-size: 11px; color: #666; margin-bottom: 5px; font-family: sans-serif;";
+        // 右寄せ、等幅フォント(monospace)、行間1.2、太字に設定
+        tsArea.style = "text-align: right; font-size: 11px; color: #444; margin-bottom: 8px; font-family: monospace; line-height: 1.2; font-weight: bold;";
+        
         const tableContainer = document.getElementById("table");
-        tableContainer.parentNode.insertBefore(tsArea, tableContainer);
+        if (tableContainer) {
+            tableContainer.parentNode.insertBefore(tsArea, tableContainer);
+        }
     }
-    tsArea.textContent = dateStr;
+    
+    // textContent ではなく innerHTML を使い、divで囲んで2段にします
+    tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
 }
-
 function RS() {
     const g = document.getElementById("gender").value;
     const c = D[g].c; const h = D[g].h;
