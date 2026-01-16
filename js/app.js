@@ -459,6 +459,14 @@ const types = [
             });
             
             document.getElementById("fitnessPokedex").innerHTML = pokedexHtml;
+
+    // --- 図鑑のレイアウトを2x2のグリッドに強制修正 ---
+const pokedexContainer = document.getElementById("fitnessPokedex");
+pokedexContainer.style.display = "grid";
+pokedexContainer.style.gridTemplateColumns = "repeat(2, 1fr)"; // 2列に分割
+pokedexContainer.style.gap = "15px"; // カード同士の隙間
+pokedexContainer.style.width = "100%";
+pokedexContainer.style.justifyContent = "center"; // 中央寄せ
             
             // 総合評価
             // 持久系は高い方のみを採用し、合計8種目で計算
