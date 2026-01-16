@@ -440,22 +440,26 @@ const types = [
                
                 pokedexHtml += `
                     <div class="pokedex-card" style="--type-color: ${type.color}">
-                        <div style="display:flex; align-items:center; margin-bottom:15px; padding-left:5px">
-                            <span style="font-size:42px; margin-right:12px">${type.emoji}</span>
+                        <div style="display:flex; align-items:center; margin-bottom:10px; padding-left:4px">
+                            <span style="font-size:52px; margin-right:12px; line-height:1">${type.emoji}</span>
                             <div style="text-align:left">
-                                <div style="font-size:15px; font-weight:bold; opacity:0.9">${type.name}</div>
-                                <div style="font-size:30px; font-weight:900; line-height:1">Lv.${level}</div>
+                                <div style="font-size:14px; font-weight:bold; opacity:0.9; margin-bottom:-2px">${type.name}</div>
+                                <div style="font-size:34px; font-weight:900; line-height:0.9">Lv.${level}</div>
                             </div>
                         </div>
                         
                         <div style="width:100%">
-                            <div style="background:rgba(255,255,255,0.2); height:12px; border-radius:6px; overflow:hidden; margin-bottom:8px">
+                            <div style="background:rgba(255,255,255,0.2); height:12px; border-radius:6px; overflow:hidden; margin-bottom:6px">
                                 <div style="background:${type.color}; height:100%; width:${progress}%; transition:width 0.8s ease-out;"></div>
                             </div>
                             
-                            <div style="font-size:12px; font-weight:bold; text-align:left; padding-left:2px">
-                                ${type.avg > 0 ? `${type.avg.toFixed(1)}点 / 10.0点` : 'データなし'}
-                                ${toNext > 0 && toNext < 1 ? `<span style="font-size:10px; opacity:0.8; font-weight:normal"> (次のレベルまであと${toNext.toFixed(1)}点！)</span>` : ''}
+                            <div style="font-size:12px; font-weight:bold; text-align:left; padding-left:2px; line-height:1.1">
+                                <span>${type.avg.toFixed(1)}点 / 10.0点</span>
+                                ${toNext > 0 && toNext < 1 ? `
+                                    <span style="font-size:10px; opacity:0.8; font-weight:normal; display:block">
+                                        あと${toNext.toFixed(1)}点でLvアップ！
+                                    </span>
+                                ` : ''}
                             </div>
                         </div>
                     </div>
