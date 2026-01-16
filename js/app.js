@@ -164,7 +164,7 @@ function updateTimestamp() {
             
             text-align: right;
             font-size: 13px;      /* 文字を大きく調整 */
-            color: #4a90e2;       /* 青色 */
+            color: #2b6cb0;       /* 青色 */
             background: transparent;
             padding: 0px 2px;
             font-family: monospace;
