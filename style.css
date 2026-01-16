@@ -409,18 +409,18 @@ input[type="number"] {
 /* =============================================
     体力タイプ図鑑：2×2 中央揃え確定設定
    ============================================= */
-/* --- 1. タイトルを巨大化（HTMLのfont-size設定を打ち消す） --- */
+/* --- 1. タイトル：大きすぎず、目立つサイズへ (32px) --- */
 #pokedexTitle {
-    font-size: 52px !important; 
+    font-size: 32px !important; 
     font-weight: 900 !important;
     text-align: center !important;
-    margin: 5px 0 10px 0 !important;
-    letter-spacing: -1px !important;
-    line-height: 1.1 !important;
+    margin: 15px 0 20px 0 !important; /* 上下に適度な余白 */
+    letter-spacing: 1px !important;
     color: white !important;
+    display: block !important;
 }
 
-/* --- 2. 図鑑コンテナ：左右端まで広げ、下の余白を詰める --- */
+/* --- 2. 図鑑コンテナ：隙間を維持 --- */
 #fitnessPokedex {
     display: flex !important;
     flex-wrap: wrap !important;
@@ -428,7 +428,7 @@ input[type="number"] {
     gap: 8px !important;
     width: 100% !important;
     padding: 0 !important;
-    margin: 0 0 -10px 0 !important; /* マイナス指定で下の評価カードを引き寄せる */
+    margin-bottom: 8px !important; /* 下のカードとの間にわずかな隙間(8px) */
 }
 
 /* --- 3. 図鑑カード自体の設定 --- */
@@ -444,7 +444,7 @@ input[type="number"] {
     overflow: hidden;
 }
 
-/* カード左端のカラーバー */
+/* 左端のカラーライン */
 .pokedex-card::before {
     content: "";
     position: absolute;
@@ -453,12 +453,13 @@ input[type="number"] {
     background: var(--type-color, #fff);
 }
 
-/* --- 4. 総合評価カード（Lvの下のカード）の隙間を消去 --- */
+/* --- 4. 総合評価カード：重なりを解消 --- */
 #totalRank {
-    margin-top: 0 !important;
+    margin-top: 8px !important; /* 図鑑カードとの隙間を8px確保 */
     background: rgba(255, 255, 255, 0.2) !important;
-    padding: 20px !important;
+    padding: 15px !important;
     border-radius: 12px !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    clear: both;
 }
