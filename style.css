@@ -407,59 +407,81 @@ input[type="number"] {
 }
 
 /* =============================================
-    体力タイプ図鑑：2×2 中央揃え確定設定
+   体力タイプ図鑑：確定レイアウト
    ============================================= */
-/* --- 1. タイトル：大きすぎず、目立つサイズへ (32px) --- */
+.pokedex-container {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 20px 10px;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    color: white;
+}
+
 #pokedexTitle {
-    font-size: 32px !important; 
+    font-size: 28px !important;
     font-weight: 900 !important;
     text-align: center !important;
-    margin: 15px 0 20px 0 !important; /* 上下に適度な余白 */
-    letter-spacing: 1px !important;
+    margin: 0 0 20px 0 !important;
     color: white !important;
-    display: block !important;
 }
 
-/* --- 2. 図鑑コンテナ：隙間を維持 --- */
 #fitnessPokedex {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: space-between !important;
-    gap: 8px !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important; /* 2列固定 */
+    gap: 10px !important;
     width: 100% !important;
-    padding: 0 !important;
-    margin-bottom: 8px !important; /* 下のカードとの間にわずかな隙間(8px) */
+    margin-bottom: 15px !important;
 }
 
-/* --- 3. 図鑑カード自体の設定 --- */
 .pokedex-card {
-    flex: 0 0 calc(50% - 4px) !important;
-    background: rgba(255, 255, 255, 0.12) !important;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-radius: 16px !important;
-    padding: 18px 12px !important;
-    box-sizing: border-box !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 15px !important;
+    padding: 15px 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     position: relative;
     overflow: hidden;
 }
 
-/* 左端のカラーライン */
-.pokedex-card::before {
-    content: "";
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 6px;
-    background: var(--type-color, #fff);
+/* カード内のアイコンと文字の並び */
+.pokedex-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px;
 }
 
-/* --- 4. 総合評価カード：重なりを解消 --- */
+.type-emoji {
+    font-size: 32px !important; /* 絵文字サイズ固定 */
+}
+
+.type-name {
+    font-size: 18px !important; /* 名前サイズ固定 */
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.type-level {
+    font-size: 16px !important; /* Lvサイズ固定 */
+    font-weight: bold;
+    opacity: 0.9;
+}
+
 #totalRank {
-    margin-top: 8px !important; /* 図鑑カードとの隙間を8px確保 */
     background: rgba(255, 255, 255, 0.2) !important;
     padding: 15px !important;
     border-radius: 12px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    clear: both;
+    text-align: center !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+}
+
+/* スマホ用の微調整 */
+@media screen and (max-width: 640px) {
+    #pokedexTitle { font-size: 22px !important; }
+    .type-emoji { font-size: 28px !important; }
+    .type-name { font-size: 15px !important; }
+    .type-level { font-size: 14px !important; }
 }
