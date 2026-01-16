@@ -444,20 +444,24 @@ input[type="number"] {
     margin-bottom: 0 !important;
 }
 
-/* 図鑑エリアを強制的に2列にする */
+/* 【最強設定】図鑑を強制的に2x2にする */
 #fitnessPokedex {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important; /* 確実に2分割 */
-    gap: 12px !important;
+    grid-template-columns: calc(50% - 5px) calc(50% - 5px) !important; /* 50%ずつに固定 */
+    gap: 10px !important;
     width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
     margin: 15px 0 !important;
-    text-align: left !important; /* 親のcenter設定を打ち消す */
+    justify-content: space-between !important; /* 左右にみっちり広げる */
 }
 
-/* カードのデザイン調整 */
+/* カード1枚ずつの設定 */
 #fitnessPokedex > div {
-    background: rgba(255, 255, 255, 0.15) !important;
-    padding: 15px !important;
-    border-radius: 12px !important;
-    backdrop-filter: blur(10px);
+    width: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    /* もし右に寄るならここをチェック */
+    text-align: center !important; 
 }
