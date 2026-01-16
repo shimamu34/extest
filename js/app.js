@@ -466,23 +466,35 @@ const types = [
 ];
             
             // 図鑑表示
-            let pokedexHtml = "";
+let pokedexHtml = "";
+const types = [
+    { name: "パワー型", emoji: "💪", color: "#f56565", score: scores.power },
+    { name: "持久力型", emoji: "🏃", color: "#4fd1c5", score: scores.endurance },
+    { name: "敏捷性型", emoji: "⚡", color: "#63b3ed", score: scores.agility },
+    { name: "柔軟性型", emoji: "🤸", color: "#f6e05e", score: scores.flexibility }
+];
+
 types.forEach(type => {
+    // スコアが未定義(undefined)なら0にする
+    const level = type.score !== undefined ? type.score : 0;
+    const percent = Math.min((level / 10) * 100, 100);
+
     pokedexHtml += `
-    <div class="pokedex-card" style="border-left: 6px solid ${type.color} !important;">
-        <div class="pokedex-header" style="display: flex; align-items: center; width: 100%;">
-            <span class="type-emoji" style="margin-right: 10px;">${type.emoji}</span>
-            <div class="type-info">
-                <div class="type-name" style="font-size: 16px; font-weight: bold;">${type.name}</div>
-                <div class="type-level" style="font-size: 14px;">Lv.${level} <span style="font-size: 10px; opacity: 0.7;">/ 10</span></div>
-                
-                <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; margin-top: 5px;">
-                    <div style="width: ${(level/10)*100}%; height: 100%; background: ${type.color}; border-radius: 3px;"></div>
+        <div class="pokedex-card" style="--type-color: ${type.color}">
+            <div class="pokedex-header">
+                <span style="font-size: 24px; margin-right: 10px;">${type.emoji}</span>
+                <div class="type-info">
+                    <div style="font-size: 16px; font-weight: bold;">${type.name}</div>
+                    <div style="font-size: 14px; opacity: 0.9;">Lv.${level} / 10</div>
+                </div>
+            </div>
+            <div class="lv-container">
+                <div class="lv-bar-bg">
+                    <div class="lv-bar-fill" style="width: ${percent}%; background: ${type.color};"></div>
                 </div>
             </div>
         </div>
-    </div>
-`;
+    `;
 });
 document.getElementById('fitnessPokedex').innerHTML = pokedexHtml;
     
