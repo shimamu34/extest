@@ -264,42 +264,43 @@ function SI() {
 }
 
 function LI() {
-    const g = document.getElementById("gender").value;
-    const gr = document.getElementById("grade").value;
-    const sv = localStorage.getItem("y-" + g);
-    
-    if (sv) {
-        const allData = JSON.parse(sv);
-        const v = allData[gr] || ["","","","","","","","",""];
-        for (let i = 0; i < v.length; i++) {
-            const input = document.getElementById(`i${i}`);
-            if (input) {
-                input.value = v[i];
-                
-                // --- 持久走の秒数を「分」と「秒」に分けて表示させる追加処理 ---
-                if (i === 4 && v[i] !== "") {
-                    const total = parseInt(v[i]);
-                    const mField = document.getElementById("i4_min");
-                    const sField = document.getElementById("i4_sec");
-                    if (mField && sField) {
-                        mField.value = Math.floor(total / 60); // 分を計算
-                        sField.value = total % 60;             // あまった秒
-                    }
-                }
-            }
-        }
-        U();
-    } else {
-        // データがない時は全部空にする
-        for (let i = 0; i < 9; i++) {
-            const input = document.getElementById(`i${i}`);
-            if (input) input.value = "";
-        }
-        // 持久走の分・秒入力欄も忘れずに空にする
-        if (document.getElementById("i4_min")) document.getElementById("i4_min").value = "";
-        if (document.getElementById("i4_sec")) document.getElementById("i4_sec").value = "";
-        U();
-    }
+    const g = document.getElementById("gender").value;
+    const gr = document.getElementById("grade").value;
+    const sv = localStorage.getItem("y-" + g);
+    
+    // 最初に持久走の分・秒入力欄をクリアしておく（これによって他学年の残骸を消す）
+    const mField = document.getElementById("i4_min");
+    const sField = document.getElementById("i4_sec");
+    if (mField) mField.value = "";
+    if (sField) sField.value = "";
+
+    if (sv) {
+        const allData = JSON.parse(sv);
+        const v = allData[gr] || ["","","","","","","","",""];
+        for (let i = 0; i < v.length; i++) {
+            const input = document.getElementById(`i${i}`);
+            if (input) {
+                input.value = v[i];
+                
+                // --- 持久走の秒数を「分」と「秒」に分けて表示させる処理 ---
+                if (i === 4 && v[i] !== "") {
+                    const total = parseInt(v[i]);
+                    if (mField && sField) {
+                        mField.value = Math.floor(total / 60); 
+                        sField.value = total % 60;             
+                    }
+                }
+            }
+        }
+        U();
+    } else {
+        // データが全くない時のリセット処理
+        for (let i = 0; i < 9; i++) {
+            const input = document.getElementById(`i${i}`);
+            if (input) input.value = "";
+        }
+        U();
+    }
 }
 
 // --- 送信機能（修正版） ---
