@@ -439,23 +439,23 @@ const types = [
                 const toNext = nextLevel - type.avg;
                 
                 pokedexHtml += `
-                    <div style="background:rgba(255,255,255,0.15);padding:20px;border-radius:12px;backdrop-filter:blur(10px)">
-                        <div style="display:flex;align-items:center;margin-bottom:15px">
-                            <span style="font-size:36px;margin-right:15px">${type.emoji}</span>
-                            <div style="flex:1">
-                                <div style="font-size:18px;font-weight:bold;margin-bottom:5px">${type.name}</div>
-                                <div style="font-size:24px;font-weight:bold">Lv.${level}</div>
-                            </div>
-                        </div>
-                        <div style="background:rgba(255,255,255,0.3);height:20px;border-radius:10px;overflow:hidden;margin-bottom:8px">
-                            <div style="background:${type.color};height:100%;width:${progress}%;transition:width 0.5s"></div>
-                        </div>
-                        <div style="font-size:13px;opacity:0.9">
-                            ${type.avg > 0 ? `${type.avg.toFixed(1)}点 / 10.0点` : 'データなし'}
-                            ${toNext > 0 && toNext < 1 ? ` (次のレベルまであと${toNext.toFixed(1)}点！)` : ''}
-                        </div>
-                    </div>
-                `;
+                    <div class="pokedex-card" style="background:rgba(255,255,255,0.15); padding:15px; border-radius:12px; backdrop-filter:blur(10px);">
+                        <div style="display:flex; align-items:center; margin-bottom:10px">
+                            <span style="font-size:30px; margin-right:10px">${type.emoji}</span>
+                            <div style="flex:1">
+                                <div style="font-size:14px; font-weight:bold;">${type.name}</div>
+                                <div style="font-size:20px; font-weight:bold">Lv.${level}</div>
+                            </div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.3); height:12px; border-radius:10px; overflow:hidden; margin-bottom:5px">
+                            <div style="background:${type.color}; height:100%; width:${progress}%; transition:width 0.5s"></div>
+                        </div>
+                        <div style="font-size:11px; opacity:0.9">
+                            ${type.avg > 0 ? `${type.avg.toFixed(1)}点 / 10.0点` : 'データなし'}
+                            ${toNext > 0 && toNext < 1 ? `<br>(次まで${toNext.toFixed(1)}点)` : ''}
+                        </div>
+                    </div>
+                `;
             });
             
             document.getElementById("fitnessPokedex").innerHTML = pokedexHtml;
