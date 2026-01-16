@@ -466,38 +466,43 @@ const types = [
 ];
             
             // 図鑑表示
-let pokedexHtml = "";
-const types = [
-    { name: "パワー型", emoji: "💪", color: "#f56565", score: scores.power },
-    { name: "持久力型", emoji: "🏃", color: "#4fd1c5", score: scores.endurance },
-    { name: "敏捷性型", emoji: "⚡", color: "#63b3ed", score: scores.agility },
-    { name: "柔軟性型", emoji: "🤸", color: "#f6e05e", score: scores.flexibility }
-];
-
-types.forEach(type => {
-    // スコアが未定義(undefined)なら0にする
-    const level = type.score || 0; // undefined対策
-const percent = (level / 10) * 100;
-
-pokedexHtml += `
-    <div class="pokedex-card" style="--type-color: ${type.color}">
-        <div class="pokedex-header">
-            <span class="type-emoji">${type.emoji}</span>
-            <div class="type-info">
-                <div class="type-name">${type.name}</div>
-                <div class="type-level">Lv.${level} / 10</div>
-            </div>
-        </div>
-        <div class="lv-container">
-            <div class="lv-bar-bg">
-                <div class="lv-bar-fill" style="width: ${percent}%; background: ${type.color};"></div>
-            </div>
-        </div>
-    </div>
-`;
-});
-document.getElementById('fitnessPokedex').innerHTML = pokedexHtml;
-    
+            let pokedexHtml = '';
+            types.forEach(type => {
+                const level = Math.floor(type.avg);
+                const progress = (type.avg / 10) * 100;
+                const nextLevel = Math.ceil(type.avg);
+                const toNext = nextLevel - type.avg;
+               
+                pokedexHtml += `
+                    <div class="pokedex-card" style="--type-color: ${type.color}">
+                        <div style="display:flex; align-items:center; margin-bottom:12px; padding-left:4px">
+                            <span style="font-size:48px; margin-right:12px; line-height:1">${type.emoji}</span>
+                            <div style="text-align:left">
+                                <div style="font-size:14px; font-weight:bold; opacity:0.9; margin-bottom:-2px">${type.name}</div>
+                                <div style="font-size:34px; font-weight:900; line-height:0.9">Lv.${level}</div>
+                            </div>
+                        </div>
+                        
+                        <div style="width:100%">
+                            <div style="background:rgba(255,255,255,0.2); height:12px; border-radius:6px; overflow:hidden; margin-bottom:8px">
+                                <div style="background:${type.color}; height:100%; width:${progress}%; transition:width 0.8s ease-out;"></div>
+                            </div>
+                            
+                            <div style="font-size:14px; font-weight:bold; text-align:left; padding-left:2px; line-height:1.3">
+                                <span>${type.avg.toFixed(1)}点 / 10.0点</span>
+                                
+                                ${toNext > 0 && toNext < 1 ? `
+                                    <span style="font-size:12px; opacity:1; font-weight:bold; display:block; color: rgba(255,255,255,0.9);">
+                                        あと${toNext.toFixed(1)}点でLvアップ！
+                                    </span>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById("fitnessPokedex").innerHTML = pokedexHtml;
             // --- ここから追加：もしシミュレーターで目標が設定されていたらタイトルを維持する ---
             const currentGoalTitle = document.getElementById('goalTargetName');
             if (currentGoalTitle && currentGoalTitle.innerText === "あなたの体力タイプ図鑑") {
