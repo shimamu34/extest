@@ -142,34 +142,43 @@ function RT() {
     document.getElementById("table").innerHTML = s;
 }
 
-// ✅ これを新しく貼り付けてください
+// 日時関係
 function updateTimestamp() {
     const now = new Date();
-    
-    // 0埋め用の補助関数
     const f = (n) => n.toString().padStart(2, '0');
 
-    // 1段目: 西暦.月/日（例: 2026.01.16）
     const datePart = `${now.getFullYear()}.${f(now.getMonth() + 1)}.${f(now.getDate())}`;
-    // 2段目: 時:分:秒（例: 21:05:08）
     const timePart = `${f(now.getHours())}:${f(now.getMinutes())}:${f(now.getSeconds())}`;
     
     let tsArea = document.getElementById("table-timestamp");
     if (!tsArea) {
         tsArea = document.createElement("div");
         tsArea.id = "table-timestamp";
-        // 右寄せ、等幅フォント(monospace)、行間1.2、太字に設定
-        tsArea.style = "text-align: right; font-size: 14px; color: #2b6cb0; margin-bottom: 10px; font-family: monospace; line-height: 1.2; font-weight: 900; letter-spacing: 0.5px;";
         
-        const tableContainer = document.getElementById("table");
-        if (tableContainer) {
-            tableContainer.parentNode.insertBefore(tsArea, tableContainer);
-        }
+        // ★ 修正ポイント：position: absolute を使い、右上に固定。
+        // これにより、他の要素（タイトルなど）を押し下げなくなります。
+        tsArea.style = `
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            text-align: right;
+            font-size: 11px;
+            color: #4a90e2; 
+            font-family: monospace;
+            line-height: 1.1;
+            font-weight: bold;
+            pointer-events: none;
+        `;
+        
+        // 「個人測定ログ」のタイトルがある親要素（ヘッダーカード）を探して挿入
+        const header = document.querySelector('.header-card') || document.querySelector('header') || document.body;
+        header.style.position = 'relative'; // 基点を作る
+        header.appendChild(tsArea);
     }
     
-    // textContent ではなく innerHTML を使い、divで囲んで2段にします
     tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
 }
+
 function RS() {
     const g = document.getElementById("gender").value;
     const c = D[g].c; const h = D[g].h;
