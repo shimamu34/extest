@@ -103,7 +103,6 @@ function RT() {
     if (!D[g]) return;
     const h = D[g].h;
     
-    // 秒数を「分'秒"」に変換するヘルパー関数
     const formatTime = (sec) => {
         const m = Math.floor(sec / 60);
         const s = Math.round(sec % 60);
@@ -118,34 +117,22 @@ function RT() {
         h.forEach((x, j) => {
             if (r === "記録") {
                 if (j === 4) { 
-                    s += `<td style="width: 120px; padding: 4px;">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-        <input type="number" id="i4_min" onchange="U()" placeholder="分" 
-               style="width: 50px; text-align: center;"> <span style="font-weight: bold;">:</span>
-        <input type="number" id="i4_sec" onchange="U()" placeholder="秒" 
-               style="width: 50px; text-align: center;">
-    </div>
-    <input type="hidden" id="i4"> 
-</td>`;
+                    // 改行を排除し、inputの幅を38pxに微調整しました
+                    s += `<td style="padding:2px; min-width:100px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><input type="number" id="i4_min" onchange="U()" placeholder="分" style="width:38px;text-align:center;padding:2px;">:<input type="number" id="i4_sec" onchange="U()" placeholder="秒" style="width:38px;text-align:center;padding:2px;"></div><input type="hidden" id="i4"></td>`;
                 } else if (j < 9) {
-                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width: 100%; box-sizing: border-box;"></td>`;
+                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width:100%;box-sizing:border-box;"></td>`;
                 } else {
                     s += `<td id="i9"><div>0</div><div>E</div></td>`;
                 }
             } else {
                 let v = A[g][r][j];
-                // --- 持久走（j === 4）かつ平均値行の表示を変換 ---
-                let displayVal = v;
-                if (j === 4) {
-                    displayVal = formatTime(v);
-                }
-
+                let displayVal = (j === 4) ? formatTime(v) : v;
                 if (j === 9) { 
                     v = T[g][r]; 
                     s += `<td>${v}</td>`; 
                 } else { 
                     const sc = CS(v, x, g); 
-                    s += `<td><div>${displayVal}</div><div style="font-size:0.85em;color:#666">(${sc}点)</div></td>`; 
+                    s += `<td><div>${displayVal}</div><div style="font-size:0.8em;color:#666">(${sc}点)</div></td>`; 
                 }
             }
         });
@@ -268,6 +255,12 @@ function LI() {
     const gr = document.getElementById("grade").value;
     const sv = localStorage.getItem("y-" + g);
     
+    // 最初に持久走の分・秒入力欄をクリアしておく（これによって他学年の残骸を消す）
+    const mField = document.getElementById("i4_min");
+    const sField = document.getElementById("i4_sec");
+    if (mField) mField.value = "";
+    if (sField) sField.value = "";
+
     if (sv) {
         const allData = JSON.parse(sv);
         const v = allData[gr] || ["","","","","","","","",""];
@@ -276,28 +269,23 @@ function LI() {
             if (input) {
                 input.value = v[i];
                 
-                // --- 持久走の秒数を「分」と「秒」に分けて表示させる追加処理 ---
+                // --- 持久走の秒数を「分」と「秒」に分けて表示させる処理 ---
                 if (i === 4 && v[i] !== "") {
                     const total = parseInt(v[i]);
-                    const mField = document.getElementById("i4_min");
-                    const sField = document.getElementById("i4_sec");
                     if (mField && sField) {
-                        mField.value = Math.floor(total / 60); // 分を計算
-                        sField.value = total % 60;             // あまった秒
+                        mField.value = Math.floor(total / 60); 
+                        sField.value = total % 60;             
                     }
                 }
             }
         }
         U();
     } else {
-        // データがない時は全部空にする
+        // データが全くない時のリセット処理
         for (let i = 0; i < 9; i++) {
             const input = document.getElementById(`i${i}`);
             if (input) input.value = "";
         }
-        // 持久走の分・秒入力欄も忘れずに空にする
-        if (document.getElementById("i4_min")) document.getElementById("i4_min").value = "";
-        if (document.getElementById("i4_sec")) document.getElementById("i4_sec").value = "";
         U();
     }
 }
@@ -471,6 +459,7 @@ const types = [
             });
             
             document.getElementById("fitnessPokedex").innerHTML = pokedexHtml;
+
             
             // 総合評価
             // 持久系は高い方のみを採用し、合計8種目で計算
