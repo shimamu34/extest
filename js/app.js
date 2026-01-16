@@ -99,47 +99,51 @@ function CS(v, h, g) {
 
 // テーブル・評価描画
 function RT() {
-    const g = document.getElementById("gender").value;
-    if (!D[g]) return;
-    const h = D[g].h;
-    
-    const formatTime = (sec) => {
-        const m = Math.floor(sec / 60);
-        const s = Math.round(sec % 60);
-        return `${m}'${s.toString().padStart(2, '0')}"`;
-    };
+    const g = document.getElementById("gender").value;
+    if (!D[g]) return;
+    const h = D[g].h;
+    
+    const formatTime = (sec) => {
+        const m = Math.floor(sec / 60);
+        const s = Math.round(sec % 60);
+        return `${m}'${s.toString().padStart(2, '0')}"`;
+    };
 
-    let s = '<table><tr><th></th>';
-    h.forEach(x => s += `<th>${x}</th>`);
-    s += '</tr>';
-    ["記録", "帯広市", "北海道", "全国"].forEach(r => {
-        s += '<tr><td>' + r + '</td>';
-        h.forEach((x, j) => {
-            if (r === "記録") {
-                if (j === 4) { 
-                    // 改行を排除し、inputの幅を38pxに微調整しました
-                    s += `<td style="padding:2px; min-width:100px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><input type="number" id="i4_min" onchange="U()" placeholder="分" style="width:38px;text-align:center;padding:2px;">:<input type="number" id="i4_sec" onchange="U()" placeholder="秒" style="width:38px;text-align:center;padding:2px;"></div><input type="hidden" id="i4"></td>`;
-                } else if (j < 9) {
-                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width:100%;box-sizing:border-box;"></td>`;
-                } else {
-                    s += `<td id="i9"><div>0</div><div>E</div></td>`;
-                }
-            } else {
-                let v = A[g][r][j];
-                let displayVal = (j === 4) ? formatTime(v) : v;
-                if (j === 9) { 
-                    v = T[g][r]; 
-                    s += `<td>${v}</td>`; 
-                } else { 
-                    const sc = CS(v, x, g); 
-                    s += `<td><div>${displayVal}</div><div style="font-size:0.8em;color:#666">(${sc}点)</div></td>`; 
-                }
-            }
-        });
-        s += '</tr>';
-    });
-    s += '</table>';
-    document.getElementById("table").innerHTML = s;
+    // 修正：外側の <table> <table> 二重構造を避ける
+    let s = '<thead><tr><th></th>'; // table ではなく thead から開始
+    h.forEach(x => s += `<th>${x}</th>`);
+    s += '</tr></thead><tbody>';
+    
+    ["記録", "帯広市", "北海道", "全国"].forEach(r => {
+        s += '<tr><td>' + r + '</td>';
+        h.forEach((x, j) => {
+            // ... (既存の記録行・比較行の生成ロジックはそのまま) ...
+            if (r === "記録") {
+                if (j === 4) { 
+                    // 入力欄の微調整
+                    s += `<td style="padding:2px; min-width:90px;"><div class="endurance-input-group"><input type="number" id="i4_min" onchange="U()" placeholder="分" style="width:35px;">:<input type="number" id="i4_sec" onchange="U()" placeholder="秒" style="width:35px;"></div><input type="hidden" id="i4"></td>`;
+                } else if (j < 9) {
+                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width:100%;box-sizing:border-box;"></td>`;
+                } else {
+                    s += `<td id="i9"><div>0</div><div>E</div></td>`;
+                }
+            } else {
+                // 比較データの表示
+                let v = A[g][r][j];
+                let displayVal = (j === 4) ? formatTime(v) : v;
+                if (j === 9) { 
+                    v = T[g][r]; 
+                    s += `<td>${v}</td>`; 
+                } else { 
+                    const sc = CS(v, x, g); 
+                    s += `<td><div>${displayVal}</div><div style="font-size:0.8em;color:#666">(${sc}点)</div></td>`; 
+                }
+            }
+        });
+        s += '</tr>';
+    });
+    s += '</tbody>'; // 最後に tbody を閉じる
+    document.getElementById("table").innerHTML = s;
 }
 
 function RS() {
