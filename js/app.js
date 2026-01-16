@@ -139,7 +139,7 @@ function RT() {
         s += '</tr>';
     });
     s += '</table>';
- document.getElementById("table").innerHTML = s;
+ document.getElementById("table").innerHTML = '<div id="table-timestamp"></div>' + s;
     
     // 表示された直後に時刻を更新する
     updateTimestamp();
@@ -153,37 +153,28 @@ function updateTimestamp() {
     const datePart = `${now.getFullYear()}.${f(now.getMonth() + 1)}.${f(now.getDate())}`;
     const timePart = `${f(now.getHours())}:${f(now.getMinutes())}:${f(now.getSeconds())}`;
     
-    let tsArea = document.getElementById("table-timestamp");
-    if (!tsArea) {
-        tsArea = document.createElement("div");
-        tsArea.id = "table-timestamp";
-        
-        // 個人測定ログのタイトル（h2やh1、あるいは特定のクラス名）を探す
-        // もし適切なクラス名が不明な場合は、一旦 #table の親要素に固定します
-        const anchor = document.querySelector('h1, h2, .title, .header-card') || document.getElementById("table").parentNode;
-        
-        // 親要素を基点にする設定
-        anchor.style.position = 'relative';
-
+    const tsArea = document.getElementById("table-timestamp");
+    if (tsArea) {
         tsArea.style = `
-            position: absolute;
-            top: 0px; 
-            right: 10px;
+            display: block;
+            margin-left: auto;   /* 右寄せにする */
+            margin-right: 0;     /* 右端に揃える */
+            width: fit-content;  /* 文字幅に合わせる */
             text-align: right;
             font-size: 11px;
-            color: #4a90e2;
-            background: #cceeff;
-            padding: 3px 8px;
-            border-radius: 4px;
+            color: #4a90e2;      /* 青色（または #333） */
+            background: #cceeff; /* 項目別得点表と同じ水色 */
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0; /* 上側だけ角丸（表と繋がって見えるように） */
             font-family: monospace;
             line-height: 1.1;
             font-weight: bold;
-            z-index: 100;
+            margin-bottom: 0px;  /* 表との隙間をゼロに */
+            border: 1px solid #ddd;
+            border-bottom: none; /* 下の枠線を消して表と合体させる */
         `;
-        anchor.appendChild(tsArea);
+        tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
     }
-    
-    tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
 }
 
 function RS() {
