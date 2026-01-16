@@ -139,7 +139,8 @@ function RT() {
         s += '</tr>';
     });
     s += '</table>';
- document.getElementById("table").innerHTML = '<div id="table-timestamp"></div>' + s;
+ 　　document.getElementById("table").style.position = "relative";
+    document.getElementById("table").innerHTML = '<div id="table-timestamp"></div>' + s;
     
     // 表示された直後に時刻を更新する
     updateTimestamp();
@@ -156,22 +157,21 @@ function updateTimestamp() {
     const tsArea = document.getElementById("table-timestamp");
     if (tsArea) {
         tsArea.style = `
-            display: block;
-            margin-left: auto;   /* 右寄せにする */
-            margin-right: 0;     /* 右端に揃える */
-            width: fit-content;  /* 文字幅に合わせる */
+            position: absolute;   /* 物理的な行数を作らずに「浮かせる」 */
+            right: 0;             /* 表の右端（合計セル）に合わせる */
+            bottom: 100%;         /* 表の真上に配置 */
+            margin-bottom: 2px;   /* 表とのわずかな隙間 */
+            
             text-align: right;
             font-size: 11px;
-            color: #4a90e2;      /* 青色（または #333） */
-            background: #cceeff; /* 項目別得点表と同じ水色 */
-            padding: 2px 8px;
-            border-radius: 4px 4px 0 0; /* 上側だけ角丸（表と繋がって見えるように） */
+            color: #4a90e2;      /* 文字色は現在の青色のまま */
+            background: transparent; /* 背景を透明（または white）に */
+            padding: 0px 4px;     /* 背景が透明なので余白を最小限に */
             font-family: monospace;
             line-height: 1.1;
             font-weight: bold;
-            margin-bottom: 0px;  /* 表との隙間をゼロに */
-            border: 1px solid #ddd;
-            border-bottom: none; /* 下の枠線を消して表と合体させる */
+            white-space: nowrap;
+            z-index: 10;
         `;
         tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
     }
