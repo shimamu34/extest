@@ -140,20 +140,24 @@ function RT() {
     });
     s += '</table>';
     document.getElementById("table").innerHTML = s;
-    // --- ★ここから日付表示の追加処理 ---
+}
+
+// 日付・時刻（秒まで）を更新する専用の関数
+function updateTimestamp() {
     const now = new Date();
-    // 2026.1/16 21:03 の形式を作成
-    const dateStr = `${now.getFullYear()}.${now.getMonth() + 1}/${now.getDate()} ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+    // 2026.1/16 21:03:45 の形式（秒を追加）
+    const dateStr = `${now.getFullYear()}.${now.getMonth() + 1}/${now.getDate()} ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
     
-    // 日付用のHTML（右寄せ、サイズ調整）
-    const timestampHtml = `
-        <div style="text-align: right; font-size: 11px; color: #666; margin-bottom: 5px; font-family: sans-serif;">
-            ${dateStr}
-        </div>`;
-    
-    // 表の前に日付を結合して表示
-    document.getElementById("table").innerHTML = timestampHtml + s;
-    // --- ★ここまで ---
+    // table-timestamp というIDの場所に表示する（なければ作る）
+    let tsArea = document.getElementById("table-timestamp");
+    if (!tsArea) {
+        tsArea = document.createElement("div");
+        tsArea.id = "table-timestamp";
+        tsArea.style = "text-align: right; font-size: 11px; color: #666; margin-bottom: 5px; font-family: sans-serif;";
+        const tableContainer = document.getElementById("table");
+        tableContainer.parentNode.insertBefore(tsArea, tableContainer);
+    }
+    tsArea.textContent = dateStr;
 }
 
 function RS() {
@@ -249,8 +253,8 @@ function U() {
     const highlightEl = document.getElementById(`e${lv}${gr}`);
     if (highlightEl) highlightEl.classList.add("highlight");
     SI();
-    // 入力するたびに図鑑も再描画させる
     RAnalysis(g);
+    updateTimestamp();
     if (typeof updateAllCharts === 'function') updateAllCharts();
 }
 
