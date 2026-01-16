@@ -139,7 +139,10 @@ function RT() {
         s += '</tr>';
     });
     s += '</table>';
-    document.getElementById("table").innerHTML = s;
+ document.getElementById("table").innerHTML = '<div id="table-timestamp"></div>' + s;
+    
+    // 表示された直後に時刻を更新する
+    updateTimestamp();
 }
 
 // 日時関係
@@ -150,33 +153,27 @@ function updateTimestamp() {
     const datePart = `${now.getFullYear()}.${f(now.getMonth() + 1)}.${f(now.getDate())}`;
     const timePart = `${f(now.getHours())}:${f(now.getMinutes())}:${f(now.getSeconds())}`;
     
-    let tsArea = document.getElementById("table-timestamp");
-    if (!tsArea) {
-        tsArea = document.createElement("div");
-        tsArea.id = "table-timestamp";
-        
-        // ★ 修正ポイント：position: absolute を使い、右上に固定。
-        // これにより、他の要素（タイトルなど）を押し下げなくなります。
+    const tsArea = document.getElementById("table-timestamp");
+    if (tsArea) {
+        // float: right を使い、縦幅を占有しないようにします
+        // 背景を項目別得点表と同じ水色(#cceeff)にし、文字サイズを調整
         tsArea.style = `
-            position: absolute;
-            top: 10px;
-            right: 15px;
+            float: right;
             text-align: right;
             font-size: 11px;
-            color: #4a90e2; 
+            color: #4a90e2;
+            background: #cceeff;
+            padding: 2px 8px;
+            border-radius: 4px;
             font-family: monospace;
             line-height: 1.1;
             font-weight: bold;
-            pointer-events: none;
+            margin-bottom: -30px; /* ここが重要：マイナスの余白で、後続のテーブルを上に引き寄せます */
+            position: relative;
+            z-index: 10;
         `;
-        
-        // 「個人測定ログ」のタイトルがある親要素（ヘッダーカード）を探して挿入
-        const header = document.querySelector('.header-card') || document.querySelector('header') || document.body;
-        header.style.position = 'relative'; // 基点を作る
-        header.appendChild(tsArea);
+        tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
     }
-    
-    tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
 }
 
 function RS() {
