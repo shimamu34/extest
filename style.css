@@ -422,17 +422,22 @@ input[type="number"] {
     clear: both !important;            /* 上の要素からの回り込みを遮断 */
 }
 
-/* カード1枚のサイズを「親要素の半分」に固定 */
+/* カード1枚ずつの設定 */
 .pokedex-card {
-    flex: 0 0 calc(50% - 10px) !important;
-    max-width: calc(50% - 10px) !important;
-    min-width: 250px !important;       /* 崩れない最小幅 */
-    background: white !important;
-    border-radius: 15px !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
+    flex: 0 0 calc(50% - 10px); /* 2列にする設定（そのまま） */
+    box-sizing: border-box;
+    
+    /* ▼ ここからデザインを追加 ▼ */
+    background: rgba(0, 0, 0, 0.25); /* 総合評価と同じような、少し濃い半透明の背景 */
+    border-radius: 15px;
+    padding: 15px;
+    color: white; /* 文字色を白にする */
+    backdrop-filter: blur(5px); /* 少しぼかしてリッチな質感に */
+}
+
+/* カード内のすべての文字色を強制的に白にする */
+.pokedex-card * {
+    color: white !important;
 }
 
 /* モバイル時：画面が狭すぎる場合は1列にする */
