@@ -440,8 +440,8 @@ const types = [
                
                 pokedexHtml += `
                     <div class="pokedex-card" style="--type-color: ${type.color}">
-                        <div style="display:flex; align-items:center; margin-bottom:10px; padding-left:4px">
-                            <span style="font-size:52px; margin-right:12px; line-height:1">${type.emoji}</span>
+                        <div style="display:flex; align-items:center; margin-bottom:12px; padding-left:4px">
+                            <span style="font-size:48px; margin-right:12px; line-height:1">${type.emoji}</span>
                             <div style="text-align:left">
                                 <div style="font-size:14px; font-weight:bold; opacity:0.9; margin-bottom:-2px">${type.name}</div>
                                 <div style="font-size:34px; font-weight:900; line-height:0.9">Lv.${level}</div>
@@ -449,14 +449,15 @@ const types = [
                         </div>
                         
                         <div style="width:100%">
-                            <div style="background:rgba(255,255,255,0.2); height:12px; border-radius:6px; overflow:hidden; margin-bottom:6px">
+                            <div style="background:rgba(255,255,255,0.2); height:12px; border-radius:6px; overflow:hidden; margin-bottom:8px">
                                 <div style="background:${type.color}; height:100%; width:${progress}%; transition:width 0.8s ease-out;"></div>
                             </div>
                             
-                            <div style="font-size:12px; font-weight:bold; text-align:left; padding-left:2px; line-height:1.1">
+                            <div style="font-size:14px; font-weight:bold; text-align:left; padding-left:2px; line-height:1.3">
                                 <span>${type.avg.toFixed(1)}点 / 10.0点</span>
+                                
                                 ${toNext > 0 && toNext < 1 ? `
-                                    <span style="font-size:10px; opacity:0.8; font-weight:normal; display:block">
+                                    <span style="font-size:12px; opacity:1; font-weight:bold; display:block; color: rgba(255,255,255,0.9);">
                                         あと${toNext.toFixed(1)}点でLvアップ！
                                     </span>
                                 ` : ''}
