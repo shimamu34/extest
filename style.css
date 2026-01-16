@@ -144,14 +144,14 @@ input[type="number"] {
         margin-right: 10px;
     }
 
-    /* 4. セットアップ画面や入力欄などの「グリッド」の崩れを直す */
-    #setupContent div[style*="display: grid"],
-    #tracking div[style*="display: grid"] {
-        display: flex !important; /* gridをやめてflexで縦に並べる */
-        flex-direction: column !important;
-        gap: 15px !important;
-        width: 100% !important;
-    }
+    /* 図鑑以外のグリッド要素をモバイルで縦並びにする設定 */
+#setupContent div[style*="display: grid"],
+#tracking div[style*="display: grid"]:not(.pokedex-container *) {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+    width: 100% !important;
+}
 
     /* 5. グリッド内の余計なラベルを消去 */
     #setupContent td:before, #tracking td:before {
@@ -436,12 +436,13 @@ input[type="number"] {
 .pokedex-card {
     background: rgba(255, 255, 255, 0.15) !important;
     border-radius: 12px !important;
-    padding: 12px !important;
+    padding: 10px !important; /* 少し詰める */
     display: flex !important;
-    flex-direction: column !important; /* 縦に並べる（これでメーターが下に来る） */
-    justify-content: center !important;
-    min-height: 100px !important; /* 高さをしっかり確保 */
+    flex-direction: column !important;
+    justify-content: space-between !important; /* 上下いっぱいに配置 */
+    min-height: 110px !important; /* 高さを少し広げて余裕を持たせる */
     border-left: 6px solid var(--type-color, #fff) !important;
+    box-sizing: border-box !important;
 }
 
 .pokedex-header {
