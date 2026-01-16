@@ -99,47 +99,60 @@ function CS(v, h, g) {
 
 // テーブル・評価描画
 function RT() {
-    const g = document.getElementById("gender").value;
-    if (!D[g]) return;
-    const h = D[g].h;
-    
-    const formatTime = (sec) => {
-        const m = Math.floor(sec / 60);
-        const s = Math.round(sec % 60);
-        return `${m}'${s.toString().padStart(2, '0')}"`;
-    };
+    const g = document.getElementById("gender").value;
+    if (!D[g]) return;
+    const h = D[g].h;
+    
+    // 秒数を「分'秒"」に変換するヘルパー関数
+    const formatTime = (sec) => {
+        const m = Math.floor(sec / 60);
+        const s = Math.round(sec % 60);
+        return `${m}'${s.toString().padStart(2, '0')}"`;
+    };
 
-    let s = '<table><tr><th></th>';
-    h.forEach(x => s += `<th>${x}</th>`);
-    s += '</tr>';
-    ["記録", "帯広市", "北海道", "全国"].forEach(r => {
-        s += '<tr><td>' + r + '</td>';
-        h.forEach((x, j) => {
-            if (r === "記録") {
-                if (j === 4) { 
-                    // 改行を排除し、inputの幅を38pxに微調整しました
-                    s += `<td style="padding:2px; min-width:100px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><input type="number" id="i4_min" onchange="U()" placeholder="分" style="width:38px;text-align:center;padding:2px;">:<input type="number" id="i4_sec" onchange="U()" placeholder="秒" style="width:38px;text-align:center;padding:2px;"></div><input type="hidden" id="i4"></td>`;
-                } else if (j < 9) {
-                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width:100%;box-sizing:border-box;"></td>`;
-                } else {
-                    s += `<td id="i9"><div>0</div><div>E</div></td>`;
-                }
-            } else {
-                let v = A[g][r][j];
-                let displayVal = (j === 4) ? formatTime(v) : v;
-                if (j === 9) { 
-                    v = T[g][r]; 
-                    s += `<td>${v}</td>`; 
-                } else { 
-                    const sc = CS(v, x, g); 
-                    s += `<td><div>${displayVal}</div><div style="font-size:0.8em;color:#666">(${sc}点)</div></td>`; 
-                }
-            }
-        });
-        s += '</tr>';
-    });
-    s += '</table>';
-    document.getElementById("table").innerHTML = s;
+    let s = '<table><tr><th></th>';
+    h.forEach(x => s += `<th>${x}</th>`);
+    s += '</tr>';
+    ["記録", "帯広市", "北海道", "全国"].forEach(r => {
+        s += '<tr><td>' + r + '</td>';
+        h.forEach((x, j) => {
+            if (r === "記録") {
+                if (j === 4) { 
+                    s += `<td style="width: 120px; padding: 4px;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+        <input type="number" id="i4_min" onchange="U()" placeholder="分" 
+               style="width: 50px; text-align: center;"> <span style="font-weight: bold;">:</span>
+        <input type="number" id="i4_sec" onchange="U()" placeholder="秒" 
+               style="width: 50px; text-align: center;">
+    </div>
+    <input type="hidden" id="i4"> 
+</td>`;
+                } else if (j < 9) {
+                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width: 100%; box-sizing: border-box;"></td>`;
+                } else {
+                    s += `<td id="i9"><div>0</div><div>E</div></td>`;
+                }
+            } else {
+                let v = A[g][r][j];
+                // --- 持久走（j === 4）かつ平均値行の表示を変換 ---
+                let displayVal = v;
+                if (j === 4) {
+                    displayVal = formatTime(v);
+                }
+
+                if (j === 9) { 
+                    v = T[g][r]; 
+                    s += `<td>${v}</td>`; 
+                } else { 
+                    const sc = CS(v, x, g); 
+                    s += `<td><div>${displayVal}</div><div style="font-size:0.85em;color:#666">(${sc}点)</div></td>`; 
+                }
+            }
+        });
+        s += '</tr>';
+    });
+    s += '</table>';
+    document.getElementById("table").innerHTML = s;
 }
 
 function RS() {
@@ -251,43 +264,42 @@ function SI() {
 }
 
 function LI() {
-    const g = document.getElementById("gender").value;
-    const gr = document.getElementById("grade").value;
-    const sv = localStorage.getItem("y-" + g);
-    
-    // 最初に持久走の分・秒入力欄をクリアしておく（これによって他学年の残骸を消す）
-    const mField = document.getElementById("i4_min");
-    const sField = document.getElementById("i4_sec");
-    if (mField) mField.value = "";
-    if (sField) sField.value = "";
-
-    if (sv) {
-        const allData = JSON.parse(sv);
-        const v = allData[gr] || ["","","","","","","","",""];
-        for (let i = 0; i < v.length; i++) {
-            const input = document.getElementById(`i${i}`);
-            if (input) {
-                input.value = v[i];
-                
-                // --- 持久走の秒数を「分」と「秒」に分けて表示させる処理 ---
-                if (i === 4 && v[i] !== "") {
-                    const total = parseInt(v[i]);
-                    if (mField && sField) {
-                        mField.value = Math.floor(total / 60); 
-                        sField.value = total % 60;             
-                    }
-                }
-            }
-        }
-        U();
-    } else {
-        // データが全くない時のリセット処理
-        for (let i = 0; i < 9; i++) {
-            const input = document.getElementById(`i${i}`);
-            if (input) input.value = "";
-        }
-        U();
-    }
+    const g = document.getElementById("gender").value;
+    const gr = document.getElementById("grade").value;
+    const sv = localStorage.getItem("y-" + g);
+    
+    if (sv) {
+        const allData = JSON.parse(sv);
+        const v = allData[gr] || ["","","","","","","","",""];
+        for (let i = 0; i < v.length; i++) {
+            const input = document.getElementById(`i${i}`);
+            if (input) {
+                input.value = v[i];
+                
+                // --- 持久走の秒数を「分」と「秒」に分けて表示させる追加処理 ---
+                if (i === 4 && v[i] !== "") {
+                    const total = parseInt(v[i]);
+                    const mField = document.getElementById("i4_min");
+                    const sField = document.getElementById("i4_sec");
+                    if (mField && sField) {
+                        mField.value = Math.floor(total / 60); // 分を計算
+                        sField.value = total % 60;             // あまった秒
+                    }
+                }
+            }
+        }
+        U();
+    } else {
+        // データがない時は全部空にする
+        for (let i = 0; i < 9; i++) {
+            const input = document.getElementById(`i${i}`);
+            if (input) input.value = "";
+        }
+        // 持久走の分・秒入力欄も忘れずに空にする
+        if (document.getElementById("i4_min")) document.getElementById("i4_min").value = "";
+        if (document.getElementById("i4_sec")) document.getElementById("i4_sec").value = "";
+        U();
+    }
 }
 
 // --- 送信機能（修正版） ---
@@ -439,24 +451,26 @@ const types = [
                 const toNext = nextLevel - type.avg;
                 
                 pokedexHtml += `
-                    <div style="background:rgba(255,255,255,0.15); padding:15px 5px; border-radius:12px; backdrop-filter:blur(10px); box-sizing:border-box; width:100%; display:flex; flex-direction:column; align-items:center;">
-        <div style="font-size:30px; margin-bottom:5px">${type.emoji}</div>
-        <div style="text-align:center">
-            <div style="font-size:12px; font-weight:bold; opacity:0.9;">${type.name}</div>
-            <div style="font-size:18px; font-weight:bold">Lv.${level}</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.3); height:10px; border-radius:5px; overflow:hidden; margin:8px 0; width:90%">
-            <div style="background:${type.color}; height:100%; width:${progress}%;"></div>
-        </div>
-        <div style="font-size:11px; opacity:0.8;">
-            ${type.avg > 0 ? type.avg.toFixed(1) + '点' : '未入力'}
-        </div>
-    </div>
-`;
+                    <div style="background:rgba(255,255,255,0.15);padding:20px;border-radius:12px;backdrop-filter:blur(10px)">
+                        <div style="display:flex;align-items:center;margin-bottom:15px">
+                            <span style="font-size:36px;margin-right:15px">${type.emoji}</span>
+                            <div style="flex:1">
+                                <div style="font-size:18px;font-weight:bold;margin-bottom:5px">${type.name}</div>
+                                <div style="font-size:24px;font-weight:bold">Lv.${level}</div>
+                            </div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.3);height:20px;border-radius:10px;overflow:hidden;margin-bottom:8px">
+                            <div style="background:${type.color};height:100%;width:${progress}%;transition:width 0.5s"></div>
+                        </div>
+                        <div style="font-size:13px;opacity:0.9">
+                            ${type.avg > 0 ? `${type.avg.toFixed(1)}点 / 10.0点` : 'データなし'}
+                            ${toNext > 0 && toNext < 1 ? ` (次のレベルまであと${toNext.toFixed(1)}点！)` : ''}
+                        </div>
+                    </div>
+                `;
             });
             
             document.getElementById("fitnessPokedex").innerHTML = pokedexHtml;
-
             
             // 総合評価
             // 持久系は高い方のみを採用し、合計8種目で計算
