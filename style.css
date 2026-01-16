@@ -416,8 +416,8 @@ input[type="number"] {
     align-items: flex-start !important;
     gap: 12px !important;              /* カード間の隙間 */
     width: 100% !important;
-    max-width: 850px !important;       /* 2枚並びに最適な幅 */
-    margin: 30px auto !important;      /* 外枠自体の左右中央寄せ */
+    max-width: 900px !important;       /* 2枚並びに最適な幅 */
+    margin: 20px auto !important;      /* 外枠自体の左右中央寄せ */
     padding: 10px !important;
     clear: both !important;            /* 上の要素からの回り込みを遮断 */
 }
@@ -426,7 +426,7 @@ input[type="number"] {
 .pokedex-card {
     flex: 0 0 calc(50% - 10px) !important;
     max-width: calc(50% - 10px) !important;
-    min-width: 280px !important;       /* 崩れない最小幅 */
+    min-width: 250px !important;       /* 崩れない最小幅 */
     background: white !important;
     border-radius: 15px !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
