@@ -165,14 +165,6 @@ input[type="number"] {
     }
 }
 
-/* --- 図鑑 (2列固定) --- */
-#fitnessPokedex {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 8px !important;
-    margin-top: 5px;
-}
-
 .notification {
     position: fixed;
     top: 10px;
@@ -444,24 +436,6 @@ input[type="number"] {
     margin-bottom: 0 !important;
 }
 
-/* 体力タイプ図鑑のレイアウト修正 */
-#fitnessPokedex {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important; /* 強制的に1:1で分割 */
-    gap: 10px !important;
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 15px 0 !important;
-    box-sizing: border-box !important;
-}
-
-/* カード自体の横幅が親を突き抜けないようにする */
-#fitnessPokedex > div {
-    min-width: 0 !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
 /* 目標ボタンのレスポンシブ対応 */
 @media screen and (max-width: 600px) {
     #correlation .btn {
@@ -470,31 +444,49 @@ input[type="number"] {
         letter-spacing: -0.5px;
     }
 }
+/* =============================================
+   図鑑レイアウト決定版（2列＋総合評価中央）
+   ============================================= */
 
-/* --- 図鑑レイアウトの最終調整（上書き） --- */
-
-/* 1. 親コンテナ：強制的に「左右5:5」の2列にする */
+/* 1. 親コンテナ：2列にして、画面中央に配置する */
 #fitnessPokedex {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important; /* 確実に2列 */
+    grid-template-columns: 1fr 1fr !important; /* 横に2列 */
     gap: 12px !important;
     width: 100% !important;
-    margin: 15px 0 !important;
+    max-width: 800px !important; /* 広がりすぎないよう制限 */
+    margin: 20px auto !important; /* 上下に余白、左右は自動で中央寄せ */
     padding: 0 !important;
-    justify-items: stretch !important; /* 中身を横いっぱいに広げる */
+    justify-content: center !important;
 }
 
-/* 2. カード：右寄りの原因になる「幅指定」をすべて解除する */
+/* 2. 図鑑カード：幅を親の50%いっぱいに広げる */
 #fitnessPokedex > div {
-    width: 100% !important;     /* 親の50%幅いっぱいに広げる */
-    max-width: none !important;  /* 制限を解除 */
-    min-width: 0 !important;
-    margin: 0 !important;        /* 勝手な余白を消す */
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    /* 背景色などはJS側で指定されているものを活かすためここでは書かない */
 }
 
-/* 3. 総合評価：1列でどっしり表示させる */
+/* 3. 総合評価：2列分をぶち抜いて下にどっしり配置 */
 #totalRank {
-    grid-column: 1 / span 2;    /* 2列分をぶち抜いて使う */
+    grid-column: 1 / span 2; /* 1列目から2列分つなげる */
     width: 100% !important;
-    margin-top: 10px !important;
+    max-width: 800px !important;
+    margin: 10px auto !important; /* 中央寄せ */
+    padding: 20px !important;
+    background: rgba(255, 255, 255, 0.15) !important; /* 以前の色合い */
+    border-radius: 15px !important;
+    text-align: center !important;
+    color: white !important;
+    box-sizing: border-box !important;
+}
+
+/* スマホ用の微調整（隙間を少し狭くする） */
+@media screen and (max-width: 600px) {
+    #fitnessPokedex {
+        gap: 8px !important;
+        margin: 10px auto !important;
+    }
 }
