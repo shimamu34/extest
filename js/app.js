@@ -674,4 +674,5 @@ function setGoal(goalType) {
             html += '</div>';
             
             document.getElementById("goalSimulator").innerHTML = html;
+   　　　　　　 document.querySelector("#correlation p").style.display = "none";
         }
