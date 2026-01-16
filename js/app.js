@@ -614,7 +614,7 @@ function setGoal(goalType) {
         goalTitle = '🎯 総合D評価を目指す';
     }
 
-    document.getElementById('goalTargetName').innerText = goalTitle.replace('🎯 ', '');
+    //document.getElementById('goalTargetName').innerText = goalTitle.replace('🎯 ', '');
     goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
     
     const pointsNeeded = Math.max(0, targetScore - totalScore);
