@@ -258,16 +258,29 @@ function SI() {
     const gr = document.getElementById("grade").value;
     let v = [];
     for (let i = 0; i < 9; i++) { v.push(document.getElementById(`i${i}`).value || ""); }
+    
+    // 現在の日時を取得 (例: 2025/10/20 14:30)
+    const now = new Date();
+    const timeString = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()} ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+
     let allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
-    allData[gr] = v;
+    
+    // データ本体と更新日時をセットで保存
+    allData[gr] = {
+        values: v,
+        lastUpdated: timeString
+    };
+    
     localStorage.setItem("y-" + g, JSON.stringify(allData));
+    
+    // 画面上の表示も即時更新
+    displayTimestamp(timeString);
 }
 function LI() {
     const g = document.getElementById("gender").value;
     const gr = document.getElementById("grade").value;
     const sv = localStorage.getItem("y-" + g);
     
-    // 最初に持久走の分・秒入力欄をクリアしておく（これによって他学年の残骸を消す）
     const mField = document.getElementById("i4_min");
     const sField = document.getElementById("i4_sec");
     if (mField) mField.value = "";
@@ -275,13 +288,23 @@ function LI() {
 
     if (sv) {
         const allData = JSON.parse(sv);
-        const v = allData[gr] || ["","","","","","","","",""];
+        // --- 【修正】新しいデータ形式(Object)か、古い形式(Array)かを判別して読み込む ---
+        const savedEntry = allData[gr];
+        let v, lastUpdated = "";
+
+        if (savedEntry && savedEntry.values) {
+            // 新しい形式の場合
+            v = savedEntry.values;
+            lastUpdated = savedEntry.lastUpdated;
+        } else {
+            // 古い形式（配列）の場合、またはデータなしの場合
+            v = savedEntry || ["","","","","","","","",""];
+        }
+
         for (let i = 0; i < v.length; i++) {
             const input = document.getElementById(`i${i}`);
             if (input) {
                 input.value = v[i];
-                
-                // --- 持久走の秒数を「分」と「秒」に分けて表示させる処理 ---
                 if (i === 4 && v[i] !== "") {
                     const total = parseInt(v[i]);
                     if (mField && sField) {
@@ -291,13 +314,15 @@ function LI() {
                 }
             }
         }
+        // --- 【追加】日時を表示する ---
+        displayTimestamp(lastUpdated);
         U();
     } else {
-        // データが全くない時のリセット処理
         for (let i = 0; i < 9; i++) {
             const input = document.getElementById(`i${i}`);
             if (input) input.value = "";
         }
+        displayTimestamp(""); // クリア
         U();
     }
 }
@@ -669,3 +694,29 @@ function setGoal(goalType) {
             
             document.getElementById("goalSimulator").innerHTML = html;
         }
+function displayTimestamp(time) {
+    let el = document.getElementById("last-update-time");
+    if (!el) {
+        // 全てのh3タグから「個人測定ログ」を探す
+        const titles = document.getElementsByTagName('h3');
+        for (let h3 of titles) {
+            if (h3.textContent.includes("個人測定ログ")) {
+                // タイトルの横に余白を作って配置
+                h3.style.display = "flex";
+                h3.style.alignItems = "center";
+                
+                el = document.createElement("span");
+                el.id = "last-update-time";
+                el.style.fontSize = "0.65em"; // 小さめに
+                el.style.color = "#666";      // 目立たない色
+                el.style.marginLeft = "15px"; // タイトルとの間隔
+                el.style.fontWeight = "normal";
+                h3.appendChild(el);
+                break;
+            }
+        }
+    }
+    if (el) {
+        el.textContent = time ? "更新: " + time : "";
+    }
+}
