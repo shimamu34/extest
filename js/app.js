@@ -545,24 +545,28 @@ function setGoal(goalType) {
                 const aRange = E.find(e => e.s === 'A')[`c${gr}`];
                 targetScore = parseInt(aRange.replace('以上', ''));
                 goalTitle = '🎯 総合A評価を目指す';
+                document.getElementById('goalTargetName').innerText = '総合A評価を目指す';
                 goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
                 targetRank = 'A';
             } else if (goalType === 'rankB') {
                 const bRange = E.find(e => e.s === 'B')[`c${gr}`];
                 targetScore = parseInt(bRange.split('～')[0]);
                 goalTitle = '🎯 総合B評価を目指す';
+                document.getElementById('goalTargetName').innerText = '総合B評価を目指す';
                 goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
                 targetRank = 'B';
             } else if (goalType === 'rankC') {
                 const cRange = E.find(e => e.s === 'C')[`c${gr}`];
                 targetScore = parseInt(cRange.split('～')[0]);
                 goalTitle = '🎯 総合C評価を目指す';
+                document.getElementById('goalTargetName').innerText = '総合C評価を目指す';
                 goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
                 targetRank = 'C';
             } else if (goalType === 'rankD') {
                 const dRange = E.find(e => e.s === 'D')[`c${gr}`];
                 targetScore = parseInt(dRange.split('～')[0]);
                 goalTitle = '🎯 総合D評価を目指す';
+                document.getElementById('goalTargetName').innerText = '総合D評価を目指す';
                 goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
                 targetRank = 'D';
             }
