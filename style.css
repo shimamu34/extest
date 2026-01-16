@@ -1,413 +1,413 @@
 /* --- 既存のスタイル --- */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    padding: 5px; /* 全体のパディングを少し縮小 */
-    background: linear-gradient(135deg, #2c5282 0%, #2b6cb0 100%);
-    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    padding: 5px; /* 全体のパディングを少し縮小 */
+    background: linear-gradient(135deg, #2c5282 0%, #2b6cb0 100%);
+    min-height: 100vh;
 }
 
 h1 {
-    text-align: center;
-    color: white;
-    font-size: 1.8em; /* わずかに縮小 */
-    font-weight: 700;
-    margin-bottom: 5px; /* 隙間を詰める */
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: white;
+    font-size: 1.8em; /* わずかに縮小 */
+    font-weight: 700;
+    margin-bottom: 5px; /* 隙間を詰める */
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 h2 {
-    text-align: center;
-    color: #333;
-    font-size: 1.3em; /* 大きさは維持 */
-    font-weight: 600;
-    /* marginを 10px 0 5px → 2px 0 2px に変更 */
-    margin: 2px 0 2px; 
-    line-height: 1.1; /* 行間を詰め、タイトルの専有面積を減らす */
+    text-align: center;
+    color: #333;
+    font-size: 1.3em; /* 大きさは維持 */
+    font-weight: 600;
+    /* marginを 10px 0 5px → 2px 0 2px に変更 */
+    margin: 2px 0 2px; 
+    line-height: 1.1; /* 行間を詰め、タイトルの専有面積を減らす */
 }
 
 h2 span {
-    margin-top: 1px !important; /* 日本語との距離を最小限に */
-    line-height: 1.2;
+    margin-top: 1px !important; /* 日本語との距離を最小限に */
+    line-height: 1.2;
 }
 
 .card {
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    /* paddingを 12px → 6px 12px に変更（上下を半分に） */
-    padding: 6px 12px; 
-    margin: 2px auto;
-    max-width: 1200px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    /* paddingを 12px → 6px 12px に変更（上下を半分に） */
+    padding: 6px 12px; 
+    margin: 2px auto;
+    max-width: 1200px;
 }
 
 /* --- テーブルの基本設定 --- */
 table {
-    border-collapse: collapse;
-    margin: 0 auto;
-    width: 100%;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
+    border-collapse: collapse;
+    margin: 0 auto;
+    width: 100%;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 th, td {
-    padding: 8px 5px; /* セル内の余白を少し縮小 */
-    text-align: center;
-    border-bottom: 1px solid #f0f0f0;
+    padding: 8px 5px; /* セル内の余白を少し縮小 */
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 th {
-    background: linear-gradient(135deg, #2c5282 0%, #2b6cb0 100%);
-    color: white;
-    font-weight: 600;
-    font-size: 0.8em;
+    background: linear-gradient(135deg, #2c5282 0%, #2b6cb0 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 0.8em;
 }
 
 .highlight {
-    background: rgba(43, 108, 176, 0.1) !important;
-    font-weight: bold;
+    background: rgba(43, 108, 176, 0.1) !important;
+    font-weight: bold;
 }
 
 /* --- ボタン・入力欄 --- */
 .btn {
-    padding: 8px 12px; /* ボタンを少しだけコンパクトに */
-    cursor: pointer;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: 600;
-    font-size: 13px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    display: inline-block;
-    transition: transform 0.1s;
-    margin: 0 5px !important;
+    padding: 8px 12px; /* ボタンを少しだけコンパクトに */
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    transition: transform 0.1s;
+    margin: 0 5px !important;
 }
 
 .btn:active {
-    transform: scale(0.98);
+    transform: scale(0.98);
 }
 
 /* ボタンごとの色設定 */
 .btn-send { background: #e91e63; }
-.btn-clear { background: #4a5568; } 
-.btn-print { background: #2d5a27; } 
+.btn-clear { background: #4a5568; } 
+.btn-print { background: #2d5a27; } 
 .btn-save { background: #4CAF50; }
 .btn-setup { background: #FF5722; }
 
 input[type="number"] {
-    width: 100%;
-    max-width: 80px;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    text-align: center;
+    width: 100%;
+    max-width: 80px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
 }
 
 /* ボタンを囲むコンテナの余白を調整 */
 .button-group, .controls {
-    margin: 5px 0; /* セクション間のボタン欄の余白を縮小 */
+    margin: 5px 0; /* セクション間のボタン欄の余白を縮小 */
 }
 
 /* --- 【重要】モバイル(縦画面)用最適化スタイル（決定版） --- */
 @media screen and (max-width: 640px) {
-    /* 1. 記録一覧（表）をカード形式にするための最小限の設定 */
-    .mobile-card-table tr {
-        display: block;
-        margin-bottom: 15px;
-        border: 2px solid #2b6cb0;
-        border-radius: 12px;
-    }
+    /* 1. 記録一覧（表）をカード形式にするための最小限の設定 */
+    .mobile-card-table tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 2px solid #2b6cb0;
+        border-radius: 12px;
+    }
 
-    /* 2. 右寄りの原因を完全に排除し、バランスよく配置 */
-    .mobile-card-table td {
-        display: flex !important;
-        justify-content: space-between !important; /* ラベルと値を左右に振り分け */
-        align-items: center;
-        padding: 10px 15px !important;
-        border: none;
-        border-bottom: 1px solid #f0f0f0;
-        text-align: left !important;
-        padding-left: 10px !important; /* 透明な壁(50%)を完全に消去 */
-    }
+    /* 2. 右寄りの原因を完全に排除し、バランスよく配置 */
+    .mobile-card-table td {
+        display: flex !important;
+        justify-content: space-between !important; /* ラベルと値を左右に振り分け */
+        align-items: center;
+        padding: 10px 15px !important;
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+        text-align: left !important;
+        padding-left: 10px !important; /* 透明な壁(50%)を完全に消去 */
+    }
 
-    /* 3. モバイル用ラベル(before)の設定（ここをスッキリさせる） */
-    .mobile-card-table td:before {
-        content: attr(data-label);
-        font-weight: bold;
-        color: #666;
-        margin-right: 10px;
-    }
+    /* 3. モバイル用ラベル(before)の設定（ここをスッキリさせる） */
+    .mobile-card-table td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #666;
+        margin-right: 10px;
+    }
 
-    /* 4. セットアップ画面や入力欄などの「グリッド」の崩れを直す */
-    #setupContent div[style*="display: grid"],
-    #tracking div[style*="display: grid"] {
-        display: flex !important; /* gridをやめてflexで縦に並べる */
-        flex-direction: column !important;
-        gap: 15px !important;
-        width: 100% !important;
-    }
+    /* 4. セットアップ画面や入力欄などの「グリッド」の崩れを直す */
+    #setupContent div[style*="display: grid"],
+    #tracking div[style*="display: grid"] {
+        display: flex !important; /* gridをやめてflexで縦に並べる */
+        flex-direction: column !important;
+        gap: 15px !important;
+        width: 100% !important;
+    }
 
-    /* 5. グリッド内の余計なラベルを消去 */
-    #setupContent td:before, #tracking td:before {
-        display: none !important;
-    }
+    /* 5. グリッド内の余計なラベルを消去 */
+    #setupContent td:before, #tracking td:before {
+        display: none !important;
+    }
 
-    /* 6. 入力欄やボタンを横いっぱいに広げて押しやすくする */
-    #tracking input, #tracking select, .btn {
-        width: 100% !important;
-        margin: 5px 0 !important;
-    }
+    /* 6. 入力欄やボタンを横いっぱいに広げて押しやすくする */
+    #tracking input, #tracking select, .btn {
+        width: 100% !important;
+        margin: 5px 0 !important;
+    }
 }
 
 /* --- 図鑑 (2列固定) --- */
 #fitnessPokedex {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 8px !important;
-    margin-top: 5px;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-top: 5px;
 }
 
 .notification {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    left: 10px;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    z-index: 2000;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    text-align: center;
-    display: none;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    z-index: 2000;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    text-align: center;
+    display: none;
 }
 
 /* ほどよく大きく、押しやすいサイズ感 */
 #gender, #grade, #class, #session {
-    font-size: 16px;          /* iPhoneでズームされない最低サイズ */
-    padding: 6px 10px;       /* ほどよい余白 */
-    border: 1px solid #ccc;  /* 主張しすぎない枠線 */
-    border-radius: 6px;      /* 少しだけ角を丸く */
-    background-color: #fff;
-    margin: 0 5px;           /* 項目間の適切な隙間 */
-    vertical-align: middle;
+    font-size: 16px;          /* iPhoneでズームされない最低サイズ */
+    padding: 6px 10px;       /* ほどよい余白 */
+    border: 1px solid #ccc;  /* 主張しすぎない枠線 */
+    border-radius: 6px;      /* 少しだけ角を丸く */
+    background-color: #fff;
+    margin: 0 5px;           /* 項目間の適切な隙間 */
+    vertical-align: middle;
 }
 
 /* スマホでも横に並びやすいように調整 */
 @media screen and (max-width: 640px) {
-    #gender, #grade, #class, #session {
-        padding: 5px 8px;
-        font-size: 15px;
-        margin: 3px 2px;
-    }
+    #gender, #grade, #class, #session {
+        padding: 5px 8px;
+        font-size: 15px;
+        margin: 3px 2px;
+    }
 }
 
 /* =============================================
-   印刷専用スタイル（A4一枚に集約）
-   ============================================= */
+   印刷専用スタイル（A4一枚に集約）
+   ============================================= */
 @media print {
-    /* 1. ページ全体の余白を最小限にする */
-    @page {
-        size: A4 portrait;
-        margin: 5mm; /* 10mmから5mmに短縮 */
-    }
+    /* 1. ページ全体の余白を最小限にする */
+    @page {
+        size: A4 portrait;
+        margin: 5mm; /* 10mmから5mmに短縮 */
+    }
 
-    body {
-        background: white !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
+    body {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
 
-    /* 2. 不要な要素を消し、隙間をゼロにする */
-    h1, .no-print, .notification, #setupModal, 
-    #correlation, #tracking, #eval, #score,
-    h2 span, h3 { 
-        display: none !important; 
-    }
+    /* 2. 不要な要素を消し、隙間をゼロにする */
+    h1, .no-print, .notification, #setupModal, 
+    #correlation, #tracking, #eval, #score,
+    h2 span, h3 { 
+        display: none !important; 
+    }
 
-    /* 3. カードの余白とタイトル周りを極限まで詰める */
-    .card {
-        box-shadow: none !important;
-        border: none !important;
-        margin: 0 !important;
-        padding: 0 0 5px 0 !important; /* 下方向の余白を最小限に */
-        width: 100% !important;
-    }
+    /* 3. カードの余白とタイトル周りを極限まで詰める */
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 0 5px 0 !important; /* 下方向の余白を最小限に */
+        width: 100% !important;
+    }
 
-    h2 {
-        font-size: 14pt !important;
-        margin: 0 0 5px 0 !important;
-        text-align: left !important; /* 左寄せにして高さを節約 */
-    }
+    h2 {
+        font-size: 14pt !important;
+        margin: 0 0 5px 0 !important;
+        text-align: left !important; /* 左寄せにして高さを節約 */
+    }
 
-    /* 4. テーブルの行の高さを詰める */
-    table {
-        font-size: 9pt !important; /* 文字を少し小さく */
-        border-collapse: collapse !important;
-        width: 100% !important;
-    }
+    /* 4. テーブルの行の高さを詰める */
+    table {
+        font-size: 9pt !important; /* 文字を少し小さく */
+        border-collapse: collapse !important;
+        width: 100% !important;
+    }
 
-    th, td {
-        padding: 2px 4px !important; /* セル内の上下余白を最小に */
-        border: 1px solid #000 !important;
-    }
+    th, td {
+        padding: 2px 4px !important; /* セル内の上下余白を最小に */
+        border: 1px solid #000 !important;
+    }
 
-    /* 5. グラフのサイズを強制的に小さくする */
-    #radar {
-        display: block !important;
-        margin-top: 5px !important;
-        text-align: center;
-        page-break-inside: avoid; /* グラフの途中で改ページさせない */
-    }
+    /* 5. グラフのサイズを強制的に小さくする */
+    #radar {
+        display: block !important;
+        margin-top: 5px !important;
+        text-align: center;
+        page-break-inside: avoid; /* グラフの途中で改ページさせない */
+    }
 
-    #rc {
-        /* ここを調整！2枚目に行く場合は 110mm くらいまで下げてください */
-        width: 120mm !important; 
-        height: 120mm !important;
-        margin: 0 auto;
-    }
+    #rc {
+        /* ここを調整！2枚目に行く場合は 110mm くらいまで下げてください */
+        width: 120mm !important; 
+        height: 120mm !important;
+        margin: 0 auto;
+    }
 }
 
 /* --- HTMLから移設した機能（ここは維持） --- */
 input[type="number"] {
-    height: 28px !important;
-    padding: 0 2px !important;
-    font-size: 15px !important;
-    box-sizing: border-box !important;
+    height: 28px !important;
+    padding: 0 2px !important;
+    font-size: 15px !important;
+    box-sizing: border-box !important;
 }
 
 #i4_min, #i4_sec {
-    width: 45px !important;
-    height: 28px !important;
+    width: 45px !important;
+    height: 28px !important;
 }
 
 #table td {
-    padding: 4px 2px !important;
-    height: auto !important;
+    padding: 4px 2px !important;
+    height: auto !important;
 }
 
 /* PC・横画面用：カード間隔をタイトにし、一体感を出す */
 @media screen and (min-width: 641px) {
-    /* カード本体：上下の間隔を15pxから8pxに短縮 */
-    .card {
-        margin: 4px auto !important; /* ← ここでカード同士の隙間を狭くします */
-        max-width: 1200px !important; 
-        width: 95%;
-        float: none !important;
-        padding: 10px 30px !important; /* 上下の内側余白も25pxから15pxに縮小 */
-    }
+    /* カード本体：上下の間隔を15pxから8pxに短縮 */
+    .card {
+        margin: 4px auto !important; /* ← ここでカード同士の隙間を狭くします */
+        max-width: 1200px !important; 
+        width: 95%;
+        float: none !important;
+        padding: 10px 30px !important; /* 上下の内側余白も25pxから15pxに縮小 */
+    }
 
 /* ボタン類が入っているカードなど、中身が少ないカードの余白 */
-    .card[style*="text-align:center"], 
-    .card[style*="text-align: center"] {
-        padding: 8px 12px !important;
-    }
+    .card[style*="text-align:center"], 
+    .card[style*="text-align: center"] {
+        padding: 8px 12px !important;
+    }
 }
-    
-    /* 種目別トラッキング：入力エリアのレイアウト */
-    .tracking-top-bar {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 12px 40px !important; /* 縦の項目間も少し詰める */
-        margin: 0 auto 10px auto; /* 下のグラフとの距離を縮小 */
-        max-width: 1000px;
-    }
+    
+    /* 種目別トラッキング：入力エリアのレイアウト */
+    .tracking-top-bar {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px 40px !important; /* 縦の項目間も少し詰める */
+        margin: 0 auto 10px auto; /* 下のグラフとの距離を縮小 */
+        max-width: 1000px;
+    }
 
-    .t-field {
-        display: flex;
-        flex-direction: column;
-        gap: 4px; /* ラベルと入力欄の距離を最小限に */
-    }
+    .t-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px; /* ラベルと入力欄の距離を最小限に */
+    }
 
-    .t-field label {
-        color: white !important;
-        font-size: 13px !important;
-        font-weight: bold !important;
-    }
+    .t-field label {
+        color: white !important;
+        font-size: 13px !important;
+        font-weight: bold !important;
+    }
 
-    /* グラフエリアの余白調整 */
-    #tracking div[style*="background:white; padding:15px"] {
-        padding: 20px 30px !important; /* 内側の余白を少し詰める */
-        border-radius: 12px;
-        margin: 5px 0; /* グラフの外側余白を最小に */
-    }
+    /* グラフエリアの余白調整 */
+    #tracking div[style*="background:white; padding:15px"] {
+        padding: 20px 30px !important; /* 内側の余白を少し詰める */
+        border-radius: 12px;
+        margin: 5px 0; /* グラフの外側余白を最小に */
+    }
 
-    #trackingGraph {
-        width: 100% !important;
-        height: 420px !important; /* 隙間を詰めた分、グラフの高さは維持 */
-        display: block;
-    }
+    #trackingGraph {
+        width: 100% !important;
+        height: 420px !important; /* 隙間を詰めた分、グラフの高さは維持 */
+        display: block;
+    }
 
-    /* 表のパディングも少しだけタイトに */
-    td, th {
-        text-align: center !important;
-        padding: 8px 10px !important;
-    }
+    /* 表のパディングも少しだけタイトに */
+    td, th {
+        text-align: center !important;
+        padding: 8px 10px !important;
+    }
 }
 
 /* スマホ用：さらにコンパクトに */
 @media screen and (max-width: 640px) {
-    .card {
-        margin: 3px auto !important;
-        padding: 8px !important;
-    }
+    .card {
+        margin: 3px auto !important;
+        padding: 8px !important;
+    }
 }
 
 /* --- 初回セットアップ画面の最終調整（左右完全対称版） --- */
 @media screen and (min-width: 641px) {
-    /* 1. 外枠（モーダル）のパディングを左右均等に固定 */
-    #setupModal > div {
-        max-width: 1100px !important;
-        width: 95% !important;
-        padding: 30px 20px !important; 
-        margin: 40px auto !important;
-        display: block !important;
-    }
+    /* 1. 外枠（モーダル）のパディングを左右均等に固定 */
+    #setupModal > div {
+        max-width: 1100px !important;
+        width: 95% !important;
+        padding: 30px 20px !important; 
+        margin: 40px auto !important;
+        display: block !important;
+    }
 
-    /* 2. 親コンテナ：左右のカラムを「均等に」配置する */
-    #setupContent > div[style*="display: flex"] {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: center !important; /* 中央寄せを徹底 */
-        align-items: flex-start !important;
-        gap: 5px !important;
-        width: 100% !important;
-        max-width: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
+    /* 2. 親コンテナ：左右のカラムを「均等に」配置する */
+    #setupContent > div[style*="display: flex"] {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important; /* 中央寄せを徹底 */
+        align-items: flex-start !important;
+        gap: 5px !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
 
-    /* 3. 左カラムと右カラム：幅を50%から「隙間分」だけ引いて完全に揃える */
-    #setupContent > div[style*="display: flex"] > div:first-child,
-    #setupContent > div[style*="display: flex"] > div:last-child {
-        flex: 0 0 calc(50% - 3px) !important; /* 伸び縮みさせず、正確に半分(マイナス隙間)にする */
-        width: calc(50% - 3px) !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 5px !important;
-        margin: 0 !important; /* 余計なマージンを排除 */
-        padding: 0 !important;
-    }
+    /* 3. 左カラムと右カラム：幅を50%から「隙間分」だけ引いて完全に揃える */
+    #setupContent > div[style*="display: flex"] > div:first-child,
+    #setupContent > div[style*="display: flex"] > div:last-child {
+        flex: 0 0 calc(50% - 3px) !important; /* 伸び縮みさせず、正確に半分(マイナス隙間)にする */
+        width: calc(50% - 3px) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 5px !important;
+        margin: 0 !important; /* 余計なマージンを排除 */
+        padding: 0 !important;
+    }
 
-    /* 右側の特殊なスタイル（sticky等）を完全に上書きして無効化 */
-    #setupContent > div[style*="display: flex"] > div:last-child {
-        position: static !important;
-        transform: none !important;
-    }
+    /* 右側の特殊なスタイル（sticky等）を完全に上書きして無効化 */
+    #setupContent > div[style*="display: flex"] > div:last-child {
+        position: static !important;
+        transform: none !important;
+    }
 
-    /* 4. カード本体：各カードがカラムの幅100%を使い切るようにする */
-    #setupContent .card, 
-    #setupContent > div[style*="display: flex"] > div > div {
-        width: 100% !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
-        padding: 20px !important;
-    }
+    /* 4. カード本体：各カードがカラムの幅100%を使い切るようにする */
+    #setupContent .card, 
+    #setupContent > div[style*="display: flex"] > div > div {
+        width: 100% !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        padding: 20px !important;
+    }
 }
 
 #rc { cursor: pointer; }
@@ -416,53 +416,57 @@ input[type="number"] {
 
 /* 1. 黄色い背景の親要素自体のpadding-bottomを強制的に0にする */
 #setupContent div[style*="background"] {
-    padding-bottom: 0px !important;
+    padding-bottom: 0px !important;
 }
 
 /* 2. リスト全体の高さを抑え、下の余白を完全に消す */
 #setupContent ol {
-    line-height: 1.3 !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+    line-height: 1.3 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 /* 3. 6番目の項目（赤いリストを包んでいるli）自体の下の余白を消す */
 #setupContent ol > li:nth-child(6),
 #setupContent ol > li:last-child {
-    margin-bottom: 0 !important;
-    padding-bottom: 5px !important; /* ここで微調整 */
+    margin-bottom: 0 !important;
+    padding-bottom: 5px !important; /* ここで微調整 */
 }
 
 /* 4. 「全員」の赤い丸リスト(ul)の下に勝手につく余白を完全に殺す */
 #setupContent ol ul {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 /* 5. 「全員」の項目自体の下の余白も消す */
 #setupContent ol ul li:last-child {
-    margin-bottom: 0 !important;
+    margin-bottom: 0 !important;
 }
 
-/* 【最強設定】図鑑を強制的に2x2にする */
+/* 体力タイプ図鑑のレイアウト修正 */
 #fitnessPokedex {
-    display: grid !important;
-    grid-template-columns: calc(50% - 5px) calc(50% - 5px) !important; /* 50%ずつに固定 */
-    gap: 10px !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 !important;
-    margin: 15px 0 !important;
-    justify-content: space-between !important; /* 左右にみっちり広げる */
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* 強制的に1:1で分割 */
+    gap: 10px !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 15px 0 !important;
+    box-sizing: border-box !important;
 }
 
-/* カード1枚ずつの設定 */
+/* カード自体の横幅が親を突き抜けないようにする */
 #fitnessPokedex > div {
-    width: auto !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    /* もし右に寄るならここをチェック */
-    text-align: center !important; 
+    min-width: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
+/* 目標ボタンのレスポンシブ対応 */
+@media screen and (max-width: 600px) {
+    #correlation .btn {
+        font-size: 13px !important;
+        padding: 12px 2px !important;
+        letter-spacing: -0.5px;
+    }
+}
