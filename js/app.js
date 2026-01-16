@@ -139,7 +139,7 @@ function RT() {
         s += '</tr>';
     });
     s += '</table>';
- document.getElementById("table").innerHTML = '<div id="table-timestamp"></div>' + s;
+ document.getElementById("table").innerHTML = s;
     
     // 表示された直後に時刻を更新する
     updateTimestamp();
@@ -153,27 +153,37 @@ function updateTimestamp() {
     const datePart = `${now.getFullYear()}.${f(now.getMonth() + 1)}.${f(now.getDate())}`;
     const timePart = `${f(now.getHours())}:${f(now.getMinutes())}:${f(now.getSeconds())}`;
     
-    const tsArea = document.getElementById("table-timestamp");
-    if (tsArea) {
-        // float: right を使い、縦幅を占有しないようにします
-        // 背景を項目別得点表と同じ水色(#cceeff)にし、文字サイズを調整
+    let tsArea = document.getElementById("table-timestamp");
+    if (!tsArea) {
+        tsArea = document.createElement("div");
+        tsArea.id = "table-timestamp";
+        
+        // 個人測定ログのタイトル（h2やh1、あるいは特定のクラス名）を探す
+        // もし適切なクラス名が不明な場合は、一旦 #table の親要素に固定します
+        const anchor = document.querySelector('h1, h2, .title, .header-card') || document.getElementById("table").parentNode;
+        
+        // 親要素を基点にする設定
+        anchor.style.position = 'relative';
+
         tsArea.style = `
-            float: right;
+            position: absolute;
+            top: 0px; 
+            right: 10px;
             text-align: right;
             font-size: 11px;
             color: #4a90e2;
             background: #cceeff;
-            padding: 2px 8px;
+            padding: 3px 8px;
             border-radius: 4px;
             font-family: monospace;
             line-height: 1.1;
             font-weight: bold;
-            margin-bottom: -30px; /* ここが重要：マイナスの余白で、後続のテーブルを上に引き寄せます */
-            position: relative;
-            z-index: 10;
+            z-index: 100;
         `;
-        tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
+        anchor.appendChild(tsArea);
     }
+    
+    tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
 }
 
 function RS() {
