@@ -409,50 +409,46 @@ input[type="number"] {
 /* =============================================
     体力タイプ図鑑：2×2 中央揃え確定設定
    ============================================= */
+/* 図鑑全体のコンテナ：左右いっぱいに広げる */
 #fitnessPokedex {
     display: flex !important;
     flex-wrap: wrap !important;
-    justify-content: center !important; /* 横方向の中央寄せ */
-    align-items: flex-start !important;
-    gap: 12px !important;              /* カード間の隙間 */
+    justify-content: space-between !important; /* 左右に振り分ける */
+    gap: 16px !important; /* カード間の隙間 */
+    padding: 10px 0 !important; /* 左右の余白を0にして端まで伸ばす */
     width: 100% !important;
-    max-width: 900px !important;       /* 2枚並びに最適な幅 */
-    margin: 20px auto !important;      /* 外枠自体の左右中央寄せ */
-    padding: 10px !important;
-    clear: both !important;            /* 上の要素からの回り込みを遮断 */
+    max-width: none !important; /* 制限を解除 */
 }
 
-/* カード1枚ずつの設定 */
+/* カード自体の設定：50%から隙間分を引いて最大化 */
 .pokedex-card {
-    flex: 0 0 calc(50% - 10px) !important; /* 2列維持 */
+    flex: 1 1 calc(50% - 8px) !important; /* 1 1 にすることで余白を埋める */
+    min-width: calc(50% - 8px) !important;
+    box-sizing: border-box !important;
+    
     background: rgba(255, 255, 255, 0.12) !important;
     backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 20px !important; /* 角丸を少し強調 */
+    border-radius: 20px !important;
     
-    /* ▼ ここを強化：サイズを最大化 ▼ */
-    padding: 25px 20px !important;  /* 上下の余白を増やして高さを出す */
-    min-height: 160px !important;   /* カード自体の高さを確保 */
+    /* ボリュームを最大に */
+    padding: 30px 25px !important; 
+    min-height: 180px !important;   
     display: flex !important;
     flex-direction: column !important;
-    justify-content: space-between !important; /* 中身を上下に広げる */
+    justify-content: space-between !important;
     
     color: white !important;
-    box-sizing: border-box !important;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
     position: relative;
     overflow: hidden;
 }
 
-/* 左端のラインも太くして存在感を出す */
+/* 左端のカラーラインを少し太くして強調 */
 .pokedex-card::before {
     content: "";
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 8px; /* 少し太く */
+    left: 0; top: 0; bottom: 0;
+    width: 10px;
     background: var(--type-color, #fff);
 }
 
