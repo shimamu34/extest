@@ -434,16 +434,12 @@ input[type="number"] {
 }
 
 .pokedex-card {
-    background: rgba(255, 255, 255, 0.15) !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 15px !important;
-    padding: 15px 10px !important;
+    min-height: 80px !important; /* 最低限の高さを持たせる */
     display: flex !important;
-    align-items: center !important;
+    flex-direction: column !important; /* 中身を縦に並べる */
     justify-content: center !important;
-    position: relative;
-    overflow: hidden;
+    padding: 10px 12px !important;
+    /* ...既存のスタイル... */
 }
 
 /* カード内のアイコンと文字の並び */
@@ -467,6 +463,13 @@ input[type="number"] {
     font-size: 16px !important; /* Lvサイズ固定 */
     font-weight: bold;
     opacity: 0.9;
+}
+
+.type-info {
+    width: 100%; /* 横幅いっぱいに広げる */
+    display: flex;
+    flex-direction: column; /* 名前、Lv、バーを縦に並べる */
+    gap: 2px; /* 項目間の隙間 */
 }
 
 #totalRank {
