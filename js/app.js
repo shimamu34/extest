@@ -150,7 +150,7 @@ function updateTimestamp() {
     const f = (n) => n.toString().padStart(2, '0');
 
     // 1段目: 西暦.月/日（例: 2026.01.16）
-    const datePart = `${now.getFullYear()}.${f(now.getMonth() + 1)}/${f(now.getDate())}`;
+    const datePart = `${now.getFullYear()}.${f(now.getMonth() + 1)}.${f(now.getDate())}`;
     // 2段目: 時:分:秒（例: 21:05:08）
     const timePart = `${f(now.getHours())}:${f(now.getMinutes())}:${f(now.getSeconds())}`;
     
@@ -159,7 +159,7 @@ function updateTimestamp() {
         tsArea = document.createElement("div");
         tsArea.id = "table-timestamp";
         // 右寄せ、等幅フォント(monospace)、行間1.2、太字に設定
-        tsArea.style = "text-align: right; font-size: 14px; color: #444; margin-bottom: 10px; font-family: monospace; line-height: 1.2; font-weight: 900; letter-spacing: 0.5px;";
+        tsArea.style = "text-align: right; font-size: 14px; color: #2b6cb0; margin-bottom: 10px; font-family: monospace; line-height: 1.2; font-weight: 900; letter-spacing: 0.5px;";
         
         const tableContainer = document.getElementById("table");
         if (tableContainer) {
