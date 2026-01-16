@@ -149,7 +149,7 @@ function updateTimestamp() {
     // 0埋め用の補助関数
     const f = (n) => n.toString().padStart(2, '0');
 
-    // 1段目: 西暦.月/日（例: 2026.01/16）
+    // 1段目: 西暦.月/日（例: 2026.01.16）
     const datePart = `${now.getFullYear()}.${f(now.getMonth() + 1)}/${f(now.getDate())}`;
     // 2段目: 時:分:秒（例: 21:05:08）
     const timePart = `${f(now.getHours())}:${f(now.getMinutes())}:${f(now.getSeconds())}`;
