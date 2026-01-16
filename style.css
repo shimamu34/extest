@@ -114,48 +114,58 @@ input[type="number"] {
     margin: 5px 0; /* セクション間のボタン欄の余白を縮小 */
 }
 
-/* --- 【修正版】メイン表示を復活させるモバイル設定 --- */
+/* --- 【重要】モバイル(縦画面)用最適化スタイル（決定版） --- */
 @media screen and (max-width: 640px) {
-    /* 表の中身を消さないよう、基本的な表示を維持 */
-    #table, #score, #eval {
-        display: block !important;
-        width: 100% !important;
-        overflow-x: auto !important; /* 横に長い場合はスクロール可能に */
-    }
-
-    /* 記録一覧（表）のカード化は、データがある場合のみ適用 */
+    /* 1. 記録一覧（表）をカード形式にするための最小限の設定 */
     .mobile-card-table tr {
         display: block;
         margin-bottom: 15px;
         border: 2px solid #2b6cb0;
         border-radius: 12px;
-        background: white;
     }
 
-    /* セルが消えるのを防ぐ */
+    /* 2. 右寄りの原因を完全に排除し、バランスよく配置 */
     .mobile-card-table td {
         display: flex !important;
-        justify-content: space-between !important;
+        justify-content: space-between !important; /* ラベルと値を左右に振り分け */
         align-items: center;
         padding: 10px 15px !important;
+        border: none;
         border-bottom: 1px solid #f0f0f0;
         text-align: left !important;
+        padding-left: 10px !important; /* 透明な壁(50%)を完全に消去 */
     }
 
-    /* グリッド崩れの修正：図鑑以外を対象にする */
+    /* 3. モバイル用ラベル(before)の設定（ここをスッキリさせる） */
+    .mobile-card-table td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #666;
+        margin-right: 10px;
+    }
+
+    /* 4. セットアップ画面や入力欄などの「グリッド」の崩れを直す */
     #setupContent div[style*="display: grid"],
-    #tracking div[style*="display: grid"]:not(.pokedex-container *) {
-        display: block !important; /* flexではなくblockで確実に縦積み */
+    #tracking div[style*="display: grid"] {
+        display: flex !important; /* gridをやめてflexで縦に並べる */
+        flex-direction: column !important;
+        gap: 15px !important;
         width: 100% !important;
     }
 
-    /* ボタンと入力欄の幅調整 */
+    /* 5. グリッド内の余計なラベルを消去 */
+    #setupContent td:before, #tracking td:before {
+        display: none !important;
+    }
+
+    /* 6. 入力欄やボタンを横いっぱいに広げて押しやすくする */
     #tracking input, #tracking select, .btn {
         width: 100% !important;
         margin: 5px 0 !important;
-        box-sizing: border-box !important;
     }
 }
+
+
 
 .notification {
     position: fixed;
@@ -397,98 +407,59 @@ input[type="number"] {
 }
 
 /* =============================================
-   体力タイプ図鑑：確定レイアウト
+    体力タイプ図鑑：2×2 中央揃え確定設定
    ============================================= */
-.pokedex-container {
-    background: linear-gradient(135deg, #667eea, #764ba2) !important;
-    padding: 20px 15px !important;
-    border-radius: 20px !important;
-    display: block !important; /* 確実に表示 */
-    margin: 10px auto !important;
-}
-
+/* --- 1. タイトル：大きすぎず、目立つサイズへ (32px) --- */
 #pokedexTitle {
-    font-size: 28px !important;
+    font-size: 32px !important; 
     font-weight: 900 !important;
     text-align: center !important;
-    margin: 0 0 20px 0 !important;
+    margin: 15px 0 20px 0 !important; /* 上下に適度な余白 */
+    letter-spacing: 1px !important;
     color: white !important;
+    display: block !important;
 }
 
+/* --- 2. 図鑑コンテナ：隙間を維持 --- */
 #fitnessPokedex {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important; /* 横2列を死守 */
-    gap: 12px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
     width: 100% !important;
-    min-height: 100px !important;
+    padding: 0 !important;
+    margin-bottom: 8px !important; /* 下のカードとの間にわずかな隙間(8px) */
 }
+
+/* --- 3. 図鑑カード自体の設定 --- */
 .pokedex-card {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-radius: 12px !important;
-    padding: 10px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    min-height: 110px !important;
-    border-left: 6px solid var(--type-color, #fff) !important;
-}
-
-.pokedex-header {
-    display: flex !important;
-    align-items: center !important;
-    margin-bottom: 8px !important; /* 下（メーター）との隙間 */
-}
-
-.type-emoji {
-    font-size: 32px !important; /* 絵文字サイズ固定 */
-}
-
-.type-name {
-    font-size: 18px !important; /* 名前サイズ固定 */
-    font-weight: 900;
-    line-height: 1.2;
-}
-
-.type-level {
-    font-size: 16px !important; /* Lvサイズ固定 */
-    font-weight: bold;
-    opacity: 0.9;
-}
-
-.type-info {
-    flex-grow: 1;
-}
-
-/* メーターの見た目 */
-.lv-container {
-    width: 100%;
-}
-
-.lv-bar-bg {
-    width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
+    flex: 0 0 calc(50% - 4px) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 16px !important;
+    padding: 18px 12px !important;
+    box-sizing: border-box !important;
+    position: relative;
     overflow: hidden;
 }
 
-.lv-bar-fill {
-    height: 100%;
-    transition: width 0.3s ease;
+/* 左端のカラーライン */
+.pokedex-card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: var(--type-color, #fff);
 }
 
+/* --- 4. 総合評価カード：重なりを解消 --- */
 #totalRank {
+    margin-top: 8px !important; /* 図鑑カードとの隙間を8px確保 */
     background: rgba(255, 255, 255, 0.2) !important;
     padding: 15px !important;
     border-radius: 12px !important;
-    text-align: center !important;
-    font-size: 18px !important;
-    font-weight: bold !important;
-}
-
-/* スマホ用の微調整 */
-@media screen and (max-width: 640px) {
-    #pokedexTitle { font-size: 22px !important; }
-    .type-emoji { font-size: 28px !important; }
-    .type-name { font-size: 15px !important; }
-    .type-level { font-size: 14px !important; }
+    width: 100% !important;
+    box-sizing: border-box !important;
+    clear: both;
 }
