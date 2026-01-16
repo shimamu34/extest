@@ -140,6 +140,20 @@ function RT() {
     });
     s += '</table>';
     document.getElementById("table").innerHTML = s;
+    // --- ★ここから日付表示の追加処理 ---
+    const now = new Date();
+    // 2026.1/16 21:03 の形式を作成
+    const dateStr = `${now.getFullYear()}.${now.getMonth() + 1}/${now.getDate()} ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+    
+    // 日付用のHTML（右寄せ、サイズ調整）
+    const timestampHtml = `
+        <div style="text-align: right; font-size: 11px; color: #666; margin-bottom: 5px; font-family: sans-serif;">
+            ${dateStr}
+        </div>`;
+    
+    // 表の前に日付を結合して表示
+    document.getElementById("table").innerHTML = timestampHtml + s;
+    // --- ★ここまで ---
 }
 
 function RS() {
