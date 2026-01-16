@@ -439,19 +439,24 @@ const types = [
                 const toNext = nextLevel - type.avg;
                
                 pokedexHtml += `
-                    <div class="pokedex-card">
-                        <div style="display:flex; align-items:center; margin-bottom:10px">
-                            <span style="font-size:30px; margin-right:10px">${type.emoji}</span>
+                    <div class="pokedex-card" style="--type-color: ${type.color}">
+                        <div style="display:flex; align-items:center; margin-bottom:15px">
+                            <span style="font-size:45px; margin-right:15px">${type.emoji}</span>
                             <div style="flex:1">
-                                <div style="font-size:14px; font-weight:bold;">${type.name}</div>
-                                <div style="font-size:20px; font-weight:bold">Lv.${level}</div>
+                                <div style="font-size:16px; opacity:0.8; font-weight:bold; letter-spacing:1px">${type.name}</div>
+                                <div style="font-size:32px; font-weight:900; line-height:1">Lv.${level}</div>
                             </div>
                         </div>
-                        <div style="background:rgba(255,255,255,0.3); height:12px; border-radius:10px; overflow:hidden; margin-bottom:5px">
-                            <div style="background:${type.color}; height:100%; width:${progress}%; transition:width 0.5s"></div>
-                        </div>
-                        <div style="font-size:11px; opacity:0.9">
-                            ${type.avg > 0 ? `${type.avg.toFixed(1)}点 / 10.0点` : 'データなし'}
+                        
+                        <div style="width:100%">
+                            <div style="background:rgba(255,255,255,0.2); height:14px; border-radius:7px; overflow:hidden; margin-bottom:10px">
+                                <div style="background:${type.color}; height:100%; width:${progress}%; transition:width 0.8s ease-out; box-shadow: 0 0 15px ${type.color}"></div>
+                            </div>
+                            
+                            <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                                <span style="font-size:14px; font-weight:bold">${type.avg.toFixed(1)} <span style="font-size:10px">pts</span></span>
+                                ${toNext > 0 && toNext < 1 ? `<span style="font-size:11px; background:rgba(255,255,255,0.2); padding:3px 8px; border-radius:12px">あと ${toNext.toFixed(1)}</span>` : ''}
+                            </div>
                         </div>
                     </div>
                 `;
