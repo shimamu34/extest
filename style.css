@@ -470,3 +470,31 @@ input[type="number"] {
         letter-spacing: -0.5px;
     }
 }
+
+/* --- 図鑑レイアウトの最終調整（上書き） --- */
+
+/* 1. 親コンテナ：強制的に「左右5:5」の2列にする */
+#fitnessPokedex {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important; /* 確実に2列 */
+    gap: 12px !important;
+    width: 100% !important;
+    margin: 15px 0 !important;
+    padding: 0 !important;
+    justify-items: stretch !important; /* 中身を横いっぱいに広げる */
+}
+
+/* 2. カード：右寄りの原因になる「幅指定」をすべて解除する */
+#fitnessPokedex > div {
+    width: 100% !important;     /* 親の50%幅いっぱいに広げる */
+    max-width: none !important;  /* 制限を解除 */
+    min-width: 0 !important;
+    margin: 0 !important;        /* 勝手な余白を消す */
+}
+
+/* 3. 総合評価：1列でどっしり表示させる */
+#totalRank {
+    grid-column: 1 / span 2;    /* 2列分をぶち抜いて使う */
+    width: 100% !important;
+    margin-top: 10px !important;
+}
