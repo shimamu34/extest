@@ -469,16 +469,20 @@ const types = [
             let pokedexHtml = "";
 types.forEach(type => {
     pokedexHtml += `
-        <div class="pokedex-card" style="border-left: 6px solid ${type.color} !important;">
-            <div class="pokedex-header">
-                <span class="type-emoji">${type.emoji}</span>
-                <div>
-                    <div class="type-name">${type.name}</div>
-                    <div class="type-level">Lv.${type.level}</div>
+    <div class="pokedex-card" style="border-left: 6px solid ${type.color} !important;">
+        <div class="pokedex-header" style="display: flex; align-items: center; width: 100%;">
+            <span class="type-emoji" style="margin-right: 10px;">${type.emoji}</span>
+            <div class="type-info">
+                <div class="type-name" style="font-size: 16px; font-weight: bold;">${type.name}</div>
+                <div class="type-level" style="font-size: 14px;">Lv.${level} <span style="font-size: 10px; opacity: 0.7;">/ 10</span></div>
+                
+                <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; margin-top: 5px;">
+                    <div style="width: ${(level/10)*100}%; height: 100%; background: ${type.color}; border-radius: 3px;"></div>
                 </div>
             </div>
         </div>
-    `;
+    </div>
+`;
 });
 document.getElementById('fitnessPokedex').innerHTML = pokedexHtml;
     
