@@ -521,148 +521,146 @@ const types = [
 
 function setGoal(goalType) {
             const g = document.getElementById("gender").value;
-            const h = D[g].h.slice(0, 9);
-            const gr = parseInt(document.getElementById("grade").value);
-            
-            let myScores = [];
-            let myValues = [];
-            for (let i = 0; i < 9; i++) {
-                const inp = document.getElementById(`i${i}`);
-                const v = parseFloat(inp.value);
-                myValues.push(!isNaN(v) ? v : 0);
-                myScores.push(!isNaN(v) ? CS(v, h[i], g) : 0);
-            }
-            
-            const totalScore = 
-   　　　　　　 myScores[0] + myScores[1] + myScores[2] + myScores[3] + 
-   　　　　　　 Math.max(myScores[4], myScores[5]) + 
-    　　　　　　myScores[6] + myScores[7] + myScores[8];
-            
-            let targetScore = 0;
-            let goalTitle = '';
-            let goalDesc = '';
-            let targetRank = '';
-            
-            if (goalType === 'rankA') {
-                const aRange = E.find(e => e.s === 'A')[`c${gr}`];
-                targetScore = parseInt(aRange.replace('以上', ''));
-                goalTitle = '🎯 総合A評価を目指す';
-                goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
-                targetRank = 'A';
-            } else if (goalType === 'rankB') {
-                const bRange = E.find(e => e.s === 'B')[`c${gr}`];
-                targetScore = parseInt(bRange.split('～')[0]);
-                goalTitle = '🎯 総合B評価を目指す';
-                goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
-                targetRank = 'B';
-            } else if (goalType === 'rankC') {
-                const cRange = E.find(e => e.s === 'C')[`c${gr}`];
-                targetScore = parseInt(cRange.split('～')[0]);
-                goalTitle = '🎯 総合C評価を目指す';
-                goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
-                targetRank = 'C';
-            } else if (goalType === 'rankD') {
-                const dRange = E.find(e => e.s === 'D')[`c${gr}`];
-                targetScore = parseInt(dRange.split('～')[0]);
-                goalTitle = '🎯 総合D評価を目指す';
-                goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
-                targetRank = 'D';
-            }
-            
-            const pointsNeeded = Math.max(0, targetScore - totalScore);
-            
-            let html = `
-                <div style="background:white;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1)">
-                    <h5 style="margin:0 0 20px 0;font-size:20px;color:#9c27b0">${goalTitle}</h5>
-                    <div style="background:#f5f5f5;padding:15px;border-radius:8px;margin-bottom:20px">
-                        <div style="font-size:16px;color:#666;margin-bottom:10px">${goalDesc}</div>
-                        <div style="font-size:24px;font-weight:bold;color:#9c27b0">必要な得点: +${pointsNeeded}点</div>
-                    </div>
-            `;
-            
-            if (pointsNeeded > 0) {
-                html += '<div style="margin-top:20px"><h6 style="color:#9c27b0;margin-bottom:15px;font-size:18px">💡 おすすめの伸ばし方</h6>';
-                
-                // 持久走とシャトルランのどちらを実施しているか判定
-                const hasEndurance = myValues[4] > 0;
-                const hasShuttle = myValues[5] > 0;
-                
-                // 各種目の伸びしろを計算
-                const improvements = [];
-                h.forEach((header, i) => {
-                    // 持久走とシャトルランの処理
-                    if (i === 4 && !hasEndurance && hasShuttle) return; // 持久走未実施
-                    if (i === 5 && !hasShuttle && hasEndurance) return; // シャトルラン未実施
-                    
-                    if (myScores[i] < 10 && myScores[i] > 0) {
-                        const potential = 10 - myScores[i];
-                        const difficulty = myScores[i] >= 7 ? '難しい' : myScores[i] >= 5 ? '普通' : myScores[i] >= 3 ? '簡単！' : 'とても簡単！';
-                        const diffColor = myScores[i] >= 7 ? '#f44336' : myScores[i] >= 5 ? '#FF9800' : myScores[i] >= 3 ? '#4CAF50' : '#2196F3';
-                        improvements.push({
-                            name: header,
-                            current: myScores[i],
-                            potential: potential,
-                            difficulty: difficulty,
-                            diffColor: diffColor
-                        });
-                    }
-                });
-                
-                // 未入力の種目を追加（持久走・シャトルラン以外）
-                h.forEach((header, i) => {
-                    if (i === 4 && !hasEndurance && hasShuttle) return;
-                    if (i === 5 && !hasShuttle && hasEndurance) return;
-                    
-                    if (myScores[i] === 0) {
-                        improvements.push({
-                            name: header,
-                            current: 0,
-                            potential: 10,
-                            difficulty: '未測定',
-                            diffColor: '#9E9E9E'
-                        });
-                    }
-                });
-                
-                improvements.sort((a, b) => {
-                    if (a.current === 0 && b.current > 0) return 1;
-                    if (a.current > 0 && b.current === 0) return -1;
-                    return b.potential - a.potential;
-                });
-                
-                let recommendCount = 0;
-                let totalRecommend = 0;
-                improvements.forEach((imp, idx) => {
-                    if (recommendCount < 5 && totalRecommend < pointsNeeded) {
-                        const recommend = imp.current === 0 ? 5 : Math.min(2, imp.potential, pointsNeeded - totalRecommend);
-                        if (recommend > 0) {
-                            html += `
-                                <div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;border-left:4px solid ${imp.diffColor}">
-                                    <div style="display:flex;justify-content:space-between;align-items:center">
-                                        <div>
-                                            <span style="font-weight:bold;font-size:16px">${imp.name}</span>
-                                            <span style="color:#666;margin-left:10px">${imp.current === 0 ? '未測定 → 平均5点を目指す' : `現在${imp.current}点 → ${imp.current + recommend}点`}</span>
-                                        </div>
-                                        <span style="background:${imp.diffColor};color:white;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:bold">${imp.difficulty}</span>
-                                    </div>
-                                </div>
-                            `;
-                            recommendCount++;
-                            totalRecommend += recommend;
-                        }
-                    }
-                });
-                
-                html += `<div style="margin-top:20px;padding:15px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-radius:8px;text-align:center;font-size:16px">
-                    ✨ これらを達成すれば目標クリア！頑張りましょう！
-                </div>`;
-                
-                html += '</div>';
-            } else {
-                html += '<div style="padding:20px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:white;border-radius:8px;text-align:center;font-size:18px">🎉 すでに目標達成しています！素晴らしい！</div>';
-            }
-            
-            html += '</div>';
-            
-            document.getElementById("goalSimulator").innerHTML = html;
-        }
+            const h = D[g].h.slice(0, 9);
+            const gr = parseInt(document.getElementById("grade").value);
+            
+            let myScores = [];
+            let myValues = [];
+            for (let i = 0; i < 9; i++) {
+                const inp = document.getElementById(`i${i}`);
+                const v = parseFloat(inp.value);
+                myValues.push(!isNaN(v) ? v : 0);
+                myScores.push(!isNaN(v) ? CS(v, h[i], g) : 0);
+            }
+            
+            const validScores = myScores.filter(s => s > 0);
+            const totalScore = validScores.reduce((a, b) => a + b, 0);
+            
+            let targetScore = 0;
+            let goalTitle = '';
+            let goalDesc = '';
+            let targetRank = '';
+            
+            if (goalType === 'rankA') {
+                const aRange = E.find(e => e.s === 'A')[`c${gr}`];
+                targetScore = parseInt(aRange.replace('以上', ''));
+                goalTitle = '🎯 総合A評価を目指す';
+                goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
+                targetRank = 'A';
+            } else if (goalType === 'rankB') {
+                const bRange = E.find(e => e.s === 'B')[`c${gr}`];
+                targetScore = parseInt(bRange.split('～')[0]);
+                goalTitle = '🎯 総合B評価を目指す';
+                goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
+                targetRank = 'B';
+            } else if (goalType === 'rankC') {
+                const cRange = E.find(e => e.s === 'C')[`c${gr}`];
+                targetScore = parseInt(cRange.split('～')[0]);
+                goalTitle = '🎯 総合C評価を目指す';
+                goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
+                targetRank = 'C';
+            } else if (goalType === 'rankD') {
+                const dRange = E.find(e => e.s === 'D')[`c${gr}`];
+                targetScore = parseInt(dRange.split('～')[0]);
+                goalTitle = '🎯 総合D評価を目指す';
+                goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
+                targetRank = 'D';
+            }
+            
+            const pointsNeeded = Math.max(0, targetScore - totalScore);
+            
+            let html = `
+                <div style="background:white;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1)">
+                    <h5 style="margin:0 0 20px 0;font-size:20px;color:#9c27b0">${goalTitle}</h5>
+                    <div style="background:#f5f5f5;padding:15px;border-radius:8px;margin-bottom:20px">
+                        <div style="font-size:16px;color:#666;margin-bottom:10px">${goalDesc}</div>
+                        <div style="font-size:24px;font-weight:bold;color:#9c27b0">必要な得点: +${pointsNeeded}点</div>
+                    </div>
+            `;
+            
+            if (pointsNeeded > 0) {
+                html += '<div style="margin-top:20px"><h6 style="color:#9c27b0;margin-bottom:15px;font-size:18px">💡 おすすめの伸ばし方</h6>';
+                
+                // 持久走とシャトルランのどちらを実施しているか判定
+                const hasEndurance = myValues[4] > 0;
+                const hasShuttle = myValues[5] > 0;
+                
+                // 各種目の伸びしろを計算
+                const improvements = [];
+                h.forEach((header, i) => {
+                    // 持久走とシャトルランの処理
+                    if (i === 4 && !hasEndurance && hasShuttle) return; // 持久走未実施
+                    if (i === 5 && !hasShuttle && hasEndurance) return; // シャトルラン未実施
+                    
+                    if (myScores[i] < 10 && myScores[i] > 0) {
+                        const potential = 10 - myScores[i];
+                        const difficulty = myScores[i] >= 7 ? '難しい' : myScores[i] >= 5 ? '普通' : myScores[i] >= 3 ? '簡単！' : 'とても簡単！';
+                        const diffColor = myScores[i] >= 7 ? '#f44336' : myScores[i] >= 5 ? '#FF9800' : myScores[i] >= 3 ? '#4CAF50' : '#2196F3';
+                        improvements.push({
+                            name: header,
+                            current: myScores[i],
+                            potential: potential,
+                            difficulty: difficulty,
+                            diffColor: diffColor
+                        });
+                    }
+                });
+                
+                // 未入力の種目を追加（持久走・シャトルラン以外）
+                h.forEach((header, i) => {
+                    if (i === 4 && !hasEndurance && hasShuttle) return;
+                    if (i === 5 && !hasShuttle && hasEndurance) return;
+                    
+                    if (myScores[i] === 0) {
+                        improvements.push({
+                            name: header,
+                            current: 0,
+                            potential: 10,
+                            difficulty: '未測定',
+                            diffColor: '#9E9E9E'
+                        });
+                    }
+                });
+                
+                improvements.sort((a, b) => {
+                    if (a.current === 0 && b.current > 0) return 1;
+                    if (a.current > 0 && b.current === 0) return -1;
+                    return b.potential - a.potential;
+                });
+                
+                let recommendCount = 0;
+                let totalRecommend = 0;
+                improvements.forEach((imp, idx) => {
+                    if (recommendCount < 5 && totalRecommend < pointsNeeded) {
+                        const recommend = imp.current === 0 ? 5 : Math.min(2, imp.potential, pointsNeeded - totalRecommend);
+                        if (recommend > 0) {
+                            html += `
+                                <div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;border-left:4px solid ${imp.diffColor}">
+                                    <div style="display:flex;justify-content:space-between;align-items:center">
+                                        <div>
+                                            <span style="font-weight:bold;font-size:16px">${imp.name}</span>
+                                            <span style="color:#666;margin-left:10px">${imp.current === 0 ? '未測定 → 平均5点を目指す' : `現在${imp.current}点 → ${imp.current + recommend}点`}</span>
+                                        </div>
+                                        <span style="background:${imp.diffColor};color:white;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:bold">${imp.difficulty}</span>
+                                    </div>
+                                </div>
+                            `;
+                            recommendCount++;
+                            totalRecommend += recommend;
+                        }
+                    }
+                });
+                
+                html += `<div style="margin-top:20px;padding:15px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-radius:8px;text-align:center;font-size:16px">
+                    ✨ これらを達成すれば目標クリア！頑張りましょう！
+                </div>`;
+                
+                html += '</div>';
+            } else {
+                html += '<div style="padding:20px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:white;border-radius:8px;text-align:center;font-size:18px">🎉 すでに目標達成しています！素晴らしい！</div>';
+            }
+            
+            html += '</div>';
+            
+            document.getElementById("goalSimulator").innerHTML = html;
+        }
