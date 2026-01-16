@@ -444,34 +444,32 @@ input[type="number"] {
     margin-bottom: 0 !important;
 }
 
-/* 体力タイプ図鑑：PC・横画面を最優先にする設定 */
+/* --- 図鑑 2×2 固定レイアウト (PC横画面優先) --- */
 #fitnessPokedex {
     display: flex !important;
     flex-wrap: wrap !important;
-    justify-content: center !important; /* 中央に並べる */
-    gap: 20px !important;
+    justify-content: center !important; /* 全体を中央へ */
+    gap: 16px !important;              /* カード間の隙間 */
     width: 100% !important;
-    max-width: 1200px !important; /* 広がりすぎを防止 */
-    margin: 30px auto !important; /* 上下に余白を作り、左右を自動中央寄せ */
-    padding: 0 20px !important;
-    clear: both !important;
+    max-width: 800px !important;       /* 2枚並びが綺麗に見える幅 */
+    margin: 20px auto !important;      /* 左右中央寄せ */
+    padding: 10px !important;
 }
 
-/* 各カードの設定 */
+/* カード1枚のサイズ指定 */
 .pokedex-card {
-    flex: 0 1 320px !important; /* 幅を320px程度に固定 */
-    min-width: 300px !important;
+    /* (100% / 2) から gap(16px) の半分を引いて 2枚ぴったりにする */
+    flex: 0 0 calc(50% - 8px) !important; 
+    max-width: calc(50% - 8px) !important;
+    min-width: 300px !important;       /* 内容が崩れない最小幅 */
     background: white !important;
-    border-radius: 15px !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
-    margin: 0 !important; /* flexで管理するためマージンは0 */
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
 }
 
-/* モバイル用の複雑な干渉を一部無効化 */
-@media screen and (max-width: 640px) {
-    /* 図鑑に関してはスマホでも中央1列になるように維持 */
-    #fitnessPokedex {
-        flex-direction: column !important;
-        align-items: center !important;
-    }
+/* 文字サイズなどが干渉してカードが巨大化するのを防ぐ */
+.pokedex-card * {
+    max-width: 100%;
 }
