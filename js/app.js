@@ -468,7 +468,14 @@ const types = [
             });
             
             document.getElementById("fitnessPokedex").innerHTML = pokedexHtml;
-            
+            // --- ここから追加：もしシミュレーターで目標が設定されていたらタイトルを維持する ---
+            const currentGoalTitle = document.getElementById('goalTargetName');
+            if (currentGoalTitle && currentGoalTitle.innerText === "あなたの体力タイプ図鑑") {
+                // まだ目標ボタンが押されていない場合のみ、デフォルトに戻す（必要に応じて）
+                currentGoalTitle.innerText = "あなたの体力タイプ図鑑";
+            }
+            // --- ここまで追加 ---
+    
             // 総合評価
             // 持久系は高い方のみを採用し、合計8種目で計算
 　　　const totalScore = 
