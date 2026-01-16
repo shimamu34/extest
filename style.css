@@ -428,25 +428,26 @@ input[type="number"] {
 #fitnessPokedex {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important; /* 2列固定 */
-    gap: 10px !important;
+    gap: 12px !important;
     width: 100% !important;
-    margin-bottom: 15px !important;
+    padding: 10px 0 !important;
+    min-height: 200px; /* 中身がなくても領域を確保 */
 }
-
 .pokedex-card {
-    min-height: 80px !important; /* 最低限の高さを持たせる */
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
     display: flex !important;
-    flex-direction: column !important; /* 中身を縦に並べる */
+    flex-direction: column !important; /* 縦に並べる（これでメーターが下に来る） */
     justify-content: center !important;
-    padding: 10px 12px !important;
-    /* ...既存のスタイル... */
+    min-height: 100px !important; /* 高さをしっかり確保 */
+    border-left: 6px solid var(--type-color, #fff) !important;
 }
 
-/* カード内のアイコンと文字の並び */
 .pokedex-header {
     display: flex !important;
     align-items: center !important;
-    gap: 8px;
+    margin-bottom: 8px !important; /* 下（メーター）との隙間 */
 }
 
 .type-emoji {
@@ -466,10 +467,25 @@ input[type="number"] {
 }
 
 .type-info {
-    width: 100%; /* 横幅いっぱいに広げる */
-    display: flex;
-    flex-direction: column; /* 名前、Lv、バーを縦に並べる */
-    gap: 2px; /* 項目間の隙間 */
+    flex-grow: 1;
+}
+
+/* メーターの見た目 */
+.lv-container {
+    width: 100%;
+}
+
+.lv-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.lv-bar-fill {
+    height: 100%;
+    transition: width 0.3s ease;
 }
 
 #totalRank {
