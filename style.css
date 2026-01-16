@@ -409,47 +409,58 @@ input[type="number"] {
 /* =============================================
     体力タイプ図鑑：2×2 中央揃え確定設定
    ============================================= */
-/* 図鑑全体のコンテナ：左右いっぱいに広げる */
+/* --- 図鑑全体のコンテナ：余白を詰める --- */
 #fitnessPokedex {
     display: flex !important;
     flex-wrap: wrap !important;
-    justify-content: space-between !important; /* 左右に振り分ける */
-    gap: 16px !important; /* カード間の隙間 */
-    padding: 10px 0 !important; /* 左右の余白を0にして端まで伸ばす */
+    justify-content: space-between !important;
+    gap: 12px !important; 
+    padding: 5px 0 !important; /* 上下の余白を最小限にして詰める */
     width: 100% !important;
-    max-width: none !important; /* 制限を解除 */
 }
 
-/* カード自体の設定：50%から隙間分を引いて最大化 */
+/* メインタイトルの拡大設定（HTML側のタグに合わせて調整してください） */
+#analysis h4, .analysis-title { 
+    font-size: 28px !important; /* タイトルを大きく */
+    margin-bottom: 10px !important; /* 下の余白を詰める */
+    font-weight: 900 !important;
+}
+
+/* --- カードのデザイン：中央寄せとサイズ最適化 --- */
 .pokedex-card {
-    flex: 1 1 calc(50% - 8px) !important; /* 1 1 にすることで余白を埋める */
-    min-width: calc(50% - 8px) !important;
+    flex: 1 1 calc(50% - 6px) !important;
+    min-width: calc(50% - 6px) !important;
     box-sizing: border-box !important;
-    
     background: rgba(255, 255, 255, 0.12) !important;
     backdrop-filter: blur(12px) !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 20px !important;
+    border-radius: 18px !important;
     
-    /* ボリュームを最大に */
-    padding: 30px 25px !important; 
-    min-height: 180px !important;   
+    padding: 20px 15px !important; /* 余白を少し詰めて内容を凝縮 */
+    min-height: 170px !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: space-between !important;
+    justify-content: center !important; /* 縦方向も中央に */
+    align-items: center !important;     /* ★横方向を中央寄せ */
+    text-align: center !important;      /* ★文字を中央揃え */
     
     color: white !important;
     position: relative;
     overflow: hidden;
 }
 
-/* 左端のカラーラインを少し太くして強調 */
+/* 左端のライン（中央寄せになってもアクセントとして残します） */
 .pokedex-card::before {
     content: "";
     position: absolute;
     left: 0; top: 0; bottom: 0;
-    width: 10px;
+    width: 6px;
     background: var(--type-color, #fff);
+}
+
+/* --- 親要素（濃い紫のカード）の余白を強制的に詰める --- */
+#analysis, .analysis-container {
+    padding: 15px !important; /* スクショの広い余白をカット */
 }
 
 /* モバイル時：画面が狭すぎる場合は1列にする */
