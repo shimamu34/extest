@@ -291,19 +291,19 @@ function SI() {
     localStorage.setItem("y-" + g, JSON.stringify(allData));
 }
 
-// 保存された記録を読み込む関数
 function L() {
     const g = document.getElementById("gender").value;
     const gr = document.getElementById("grade").value;
     const allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
-    const v = allData[gr] || ["", "", "", "", "", "", "", "", ""];
+    
+    // データ形式の変更に対応（古い配列データでも動くように調整）
+    const entry = allData[gr] || { v: ["", "", "", "", "", "", "", "", ""], ts: "" };
+    const v = Array.isArray(entry) ? entry : entry.v;
+    const ts = entry.ts || "";
 
-    // 各入力欄 (i0～i8) に値をセット
     v.forEach((val, i) => {
         const el = document.getElementById("i" + i);
         if (el) el.value = val;
-
-        // 持久走 (i4) の分・秒入力欄への反映
         if (i === 4) {
             const mEl = document.getElementById("i4_min");
             const sEl = document.getElementById("i4_sec");
@@ -312,14 +312,23 @@ function L() {
                 if (mEl) mEl.value = Math.floor(totalSec / 60);
                 if (sEl) sEl.value = totalSec % 60;
             } else {
-                if (mEl) mEl.value = "";
-                if (sEl) sEl.value = "";
+                if (mEl) mEl.value = ""; if (sEl) sEl.value = "";
             }
         }
     });
 
-    // 数値を読み込んだ後、得点計算と図鑑更新を実行
-    U(); 
+    U(true); // 時刻を更新させないために引数 true を渡す
+
+    // --- 追加：保存されていた時刻を表示エリアに反映 ---
+    const tsArea = document.getElementById("table-timestamp");
+    if (tsArea) {
+        if (ts) {
+            const [datePart, timePart] = ts.split(" ");
+            tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
+        } else {
+            tsArea.innerHTML = ""; // 未入力学年は時刻を出さない
+        }
+    }
 }
 
 function LI() {
