@@ -490,7 +490,6 @@ const types = [
                 const toNext = nextLevel - type.avg;
                
                 pokedexHtml += `
-                    pokedexHtml += `
             <div class="pokedex-card" style="--type-color: ${type.color}">
                 <div style="display:block; text-align:center; margin-bottom:12px;">
                     <span style="font-size:48px; display:block; margin-bottom:8px; line-height:1">${type.emoji}</span>
