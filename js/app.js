@@ -388,91 +388,76 @@ function LI() {
 }
 
 // --- 送信機能（修正版） ---
+// --- 送信機能（元通りの動き＋持久走の変換機能を追加） ---
 function sendToTeacher() {
-    const url = localStorage.getItem("gasUrl");
-    if (!url) { alert("先生のURLが設定されていません。"); return; }
+    // 1. 通知を表示
+    N('送信処理を開始します...', 'info');
+
+    // 半角変換用関数
+    const toHalfWidth = (str) => str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+
+    // 2. 氏名・番号の入力（ここを復活させました）
+    const name = prompt("氏名を入力してください");
+    if (!name) { N('送信をキャンセルしました', 'info'); return; }
+
+    let studentIdRaw = prompt("出席番号を入力してください（例：12）");
+    if (!studentIdRaw) { N('送信をキャンセルしました', 'info'); return; }
+    const studentId = toHalfWidth(studentIdRaw);
+
+    // 3. URLの取得
+    const gasUrl = localStorage.getItem('gasUrl') || localStorage.getItem('teacherScriptUrl');
     
-    // 送信確認
-    if (!confirm("先生にデータを送信しますか？")) return;
-    
-    const g = document.getElementById("gender").value;
-    const name = localStorage.getItem("userName") || "名無し";
-    
-    // 送信データ作成
-    let payload = {
-        gender: g,
-        name: name
+    if (!gasUrl) {
+        alert("送信先URLが見つかりません。初期設定をやり直してください。");
+        N('送信エラー：URL未設定', 'error');
+        return;
+    }
+
+    N('送信中...', 'info');
+
+    // ★追加：持久走の値を「秒」から「分:秒」に変換する処理
+    let enduranceVal = document.getElementById('i4').value || "";
+    if (enduranceVal !== "") {
+        const totalSec = parseInt(enduranceVal);
+        const m = Math.floor(totalSec / 60);
+        const s = totalSec % 60;
+        // 例: 306秒 → "5:06"
+        enduranceVal = `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    // 4. データ作成（現在画面に入力されている内容を送ります）
+    const data = {
+        name: name,
+        studentId: studentId,
+        gender: document.getElementById('gender').value,
+        grade: document.getElementById('grade').value,
+        class: document.getElementById('class').value,
+        session: document.getElementById('session').value,
+        grip: document.getElementById('i0').value || "",
+        situp: document.getElementById('i1').value || "",
+        forward: document.getElementById('i2').value || "",
+        sidestep: document.getElementById('i3').value || "",
+        endurance: enduranceVal, // ★変換した値をセット
+        shuttle: document.getElementById('i5').value || "",
+        sprint50: document.getElementById('i6').value || "",
+        jump: document.getElementById('i7').value || "",
+        throw: document.getElementById('i8').value || ""
     };
 
-    // 1～3年のデータを取得してパック詰め
-    [1, 2, 3].forEach(gr => {
-        // --- 1. 新しい保存形式（時刻付き）に対応してデータを取り出す ---
-        const rawData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
-        const entry = rawData[gr];
-        
-        // データが存在すれば配列部分(.v)を、なければ空の配列を使う
-        // ※ entry が配列ならそのまま(旧データ)、オブジェクトなら.v(新データ)を使う
-        let v = [];
-        if (entry) {
-            v = Array.isArray(entry) ? entry : (entry.v || []);
-        }
-        
-        // データが足りない場合（まだ入力していない学年など）は空文字で埋める
-        if (!v || v.length === 0) v = ["", "", "", "", "", "", "", "", ""];
-
-        // 各種目の値を payload にセット
-        v.forEach((val, i) => {
-            // --- 2. 持久走（5番目＝index 4）の場合だけ「分:秒」に変換 ---
-            if (i === 4 && val !== "") {
-                const totalSec = parseInt(val);
-                const min = Math.floor(totalSec / 60);
-                const sec = totalSec % 60;
-                // "5:06" のように、秒が一桁なら0埋めする
-                val = `${min}:${sec.toString().padStart(2, '0')}`;
-            }
-
-            // payload["d1_1"] (1年_種目1) のようなキーでセット
-            payload["d" + gr + "_" + (i + 1)] = val;
-        });
+    fetch(gasUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify(data)
+    })
+    .then(() => {
+        N('送信完了しました！', 'success');
+        alert('先生のスプレッドシートへ送信が完了しました。');
+    })
+    .catch(err => {
+        console.error("Fetch error:", err);
+        N('送信失敗', 'error');
+        alert('エラー詳細：' + err);
     });
-
-    // 送信処理
-    fetch(url, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    }).then(() => {
-        alert("送信しました！");
-    }).catch(e => {
-        alert("送信に失敗しました。" + e);
-    });
-}
-
-// データ消去
-function clearData() {
-    const g = document.getElementById("gender").value;
-    const gr = document.getElementById("grade").value;
-    if (confirm(`中学${gr}年生の入力記録をすべて消去しますか？`)) {
-        let allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
-        delete allData[gr];
-        localStorage.setItem("y-" + g, JSON.stringify(allData));
-        
-        // 1. 通常の入力欄（i0〜i8）をすべて空にする
-        for (let i = 0; i < 9; i++) {
-            const inputField = document.getElementById(`i${i}`);
-            if (inputField) inputField.value = "";
-        }
-        
-        // 2. 【追加】持久走専用の入力欄（分・秒）も空にする
-        const mField = document.getElementById("i4_min");
-        const sField = document.getElementById("i4_sec");
-        if (mField) mField.value = "";
-        if (sField) sField.value = "";
-        
-        U(); // 合計点や評価もリセット
-        N(`中${gr}の記録を消去しました`, "info");
-    }
 }
 
 function RAnalysis(g) {
