@@ -439,9 +439,34 @@ input[type="number"] {
     border: 1px solid rgba(255, 255, 255, 0.15) !important;
     border-radius: 16px !important;
     padding: 18px 12px !important;
-    box-sizing: border-box !important;
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    /* 中央揃えを追加 */
+    text-align: center !important;
+}
+
+.pokedex-card h3 {
+    color: white !important;
+    /* サイズを18pxに調整（LVと同じにする） */
+    font-size: 18px !important; 
+    font-weight: 800 !important;
+    margin-bottom: 4px !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+}
+
+.pokedex-level {
+    display: block !important; /* inline-blockからblockに変更して中央配置を確実に */
+    background: rgba(255, 255, 255, 0.2) !important;
+    padding: 2px 10px !important;
+    border-radius: 12px !important;
+    /* サイズを18pxに調整（名前と同じにする） */
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #ffeb3b !important;
+    margin: 0 auto 10px auto !important; /* 中央寄せ用の余白設定 */
+    width: fit-content !important; /* 背景の幅を文字に合わせる */
 }
 
 /* 左端のカラーライン */
