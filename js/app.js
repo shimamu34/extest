@@ -23,19 +23,20 @@ var radarVisible = radarVisible || [true, true, true, true, true, true];
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', function() {
-    RT(); RS(); RE(); LI();
+    RT(); RS(); RE(); 
+    L(); // 最初の一回読み込み
     
     document.getElementById("gender").addEventListener("change", () => {
         const g = document.getElementById("gender").value;
         RT(); RS();
+        L(); // 性別を変えたら読み込み
         if (document.getElementById("radar").style.display !== "none") RR(g);
         if (document.getElementById("correlation").style.display !== "none") RAnalysis(g);
         if (document.getElementById("tracking").style.display !== "none") updateTrackingView();
-        LI();
     });
     
     document.getElementById("grade").addEventListener("change", () => {
-        LI();
+        L(); // 学年を変えたら読み込み
     });
 });
 
@@ -283,6 +284,37 @@ function SI() {
     let allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
     allData[gr] = v;
     localStorage.setItem("y-" + g, JSON.stringify(allData));
+}
+
+// 保存された記録を読み込む関数
+function L() {
+    const g = document.getElementById("gender").value;
+    const gr = document.getElementById("grade").value;
+    const allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
+    const v = allData[gr] || ["", "", "", "", "", "", "", "", ""];
+
+    // 各入力欄 (i0～i8) に値をセット
+    v.forEach((val, i) => {
+        const el = document.getElementById("i" + i);
+        if (el) el.value = val;
+
+        // 持久走 (i4) の分・秒入力欄への反映
+        if (i === 4) {
+            const mEl = document.getElementById("i4_min");
+            const sEl = document.getElementById("i4_sec");
+            if (val) {
+                const totalSec = parseInt(val);
+                if (mEl) mEl.value = Math.floor(totalSec / 60);
+                if (sEl) sEl.value = totalSec % 60;
+            } else {
+                if (mEl) mEl.value = "";
+                if (sEl) sEl.value = "";
+            }
+        }
+    });
+
+    // 数値を読み込んだ後、得点計算と図鑑更新を実行
+    U(); 
 }
 
 function LI() {
