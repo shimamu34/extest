@@ -287,42 +287,58 @@ function SI() {
 
 function LI() {
     const g = document.getElementById("gender").value;
-    const gr = document.getElementById("grade").value;
-    const sv = localStorage.getItem("y-" + g);
+    const s = g === "男" ? D.男 : D.女;
+    const v = s.h.slice(0, 9).map((_, i) => parseFloat(document.getElementById("v" + i).value) || 0);
+    const p = v.map((val, i) => C(g, i, val));
     
-    // 最初に持久走の分・秒入力欄をクリアしておく（これによって他学年の残骸を消す）
-    const mField = document.getElementById("i4_min");
-    const sField = document.getElementById("i4_sec");
-    if (mField) mField.value = "";
-    if (sField) sField.value = "";
+    const types = [
+        { name: "筋力型", emoji: "🦍", color: "#e53e3e", indices: [0, 1, 7], weight: [1, 1, 1] },
+        { name: "瞬発力型", emoji: "⚡", color: "#ed8936", indices: [3, 6, 7, 8], weight: [1, 1, 1, 1] },
+        { name: "持久力型", emoji: "🏃", color: "#38a169", indices: [4, 5], weight: [1, 1] },
+        { name: "柔軟性型", emoji: "🧘", color: "#3182ce", indices: [2], weight: [1] },
+        { name: "バランス型", emoji: "⚖️", color: "#805ad5", indices: [0, 1, 2, 3, 4, 5, 6, 7, 8], weight: [1, 1, 1, 1, 1, 1, 1, 1, 1] }
+    ];
 
-    if (sv) {
-        const allData = JSON.parse(sv);
-        const v = allData[gr] || ["","","","","","","","",""];
-        for (let i = 0; i < v.length; i++) {
-            const input = document.getElementById(`i${i}`);
-            if (input) {
-                input.value = v[i];
-                
-                // --- 持久走の秒数を「分」と「秒」に分けて表示させる処理 ---
-                if (i === 4 && v[i] !== "") {
-                    const total = parseInt(v[i]);
-                    if (mField && sField) {
-                        mField.value = Math.floor(total / 60); 
-                        sField.value = total % 60;             
-                    }
-                }
-            }
-        }
-        U();
-    } else {
-        // データが全くない時のリセット処理
-        for (let i = 0; i < 9; i++) {
-            const input = document.getElementById(`i${i}`);
-            if (input) input.value = "";
-        }
-        U();
-    }
+    let pokedexHtml = '';
+    types.forEach(type => {
+        let sum = 0, wSum = 0;
+        type.indices.forEach((idx, i) => {
+            sum += p[idx] * type.weight[i];
+            wSum += type.weight[i];
+        });
+        type.avg = sum / wSum;
+        const level = Math.floor(type.avg) || 1;
+        const progress = (type.avg % 1) * 100;
+        const nextLevel = Math.min(10, level + 1);
+        const toNext = nextLevel - type.avg;
+
+        pokedexHtml += `
+            <div class="pokedex-card" style="--type-color: ${type.color}">
+                <div style="display:block; text-align:center; margin-bottom:12px;">
+                    <span style="font-size:48px; display:block; margin-bottom:8px; line-height:1">${type.emoji}</span>
+                    <div>
+                        <div style="font-size:18px; font-weight:bold; opacity:0.9; margin-bottom:2px">${type.name}</div>
+                        <div style="font-size:18px; font-weight:900; line-height:1">Lv.${level}</div>
+                    </div>
+                </div>
+                <div style="width:100%">
+                    <div style="background:rgba(255,255,255,0.2); height:12px; border-radius:6px; overflow:hidden; margin-bottom:8px">
+                        <div style="background:${type.color}; height:100%; width:${progress}%; transition:width 0.8s ease-out;"></div>
+                    </div>
+                    <div style="font-size:14px; font-weight:bold; text-align:center; line-height:1.3">
+                        <span>${type.avg.toFixed(1)}点 / 10.0点</span>
+                        ${toNext > 0 && toNext < 1 ? 
+                            `<span style="font-size:12px; opacity:1; font-weight:bold; display:block; color: rgba(255,255,255,0.9);">
+                                あと${toNext.toFixed(1)}点でLvアップ！
+                            </span>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    const container = document.getElementById("fitnessPokedex");
+    if (container) container.innerHTML = pokedexHtml;
 }
 
 // --- 送信機能（修正版） ---
