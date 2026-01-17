@@ -143,8 +143,6 @@ function RT() {
  　　document.getElementById("table").style.position = "relative";
     document.getElementById("table").innerHTML = '<div id="table-timestamp"></div>' + s;
     
-    // 表示された直後に時刻を更新する
-    updateTimestamp();
 }
 
 // 日時関係
@@ -281,8 +279,15 @@ function SI() {
     const gr = document.getElementById("grade").value;
     let v = [];
     for (let i = 0; i < 9; i++) { v.push(document.getElementById(`i${i}`).value || ""); }
+    
+    // --- 追加：保存する時刻の文字列を作成 ---
+    const now = new Date();
+    const f = (n) => n.toString().padStart(2, '0');
+    const ts = `${now.getFullYear()}.${f(now.getMonth() + 1)}.${f(now.getDate())} ${f(now.getHours())}:${f(now.getMinutes())}:${f(now.getSeconds())}`;
+
     let allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
-    allData[gr] = v;
+    // 値(v)と時刻(ts)をセットで保存
+    allData[gr] = { v: v, ts: ts }; 
     localStorage.setItem("y-" + g, JSON.stringify(allData));
 }
 
