@@ -58,20 +58,24 @@ function RR(g) {
         dataSets.push(h.map((x, i) => CS(A[g][rg][i], x, g)));
     });
 
-    // 4-6. 自分の各学年データ（ここが修正の核心部分です）
+    // 4-6. 自分の各学年データ（修正済み）
     ["1", "2", "3"].forEach(grKey => {
-        // その学年のデータが一つでも入力されているかチェック
-        if (allData[grKey] && allData[grKey].some(v => v !== "" && v !== null && parseFloat(v) !== 0)) {
+        const gradeData = allData[grKey]; // データオブジェクトを取得
+        const values = gradeData ? gradeData.v : null; // .v から配列を取り出す
+
+        // 配列(values)が存在し、かつデータが入っているかチェック
+        if (values && values.some(v => v !== "" && v !== null && parseFloat(v) !== 0)) {
             dataSets.push(h.map((x, i) => {
-                const rawValue = allData[grKey][i];
-                // 【重要】値が空、または0の場合は、高得点計算(CS)を避けて0点とする
+                const rawValue = values[i]; // 配列から値を取得
+                
+                // 値が空、または0の場合は0点とする
                 if (rawValue === "" || rawValue === null || parseFloat(rawValue) === 0) {
                     return 0;
                 }
                 return CS(parseFloat(rawValue), x, g);
             }));
         } else {
-            // データが全くない学年はグラフを描画しない
+            // データがない場合はグラフを描画しない
             dataSets.push(null);
         }
     });
