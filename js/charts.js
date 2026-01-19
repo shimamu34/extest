@@ -1,26 +1,43 @@
 // charts.js の一番上に追記（二重定義エラーを防ぎつつ初期値を確保）
 var radarVisible = radarVisible || [true, true, true, true, true, true];
 
-// グラフ表示切り替え
-function toggleRadar() {
-    const c = document.getElementById("radar");
-    if (c.style.display === "none") {
-        c.style.display = "block";
-        RR(document.getElementById("gender").value);
-    } else {
-        c.style.display = "none";
-    }
+// ランキングの表示・非表示を自動判定する補助関数（charts.jsの適当な場所に追加）
+function updateRankingVisibility() {
+    const r = document.getElementById("radar").style.display;
+    const c = document.getElementById("correlation").style.display;
+    const rb = document.getElementById("rankingBox");
+    if (!rb) return;
+
+    // レーダーか分析図鑑、どちらかが表示されていればランキングも出す
+    if (r === "block" || c === "block") {
+        rb.style.display = "block";
+    } else {
+        rb.style.display = "none";
+    }
 }
 
+// グラフ表示切り替え（上書き）
+function toggleRadar() {
+    const c = document.getElementById("radar");
+    if (c.style.display === "none") {
+        c.style.display = "block";
+        RR(document.getElementById("gender").value);
+    } else {
+        c.style.display = "none";
+    }
+    updateRankingVisibility(); // 連動
+}
 
+// 分析表示切り替え（上書き）
 function toggleAnalysis() {
-    const c = document.getElementById("correlation");
-    if (c.style.display === "none") {
-        c.style.display = "block";
-        RAnalysis(document.getElementById("gender").value);
-    } else {
-        c.style.display = "none";
-    }
+    const c = document.getElementById("correlation");
+    if (c.style.display === "none") {
+        c.style.display = "block";
+        RAnalysis(document.getElementById("gender").value);
+    } else {
+        c.style.display = "none";
+    }
+    updateRankingVisibility(); // 連動
 }
 
 function toggleTracking() {
