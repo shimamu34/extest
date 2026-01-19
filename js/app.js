@@ -38,6 +38,31 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// --- 印刷用関数 (preparePrint) ---
+// 印刷時にレーダーチャートを一時的に強制表示して、描画してから印刷ダイアログを開きます
+function preparePrint() {
+    const gender = document.getElementById("gender").value;
+    const radarArea = document.getElementById("radar");
+    
+    if (!radarArea) return window.print();
+
+    // グラフエリアを一時的に表示状態にする（非表示だと描画が崩れるため）
+    const originalDisplay = radarArea.style.display;
+    radarArea.style.display = "block";
+
+    // グラフ描画(RR)を強制実行
+    if (typeof RR === 'function') {
+        RR(gender);
+    }
+
+    // 描画完了をわずかに待ってから印刷
+    setTimeout(() => {
+        window.print();
+        // 印刷が終わったら元の表示状態に戻す
+        radarArea.style.display = originalDisplay;
+    }, 300);
+}
+
 // 通知表示
 function N(m, t = 'success') {
     const n = document.getElementById('notif');
@@ -196,22 +221,18 @@ function RE() {
     document.getElementById("eval").innerHTML = s;
 }
 
-function U() {
-    // 【追加】分と秒を合体させて、隠し持った i4 に入れる
+function U(isInitial = false) {
     const m = parseInt(document.getElementById("i4_min")?.value) || 0;
     const sec = parseInt(document.getElementById("i4_sec")?.value) || 0;
     const i4 = document.getElementById("i4");
-    if (i4) {
-        if (m > 0 || sec > 0) {
-            i4.value = (m * 60) + sec;
-        } else {
-            i4.value = "";
-        }
-    }
+    if (i4) i4.value = (m > 0 || sec > 0) ? (m * 60) + sec : "";
+
     const g = document.getElementById("gender").value;
     const gr = parseInt(document.getElementById("grade").value);
     const c = D[g].c; const h = D[g].h;
     let tot = 0;
+
+    // ハイライト初期化
     c.forEach((r, ri) => h.slice(0, -1).forEach((x, ci) => {
         const el = document.getElementById(`s${ri}-${ci}`);
         if (el) el.style.background = '';
@@ -220,14 +241,11 @@ function U() {
         const el = document.getElementById(`e${r.s}${a}`);
         if (el) el.classList.remove("highlight");
     }));
+
     let scores = [];
     h.slice(0, -1).forEach((x, i) => {
         const v = parseFloat(document.getElementById(`i${i}`).value);
-        // 修正：isNaN(v) だけでなく v === 0 の場合も null（未入力扱い）として処理する
-        if (isNaN(v) || v === 0) { 
-            scores.push(null); 
-            return; 
-        }
+        if (isNaN(v) || v === 0) { scores.push(null); return; }
         const k = K(x);
         let rv = k === "50m" || k === "持" ? Math.ceil(v * 100) / 100 : Math.floor(v);
         for (let j = 0; j < c.length; j++) {
@@ -246,12 +264,14 @@ function U() {
             if (m) { scores.push(r.p); const el = document.getElementById(`s${j}-${i}`); if (el) el.style.background = '#cceeff'; break; }
         }
     });
+
     const endS = scores[4] || 0; const shuS = scores[5] || 0;
     if (endS > 0 && shuS > 0) {
         tot = (scores[0]||0)+(scores[1]||0)+(scores[2]||0)+(scores[3]||0)+Math.max(endS, shuS)+(scores[6]||0)+(scores[7]||0)+(scores[8]||0);
     } else {
         scores.forEach(sc => { if (sc !== null) tot += sc; });
     }
+
     const scArea = document.getElementById("i9");
     let lv = "E";
     for (let i = 0; i < E.length; i++) {
@@ -266,22 +286,20 @@ function U() {
     scArea.querySelectorAll("div")[1].textContent = lv;
     const highlightEl = document.getElementById(`e${lv}${gr}`);
     if (highlightEl) highlightEl.classList.add("highlight");
-    SI();
-    RAnalysis(g);
+
+    // 保存と表示更新
+    if (!isInitial) SI();
     updateTimestamp();
-    
-    const gender = document.getElementById("gender").value;
-    
-    // 1. レーダーチャートの描画 (charts.jsの関数)
+    RAnalysis(g); // 分析図鑑の更新
+
+    // --- レーダーチャートの更新 ---
+    const radarArea = document.getElementById("radar");
     if (typeof RR === 'function') {
-        RR(gender); 
+        // もしレーダーチャートが非表示なら描画しない（またはここで強制表示にする場合は style.display = "block"）
+        if (radarArea && radarArea.style.display !== "none") {
+            RR(g);
+        }
     }
-
-    // 2. 分析図鑑の更新
-    RAnalysis(gender);
-
-    // 3. その他グラフがある場合の更新
-    if (typeof updateAllCharts === 'function') updateAllCharts();
 }
 
 function SI() {
@@ -305,18 +323,13 @@ function L() {
     const g = document.getElementById("gender").value;
     const gr = document.getElementById("grade").value;
     const allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
-    
-    // データがない場合の初期値を定義
     const entry = allData[gr] || { v: ["", "", "", "", "", "", "", "", ""], ts: "" };
     const v = Array.isArray(entry) ? entry : entry.v;
     const ts = entry.ts || "";
 
-    // 1. 各入力欄(i0〜i8)に値をセット
     v.forEach((val, i) => {
         const el = document.getElementById("i" + i);
         if (el) el.value = val;
-
-        // 2. 持久走(index 4)の場合は、分・秒の入力欄も連動させる
         if (i === 4) {
             const mEl = document.getElementById("i4_min");
             const sEl = document.getElementById("i4_sec");
@@ -325,19 +338,13 @@ function L() {
                 if (mEl) mEl.value = Math.floor(totalSec / 60);
                 if (sEl) sEl.value = totalSec % 60;
             } else {
-                if (mEl) mEl.value = ""; 
-                if (sEl) sEl.value = "";
+                if (mEl) mEl.value = ""; if (sEl) sEl.value = "";
             }
         }
     });
 
-    // 3. 【重要】全ての値をセットした後に、計算と描画(U)を実行
-    // 引数に true を渡すことで、読み込んだだけで「保存(SI)」が走るのを防ぎます
-    if (typeof U === 'function') {
-        U(true); 
-    }
+    U(true); // 初期読み込みとして実行
 
-    // 4. 保存されていた時刻を表示
     const tsArea = document.getElementById("table-timestamp");
     if (tsArea) {
         if (ts && ts.includes(" ")) {
@@ -405,7 +412,6 @@ function LI() {
     if (container) container.innerHTML = pokedexHtml;
 }
 
-// --- 送信機能（修正版） ---
 // --- 送信機能（元通りの動き＋持久走の変換機能を追加） ---
 function sendToTeacher() {
     // 1. 通知を表示
@@ -479,151 +485,63 @@ function sendToTeacher() {
 }
 
 function RAnalysis(g) {
-            const h = D[g].h.slice(0, 9);
-            
-            // 自分のスコアを取得
-            let myScores = [];
-            let hasData = false;
-            for (let i = 0; i < 9; i++) {
-                const inp = document.getElementById(`i${i}`);
-                const v = parseFloat(inp.value);
-                if (!isNaN(v)) {
-                    hasData = true;
-                    myScores.push(CS(v, h[i], g));
-                } else {
-                    myScores.push(0);
-                }
-            }
-            
-            if (!hasData) {
-                document.getElementById("fitnessPokedex").innerHTML = '<div style="grid-column:1/-1;text-align:center;color:white;opacity:0.8;padding:40px">データを入力すると図鑑が表示されます</div>';
-                document.getElementById("totalRank").innerHTML = '';
-                document.getElementById("goalSimulator").innerHTML = '';
-                return;
-            }
-            
-            // タイプ別レベル計算
-// 0:握力, 1:上体起こし, 2:長座体前屈, 3:反復横とび, 4:持久走, 5:シャトルラン, 6:50m, 7:立ち幅跳び, 8:ハンドボール投げ
-
-const calcAvg = (indices) => {
-    const validScores = indices.map(i => myScores[i]).filter(s => s > 0);
-    return validScores.length > 0 ? validScores.reduce((sum, s) => sum + s, 0) / validScores.length : 0;
-};
-
-// パワー型：握力(0), 上体起こし(1), 立ち幅(7), ハンド(8)
-const powerAvg = calcAvg([0, 1, 7, 8]); 
-
-// 持久力型：(持久走(4) or シャトルラン(5)の高い方) と 上体起こし(1) の平均
-const enduranceBest = Math.max(myScores[4], myScores[5]);
-let eList = [];
-if (enduranceBest > 0) eList.push(enduranceBest);
-if (myScores[1] > 0) eList.push(myScores[1]); // 上体起こしは「1」番！
-const enduranceAvg = eList.length > 0 ? eList.reduce((a, b) => a + b, 0) / eList.length : 0;
-
-// 敏捷性型：反復横とび(3), 50m走(6), ハンドボール投(8)
-const agilityAvg = calcAvg([3, 6, 8]);
-
-// 柔軟性型：長座体前屈(2), 上体起こし(1)
-const flexibilityAvg = calcAvg([2, 1]); // 長座は「2」、上体は「1」！
-
-const types = [
-    {name: 'パワー型', emoji: '💪', avg: powerAvg, color: '#f5576c'},
-    {name: '持久力型', emoji: '🏃', avg: enduranceAvg, color: '#00f2fe'},
-    {name: '敏捷性型', emoji: '⚡', avg: agilityAvg, color: '#38f9d7'},
-    {name: '柔軟性型', emoji: '🤸', avg: flexibilityAvg, color: '#fee140'}
-];
-            
-            // 図鑑表示
-            let pokedexHtml = '';
-            types.forEach(type => {
-                const level = Math.floor(type.avg);
-                const progress = (type.avg / 10) * 100;
-                const nextLevel = Math.ceil(type.avg);
-                const toNext = nextLevel - type.avg;
-               
-                pokedexHtml += `
-            <div class="pokedex-card" style="--type-color: ${type.color}">
-                <div style="display:block; text-align:center; margin-bottom:12px;">
-                    <span style="font-size:48px; display:block; margin-bottom:8px; line-height:1">${type.emoji}</span>
-                    <div>
-                        <div style="font-size:18px; font-weight:bold; opacity:0.9; margin-bottom:2px">${type.name}</div>
-                        <div style="font-size:18px; font-weight:900; line-height:1">Lv.${level}</div>
-                    </div>
-                </div>
-                <div style="width:100%">
-                    <div style="background:rgba(255,255,255,0.2); height:12px; border-radius:6px; overflow:hidden; margin-bottom:8px">
-                        <div style="background:${type.color}; height:100%; width:${progress}%; transition:width 0.8s ease-out;"></div>
-                    </div>
-                    <div style="font-size:14px; font-weight:bold; text-align:center; line-height:1.3">
-                        <span>${type.avg.toFixed(1)}点 / 10.0点</span>
-                        ${toNext > 0 && toNext < 1 ? 
-                            `<span style="font-size:12px; opacity:1; font-weight:bold; display:block; color: rgba(255,255,255,0.9);">
-                                あと${toNext.toFixed(1)}点でLvアップ！
-                            </span>` : ''}
-                    </div>
-                </div>
-            </div>
-        `;
-            });
-            
-            document.getElementById("fitnessPokedex").innerHTML = pokedexHtml;
-            // --- ここから追加：もしシミュレーターで目標が設定されていたらタイトルを維持する ---
-            const currentGoalTitle = document.getElementById('goalTargetName');
-            if (currentGoalTitle && currentGoalTitle.innerText === "あなたの体力タイプ図鑑") {
-                // まだ目標ボタンが押されていない場合のみ、デフォルトに戻す（必要に応じて）
-                currentGoalTitle.innerText = "あなたの体力タイプ図鑑";
-            }
-            // --- ここまで追加 ---
+    const h = D[g].h.slice(0, 9);
+    let myScores = [];
+    let hasData = false;
+    for (let i = 0; i < 9; i++) {
+        const v = parseFloat(document.getElementById(`i${i}`).value);
+        if (!isNaN(v)) { hasData = true; myScores.push(CS(v, h[i], g)); }
+        else { myScores.push(0); }
+    }
     
-            // 総合評価
-            // 持久系は高い方のみを採用し、合計8種目で計算
-　　　const totalScore = 
-    myScores[0] + myScores[1] + myScores[2] + myScores[3] + 
-    Math.max(myScores[4], myScores[5]) + // 持久走 or シャトルラン
-    myScores[6] + myScores[7] + myScores[8];
-            const gr = parseInt(document.getElementById("grade").value);
-            let rank = 'E';
-            let rankMin = 0, rankMax = 0;
-            
-            for (let i = 0; i < E.length; i++) {
-                const r = E[i];
-                const rg = r[`c${gr}`];
-                let min, max;
-                
-                if (rg.includes("以上")) {
-                    min = parseFloat(rg);
-                    max = Infinity;
-                } else if (rg.includes("以下")) {
-                    min = -Infinity;
-                    max = parseFloat(rg);
-                } else if (rg.includes("～")) {
-                    [min, max] = rg.split("～").map(Number);
-                } else {
-                    min = max = parseFloat(rg);
-                }
-                
-                if (totalScore >= min && totalScore <= max) {
-                    rank = r.s;
-                    rankMin = min;
-                    rankMax = max;
-                    break;
-                }
-            }
-            
-            const nextRankIndex = ['E', 'D', 'C', 'B', 'A'].indexOf(rank) + 1;
-            const nextRank = nextRankIndex < 5 ? ['E', 'D', 'C', 'B', 'A'][nextRankIndex] : null;
-            const toNextRank = nextRank ? (rankMax + 1 - totalScore) : 0;
-            
-            let totalHtml = `
-                <div style="font-size:28px;margin-bottom:10px">総合評価: ${rank} (${totalScore}点)</div>
-                ${nextRank ? `<div style="font-size:16px;opacity:0.9">次の${nextRank}評価まで: あと${toNextRank}点！</div>` : '<div style="font-size:16px;opacity:0.9">最高ランク達成！🎉</div>'}
-            `;
-            
-            document.getElementById("totalRank").innerHTML = totalHtml;
-            
-            // 初期状態のシミュレーター表示
-            //document.getElementById("goalSimulator").innerHTML = '<div style="text-align:center;color:#666;padding:40px">上のボタンから目標を選んでください</div>';
-        }
+    if (!hasData) {
+        document.getElementById("fitnessPokedex").innerHTML = '<div style="grid-column:1/-1;text-align:center;color:white;opacity:0.8;padding:40px">データを入力すると図鑑が表示されます</div>';
+        document.getElementById("totalRank").innerHTML = '';
+        return;
+    }
+
+    const calcAvg = (indices) => {
+        const validScores = indices.map(i => myScores[i]).filter(s => s > 0);
+        return validScores.length > 0 ? validScores.reduce((sum, s) => sum + s, 0) / validScores.length : 0;
+    };
+
+    const types = [
+        {name: 'パワー型', emoji: '💪', avg: calcAvg([0, 1, 7, 8]), color: '#f5576c'},
+        {name: '持久力型', emoji: '🏃', avg: (Math.max(myScores[4], myScores[5]) + myScores[1])/2, color: '#00f2fe'},
+        {name: '敏捷性型', emoji: '⚡', avg: calcAvg([3, 6, 8]), color: '#38f9d7'},
+        {name: '柔軟性型', emoji: '🤸', avg: calcAvg([2, 1]), color: '#fee140'}
+    ];
+    
+    let pokedexHtml = '';
+    types.forEach(type => {
+        const level = Math.floor(type.avg);
+        const progress = (type.avg / 10) * 100;
+        pokedexHtml += `
+            <div class="pokedex-card" style="--type-color: ${type.color}">
+                <div style="text-align:center; margin-bottom:12px;">
+                    <span style="font-size:48px; display:block; line-height:1">${type.emoji}</span>
+                    <div style="font-size:18px; font-weight:bold;">${type.name} Lv.${level}</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.2); height:12px; border-radius:6px; overflow:hidden;">
+                    <div style="background:${type.color}; height:100%; width:${progress}%;"></div>
+                </div>
+            </div>`;
+    });
+    document.getElementById("fitnessPokedex").innerHTML = pokedexHtml;
+
+    const totalScore = myScores[0] + myScores[1] + myScores[2] + myScores[3] + Math.max(myScores[4], myScores[5]) + myScores[6] + myScores[7] + myScores[8];
+    const gr = parseInt(document.getElementById("grade").value);
+    let rank = 'E';
+    for (let i = 0; i < E.length; i++) {
+        const rg = E[i][`c${gr}`];
+        let min, max;
+        if (rg.includes("以上")) { min = parseFloat(rg); max = 100; }
+        else if (rg.includes("以下")) { min = 0; max = parseFloat(rg); }
+        else { [min, max] = rg.split("～").map(Number); }
+        if (totalScore >= min && totalScore <= max) { rank = E[i].s; break; }
+    }
+    document.getElementById("totalRank").innerHTML = `<div style="font-size:28px;">総合評価: ${rank} (${totalScore}点)</div>`;
+}
 
 function setGoal(goalType) {
     const g = document.getElementById("gender").value;
