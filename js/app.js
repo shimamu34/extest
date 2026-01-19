@@ -318,39 +318,48 @@ function SI() {
 
 function L() {
     const g = document.getElementById("gender").value;
+    const allData = JSON.parse(localStorage.getItem("y-" + g) || '{}');
     const gr = document.getElementById("grade").value;
-    const allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
-    const entry = allData[gr] || { v: ["", "", "", "", "", "", "", "", ""], ts: "" };
-    const v = Array.isArray(entry) ? entry : entry.v;
-    const ts = entry.ts || "";
+    
+    // 現在の学年のデータを取得
+    const data = allData[gr];
+    
+    // 入力欄（input）をすべて取得
+    const inputs = document.querySelectorAll(".v-in");
 
-    v.forEach((val, i) => {
-        const el = document.getElementById("i" + i);
-        if (el) el.value = val;
-        if (i === 4) {
-            const mEl = document.getElementById("i4_min");
-            const sEl = document.getElementById("i4_sec");
-            if (val && val !== "") {
-                const totalSec = parseInt(val);
-                if (mEl) mEl.value = Math.floor(totalSec / 60);
-                if (sEl) sEl.value = totalSec % 60;
-            } else {
-                if (mEl) mEl.value = ""; if (sEl) sEl.value = "";
-            }
+    if (data) {
+        // --- ここからデータ形式の判定と読み込み ---
+        let values = [];
+        let timestamp = "";
+
+        if (Array.isArray(data)) {
+            // 【旧形式】データがただの配列の場合
+            values = data;
+        } else if (data && data.v) {
+            // 【新形式】データが {v: [...], ts: "..."} の場合
+            values = data.v;
+            timestamp = data.ts || "";
         }
-    });
 
-    U(true); // 初期読み込みとして実行
+        // 入力欄に値をセット
+        inputs.forEach((input, i) => {
+            input.value = (values[i] !== undefined && values[i] !== null) ? values[i] : "";
+        });
 
-    const tsArea = document.getElementById("table-timestamp");
-    if (tsArea) {
-        if (ts && ts.includes(" ")) {
-            const [datePart, timePart] = ts.split(" ");
-            tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
-        } else {
-            tsArea.innerHTML = ""; 
+        // 保存日時を表示
+        const tsElement = document.getElementById("lastSaved");
+        if (tsElement) {
+            tsElement.innerText = timestamp ? "最終保存: " + timestamp : "";
         }
+    } else {
+        // データがない学年の場合は、入力を空にする
+        inputs.forEach(input => input.value = "");
+        const tsElement = document.getElementById("lastSaved");
+        if (tsElement) tsElement.innerText = "";
     }
+
+    // 数値を画面に反映
+    U(); 
 }
 
 
