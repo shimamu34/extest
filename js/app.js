@@ -26,17 +26,22 @@ document.addEventListener('DOMContentLoaded', function() {
     RT(); RS(); RE(); 
     L(); // データの読み込み（この中でUも呼ばれます）
     
-    / 性別を変えた時
+    // --- app.js の 初期化処理部分 ---
+document.addEventListener('DOMContentLoaded', function() {
+    RT(); RS(); RE(); 
+    L(); 
+    
+    // 性別を変えた時
     document.getElementById("gender").addEventListener("change", () => {
-        RT(); RS(); // 平均点などの基準を更新
-        L();        // ★重要：その性別のデータを読み込む
-        U();        // 再計算と描画
+        SI();       // ★これを追加（切り替え前のデータを保存）
+        RT(); RS(); 
+        L();        // 新しい性別のデータを読み込む
     });
     
     // 学年を変えた時
     document.getElementById("grade").addEventListener("change", () => {
-        L(); // ★ここで新しい学年のデータを読み込む
-        U(); 
+        SI();       // ★これを追加（切り替え前のデータを保存）
+        L();        // 新しい学年のデータを読み込む
     });
 });
 
@@ -304,18 +309,27 @@ function U(isInitial = false) {
 function SI() {
     const g = document.getElementById("gender").value;
     const gr = document.getElementById("grade").value;
-    let v = [];
-    for (let i = 0; i < 9; i++) { v.push(document.getElementById(`i${i}`).value || ""); }
+    const key = "y-" + g;
     
-    // --- 追加：保存する時刻の文字列を作成 ---
+    // 入力値を取得
+    let v = [];
+    for (let i = 0; i < 9; i++) { 
+        v.push(document.getElementById(`i${i}`).value || ""); 
+    }
+    
+    // 時刻の作成
     const now = new Date();
     const f = (n) => n.toString().padStart(2, '0');
     const ts = `${now.getFullYear()}.${f(now.getMonth() + 1)}.${f(now.getDate())} ${f(now.getHours())}:${f(now.getMinutes())}:${f(now.getSeconds())}`;
 
-    let allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
-    // 値(v)と時刻(ts)をセットで保存
+    // ストレージから取得して、現在の学年の場所だけに上書き保存
+    let allData = JSON.parse(localStorage.getItem(key) || "{}");
     allData[gr] = { v: v, ts: ts }; 
-    localStorage.setItem("y-" + g, JSON.stringify(allData));
+    localStorage.setItem(key, JSON.stringify(allData));
+
+    // 画面上の最終保存日時表示を更新
+    const tsElement = document.getElementById("lastSaved");
+    if (tsElement) tsElement.innerText = "最終保存: " + ts;
 }
 
 function L() {
