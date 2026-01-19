@@ -24,24 +24,21 @@ var radarVisible = radarVisible || [true, true, true, true, true, true];
 // --- app.js の 初期化処理部分 ---
 document.addEventListener('DOMContentLoaded', function() {
     RT(); RS(); RE(); 
-    L(); // データの読み込み（この中でUも呼ばれます）
     
-    // --- app.js の 初期化処理部分 ---
-document.addEventListener('DOMContentLoaded', function() {
-    RT(); RS(); RE(); 
+    // 最初にデータを読み込み、その流れで U() -> グラフ描画 が走ります
     L(); 
     
-    // 性別を変えた時
+    // 性別変更時
     document.getElementById("gender").addEventListener("change", () => {
-        SI();       // ★これを追加（切り替え前のデータを保存）
-        RT(); RS(); 
-        L();        // 新しい性別のデータを読み込む
+        SI(); // 現在の学年を保存
+        RT(); RS(); // 性別ごとの基準表を作り直し
+        L(); // 新しい性別のデータを読み込んで再描画
     });
     
-    // 学年を変えた時
+    // 学年変更時
     document.getElementById("grade").addEventListener("change", () => {
-        SI();       // ★これを追加（切り替え前のデータを保存）
-        L();        // 新しい学年のデータを読み込む
+        SI(); // 現在の学年を保存
+        L();  // 新しい学年のデータを読み込んで再描画
     });
 });
 
@@ -149,9 +146,16 @@ function RT() {
             if (r === "記録") {
                 if (j === 4) { 
                     // 改行を排除し、inputの幅を38pxに微調整しました
-                    s += `<td style="padding:2px; min-width:100px;"><div style="display:flex;align-items:center;justify-content:center;gap:2px;"><input type="number" id="i4_min" onchange="U()" placeholder="分" style="width:38px;text-align:center;padding:2px;">:<input type="number" id="i4_sec" onchange="U()" placeholder="秒" style="width:38px;text-align:center;padding:2px;"></div><input type="hidden" id="i4"></td>`;
+                    s += `<td style="padding:2px; min-width:100px;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:2px;">
+            <input type="number" id="i4_min" class="v-in" onchange="U()" placeholder="分" style="width:38px;text-align:center;padding:2px;">
+            :
+            <input type="number" id="i4_sec" class="v-in" onchange="U()" placeholder="秒" style="width:38px;text-align:center;padding:2px;">
+        </div>
+        <input type="hidden" id="i4">
+      </td>`;
                 } else if (j < 9) {
-                    s += `<td><input type="number" id="i${j}" onchange="U()" step="0.1" style="width:100%;box-sizing:border-box;"></td>`;
+                    s += `<td><input type="number" id="i${j}" class="v-in" onchange="U()" step="0.1" style="width:100%;box-sizing:border-box;"></td>`;
                 } else {
                     s += `<td id="i9"><div>0</div><div>E</div></td>`;
                 }
@@ -336,48 +340,40 @@ function L() {
     const g = document.getElementById("gender").value;
     const allData = JSON.parse(localStorage.getItem("y-" + g) || '{}');
     const gr = document.getElementById("grade").value;
-    
-    // 現在の学年のデータを取得
     const data = allData[gr];
     
-    // 入力欄（input）をすべて取得
-    const inputs = document.querySelectorAll(".v-in");
+    // 一旦すべての入力欄を空にする
+    document.querySelectorAll(".v-in").forEach(input => input.value = "");
 
     if (data) {
-        // --- ここからデータ形式の判定と読み込み ---
-        let values = [];
-        let timestamp = "";
+        // 新旧データ形式に対応
+        let values = Array.isArray(data) ? data : (data.v || []);
+        let timestamp = data.ts || "";
 
-        if (Array.isArray(data)) {
-            // 【旧形式】データがただの配列の場合
-            values = data;
-        } else if (data && data.v) {
-            // 【新形式】データが {v: [...], ts: "..."} の場合
-            values = data.v;
-            timestamp = data.ts || "";
-        }
+        // 各入力欄に値を戻す
+        values.forEach((val, i) => {
+            const input = document.getElementById(`i${i}`);
+            if (input) input.value = val;
 
-        // 入力欄に値をセット
-        inputs.forEach((input, i) => {
-            input.value = (values[i] !== undefined && values[i] !== null) ? values[i] : "";
+            // ★持久走(i4)だけは分と秒にバラして表示する
+            if (i === 4 && val) {
+                const m = Math.floor(val / 60);
+                const s = val % 60;
+                if (document.getElementById("i4_min")) document.getElementById("i4_min").value = m;
+                if (document.getElementById("i4_sec")) document.getElementById("i4_sec").value = s;
+            }
         });
 
-        // 保存日時を表示
         const tsElement = document.getElementById("lastSaved");
-        if (tsElement) {
-            tsElement.innerText = timestamp ? "最終保存: " + timestamp : "";
-        }
+        if (tsElement) tsElement.innerText = timestamp ? "最終保存: " + timestamp : "";
     } else {
-        // データがない学年の場合は、入力を空にする
-        inputs.forEach(input => input.value = "");
         const tsElement = document.getElementById("lastSaved");
         if (tsElement) tsElement.innerText = "";
     }
 
-    // 数値を画面に反映
+    // ★最後にこれを呼ぶことでグラフが描画されます
     U(); 
 }
-
 
 // --- 送信機能（元通りの動き＋持久走の変換機能を追加） ---
 function sendToTeacher() {
