@@ -24,21 +24,18 @@ var radarVisible = radarVisible || [true, true, true, true, true, true];
 // --- app.js の 初期化処理部分 ---
 document.addEventListener('DOMContentLoaded', function() {
     RT(); RS(); RE(); 
-    
-    // 最初にデータを読み込み、その流れで U() -> グラフ描画 が走ります
-    L(); 
+    L(); // ページを開いた時に現在の学年データを読み込む
     
     // 性別変更時
     document.getElementById("gender").addEventListener("change", () => {
-        SI(); // 現在の学年を保存
-        RT(); RS(); // 性別ごとの基準表を作り直し
-        L(); // 新しい性別のデータを読み込んで再描画
+        // SI(); は U() の中で行われるため、ここでは「切り替え → 再構築 → 読み込み」に集中
+        RT(); RS(); 
+        L(); 
     });
     
     // 学年変更時
     document.getElementById("grade").addEventListener("change", () => {
-        SI(); // 現在の学年を保存
-        L();  // 新しい学年のデータを読み込んで再描画
+        L(); 
     });
 });
 
@@ -338,24 +335,30 @@ function SI() {
 
 function L() {
     const g = document.getElementById("gender").value;
-    const allData = JSON.parse(localStorage.getItem("y-" + g) || '{}');
     const gr = document.getElementById("grade").value;
+    const allData = JSON.parse(localStorage.getItem("y-" + g) || '{}');
     const data = allData[gr];
     
-    // 一旦すべての入力欄を空にする
-    document.querySelectorAll(".v-in").forEach(input => input.value = "");
+    // --- 1. 画面上の入力値を一旦リセット（UIは壊さず中身だけ空にする） ---
+    // class="v-in" が付いているすべてのinputを空にする
+    document.querySelectorAll(".v-in").forEach(input => {
+        input.value = "";
+    });
+    // 持久走専用の隠し項目と分・秒もリセット
+    if (document.getElementById("i4")) document.getElementById("i4").value = "";
+    if (document.getElementById("i4_min")) document.getElementById("i4_min").value = "";
+    if (document.getElementById("i4_sec")) document.getElementById("i4_sec").value = "";
 
+    // --- 2. 該当学年のデータがあれば流し込む ---
     if (data) {
-        // 新旧データ形式に対応
         let values = Array.isArray(data) ? data : (data.v || []);
         let timestamp = data.ts || "";
 
-        // 各入力欄に値を戻す
         values.forEach((val, i) => {
             const input = document.getElementById(`i${i}`);
             if (input) input.value = val;
 
-            // ★持久走(i4)だけは分と秒にバラして表示する
+            // 持久走(i4)の表示復元
             if (i === 4 && val) {
                 const m = Math.floor(val / 60);
                 const s = val % 60;
@@ -371,8 +374,9 @@ function L() {
         if (tsElement) tsElement.innerText = "";
     }
 
-    // ★最後にこれを呼ぶことでグラフが描画されます
-    U(); 
+    // --- 3. 画面更新（計算・グラフ・分析図鑑）を安全に実行 ---
+    // 引数に true を渡すことで、読み込み直後の二重保存を防ぎます
+    U(true); 
 }
 
 // --- 送信機能（元通りの動き＋持久走の変換機能を追加） ---
