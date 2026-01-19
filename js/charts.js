@@ -524,25 +524,31 @@ function preparePrint() {
 }
 
 // --- 追加：凡例クリック判定 ---
-document.getElementById("rc").onclick = function(e) {
-    const cv = e.target;
-    const rect = cv.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+document.addEventListener('DOMContentLoaded', function() {
+    const cv = document.getElementById("rc");
+    if (!cv) return; // キャンバスが無い場合は何もしない（エラー回避）
 
-    const cX = cv.width / 2;
-    const startX = cX - 270; // 凡例の開始位置
-    const itemWidth = 90;    // 各凡例の幅
-    const lY = cv.height - 20;
+    cv.onclick = function(e) {
+        const rect = cv.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
 
-    // 6つの凡例（帯広〜中3）のどこをクリックしたか判定
-    for (let i = 0; i < 6; i++) {
-        const lX = startX + i * itemWidth;
-        // 四角と文字のあたり（横80px、縦25pxの範囲）をクリックしたかチェック
-        if (x >= lX && x <= lX + 80 && y >= lY - 20 && y <= lY + 10) {
-            radarVisible[i] = !radarVisible[i]; // 表示・非表示を反転
-            RR(document.getElementById("gender").value); // 再描画
-            break;
+        const cX = cv.width / 2;
+        const startX = cX - 270; 
+        const itemWidth = 90;    
+        const lY = cv.height - 20;
+
+        // 6つの凡例（帯広〜中3）のクリック判定
+        for (let i = 0; i < 6; i++) {
+            const lX = startX + i * itemWidth;
+            if (x >= lX && x <= lX + 80 && y >= lY - 20 && y <= lY + 10) {
+                radarVisible[i] = !radarVisible[i]; // 表示切り替え
+                
+                // 性別を取得して再描画
+                const g = document.getElementById("gender") ? document.getElementById("gender").value : "m";
+                RR(g); 
+                break;
+            }
         }
-    }
-};
+    };
+});
