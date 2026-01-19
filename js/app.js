@@ -26,9 +26,10 @@ document.addEventListener('DOMContentLoaded', function() {
     RT(); RS(); RE(); 
     L(); // データの読み込み（この中でUも呼ばれます）
     
-    // 性別を変えた時
+    / 性別を変えた時
     document.getElementById("gender").addEventListener("change", () => {
-        RT(); RS(); // テーブルの基準を作り直す
+        RT(); RS(); // 平均点などの基準を更新
+        L();        // ★重要：その性別のデータを読み込む
         U();        // 再計算と描画
     });
     
