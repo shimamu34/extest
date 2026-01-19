@@ -510,6 +510,50 @@ function RAnalysis(g) {
     document.getElementById("totalRank").innerHTML = `<div style="font-size:28px;">総合評価: ${rank} (${totalScore}点)</div>`;
 }
 
+// --- RAnalysis関数の中の最後の方に追加 ---
+
+    // データの収集（ランキング用）
+    const h = D[g].h.slice(0, 9);
+    let myScores = [];
+    for (let i = 0; i < 9; i++) {
+        const v = parseFloat(document.getElementById(`i${i}`).value);
+        if (!isNaN(v) && v !== 0) {
+            myScores.push({ name: h[i], score: CS(v, h[i], g) });
+        }
+    }
+
+    // 得点が高い順に並び替え
+    const sortedScores = myScores.sort((a, b) => b.score - a.score);
+
+    let rankingHtml = `
+        <div style="background: white; padding: 15px; border-radius: 15px; border: 2px solid #2b6cb0; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+            <h4 style="margin: 0 0 15px 0; color: #2b6cb0; font-size: 18px; text-align: center; border-bottom: 2px dashed #eee; pb: 8px;">🏆 種目別ランキング</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+    `;
+
+    sortedScores.forEach((item, index) => {
+        let badgeColor = "#f0f4f8";
+        let icon = "";
+        let textColor = "#333";
+        if (index === 0) { badgeColor = "#FFD700"; icon = "🥇"; }
+        else if (index === 1) { badgeColor = "#C0C0C0"; icon = "🥈"; }
+        else if (index === 2) { badgeColor = "#CD7F32"; icon = "🥉"; }
+
+        rankingHtml += `
+            <div style="background: ${badgeColor}; color: ${textColor}; 
+                        padding: 8px 15px; border-radius: 25px; font-weight: bold; font-size: 14px;
+                        display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <span>${icon}${item.name}</span>
+                <span style="background: rgba(255,255,255,0.5); padding: 2px 8px; border-radius: 10px; font-size: 13px;">${item.score}点</span>
+            </div>
+        `;
+    });
+
+    rankingHtml += `</div></div>`;
+    
+    const rb = document.getElementById("rankingBox");
+    if (rb) rb.innerHTML = rankingHtml;
+
 function setGoal(goalType) {
     const g = document.getElementById("gender").value;
     const h = D[g].h.slice(0, 9);
