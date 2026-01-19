@@ -15,7 +15,7 @@
 </h1>
     
     <div class="card no-print" style="text-align:center">
-        <button class="btn btn-clear" onclick="clearData()">🗑️ クリア</button>
+        <button class="btn btn-clear" onclick="C()">🗑️ クリア</button>
 <button class="btn btn-print" onclick="preparePrint()">🖨️ 印刷</button>
 <button class="btn btn-send" onclick="sendToTeacher()">📤 先生に送信</button>
 <button class="btn btn-setup" onclick="checkPasscode()">⚙️ 初回設定</button>
@@ -318,45 +318,41 @@
     <script src="js/setup.js"></script>
 
     <script>
-    // 1. パスコードをチェックする関数
-    function checkPasscode() {
-        const code = prompt("管理者用パスコードを入力してください（4桁）");
-        if (code === "9076") {
-            showSetupGuide();
-        } else if (code !== null) {
-            alert("パスコードが違います。");
-        }
-    }
+// 1. パスコードをチェックする関数
+function checkPasscode() {
+    const code = prompt("管理者用パスコードを入力してください（4桁）");
+    if (code === "9076") {
+        showSetupGuide();
+    } else if (code !== null) {
+        alert("パスコードが違います。");
+    }
+}
 
-    // 2. 設定画面を表示する関数
-    function showSetupGuide() {
-        const gasInput = document.getElementById('gasUrlInput');
-        const distInput = document.getElementById('studentDistUrlInput');
-        const urlArea = document.getElementById('studentUrlArea');
-        if (gasInput) gasInput.value = ""; 
-        if (distInput) distInput.value = "";
-        if (urlArea) urlArea.style.display = "none";
-        document.getElementById('setupModal').style.display = "block";
-    }
+// 2. 設定画面を表示する関数
+function showSetupGuide() {
+    const gasInput = document.getElementById('gasUrlInput');
+    const distInput = document.getElementById('studentDistUrlInput');
+    const urlArea = document.getElementById('studentUrlArea');
+    if (gasInput) gasInput.value = ""; 
+    if (distInput) distInput.value = "";
+    if (urlArea) urlArea.style.display = "none";
+    document.getElementById('setupModal').style.display = "block";
+}
 
-    // 3. ページ読み込み時の初期化
-    window.onload = function() {
-        // 学年・性別の変更時に表を更新するようにイベントを追加
-        document.getElementById("gender").addEventListener("change", function() {
-            if (typeof renderTable === 'function') renderTable();
-            if (typeof RR === 'function') RR(this.value);
-        });
-        
-        document.getElementById("grade").addEventListener("change", function() {
-            if (typeof renderTable === 'function') renderTable();
-            const g = document.getElementById("gender").value;
-            if (typeof RR === 'function') RR(g);
-        });
+// 3. ページ読み込み・切り替え時の処理
+document.addEventListener('DOMContentLoaded', function() {
+    // 初期読み込み
+    if (typeof L === 'function') L(); 
 
-        // 初回実行
-        const gender = document.getElementById("gender").value;
-        if (typeof renderTable === 'function') renderTable(); 
-        if (typeof RR === 'function') RR(gender);
-    };
-    </script> </body>
+    // 性別・学年が変更された時の連動設定
+    const updateAll = () => {
+        if (typeof RT === 'function') RT(); // テーブル基準更新
+        if (typeof L === 'function') L();   // データ読み込み
+        if (typeof U === 'function') U();   // 計算と描画
+    };
+
+    document.getElementById("gender").addEventListener("change", updateAll);
+    document.getElementById("grade").addEventListener("change", updateAll);
+});
+</script> </body>
 </html>
