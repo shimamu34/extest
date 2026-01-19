@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 学年を変えた時
     document.getElementById("grade").addEventListener("change", () => {
+        L(); // ★ここで新しい学年のデータを読み込む
         U(); 
     });
 });
@@ -625,4 +626,32 @@ function setGoal(goalType) {
     html += '</div>';
     document.getElementById("goalSimulator").innerHTML = html;
     document.querySelector("#correlation p").style.display = "none";
+}
+
+// 全消去（クリア）ボタンの処理
+function C() {
+    if (!confirm("現在の学年の入力内容をすべて消去しますか？")) return;
+
+    // 1. 画面上の入力欄を空にする
+    const inputs = document.querySelectorAll(".v-in");
+    inputs.forEach(input => input.value = "");
+
+    // 2. ローカルストレージの該当学年データのみ削除
+    const g = document.getElementById("gender").value;
+    const gr = document.getElementById("grade").value;
+    const key = "y-" + g;
+    let allData = JSON.parse(localStorage.getItem(key) || '{}');
+    
+    if (allData[gr]) {
+        delete allData[gr]; // その学年のデータを削除
+        localStorage.setItem(key, JSON.stringify(allData));
+    }
+
+    // 3. 保存日時表示を消す
+    const tsElement = document.getElementById("lastSaved");
+    if (tsElement) tsElement.innerText = "";
+
+    // 4. 画面更新（計算とグラフ）
+    U();
+    alert("消去しました。");
 }
