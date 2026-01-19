@@ -142,17 +142,22 @@ function RR(g) {
         ctx.fillText(fullLabel, x, y);
     });
 
-    // データのポリゴン描画
-    const currentGr = document.getElementById("grade").value;
+　　　// データのポリゴン描画
+    const currentGr = document.getElementById("grade").value; // "1", "2", または "3"
     dataSets.forEach((scs, ri) => {
         if (!scs || (typeof radarVisible !== 'undefined' && !radarVisible[ri])) return;
         
         const c = cols[ri];
-        const isSelf = ri >= 3;
+        const isSelf = ri >= 3; // 3:中1, 4:中2, 5:中3
+
+        // --- ★ここを修正：現在の学年かどうかを正しく判定 ---
+        // ri:3(中1)なら "1"、ri:4(中2)なら "2"、ri:5(中3)なら "3" と比較します
         const isActive = isSelf && (ri - 2).toString() === currentGr;
         
         ctx.beginPath();
-        ctx.setLineDash(isSelf && !isActive ? [5, 5] : []);
+        // ★isSelf（自分のデータ）かつ isActive（今の学年）でないなら点線にする
+        ctx.setLineDash(isSelf && !isActive ? [5, 5] : []); 
+        
         ctx.strokeStyle = c.s;
         ctx.fillStyle = c.f;
         ctx.lineWidth = isActive ? 3 : 2;
