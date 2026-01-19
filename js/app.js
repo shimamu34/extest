@@ -21,22 +21,20 @@ var radarVisible = radarVisible || [true, true, true, true, true, true];
     }
 })();
 
-// 初期化処理
+// --- app.js の 初期化処理部分 ---
 document.addEventListener('DOMContentLoaded', function() {
     RT(); RS(); RE(); 
-    L(); // 最初の一回読み込み
+    L(); // 最初にデータを読み込む（この中でUも呼ばれる）
     
+    // 性別を変えた時
     document.getElementById("gender").addEventListener("change", () => {
-        const g = document.getElementById("gender").value;
-        RT(); RS();
-        L(); // 性別を変えたら読み込み
-        if (document.getElementById("radar").style.display !== "none") RR(g);
-        if (document.getElementById("correlation").style.display !== "none") RAnalysis(g);
-        if (document.getElementById("tracking").style.display !== "none") updateTrackingView();
+        RT(); RS(); // テーブルの基準を作り直す
+        L();        // データを再読み込みして描画
     });
     
+    // 学年を変えた時
     document.getElementById("grade").addEventListener("change", () => {
-        L(); // 学年を変えたら読み込み
+        L(); // データを切り替えて描画
     });
 });
 
@@ -271,6 +269,18 @@ function U() {
     SI();
     RAnalysis(g);
     updateTimestamp();
+    
+    const gender = document.getElementById("gender").value;
+    
+    // 1. レーダーチャートの描画 (charts.jsの関数)
+    if (typeof RR === 'function') {
+        RR(gender); 
+    }
+
+    // 2. 分析図鑑の更新
+    RAnalysis(gender);
+
+    // 3. その他グラフがある場合の更新
     if (typeof updateAllCharts === 'function') updateAllCharts();
 }
 
@@ -296,37 +306,45 @@ function L() {
     const gr = document.getElementById("grade").value;
     const allData = JSON.parse(localStorage.getItem("y-" + g) || "{}");
     
-    // データ形式の変更に対応（古い配列データでも動くように調整）
+    // データがない場合の初期値を定義
     const entry = allData[gr] || { v: ["", "", "", "", "", "", "", "", ""], ts: "" };
     const v = Array.isArray(entry) ? entry : entry.v;
     const ts = entry.ts || "";
 
+    // 1. 各入力欄(i0〜i8)に値をセット
     v.forEach((val, i) => {
         const el = document.getElementById("i" + i);
         if (el) el.value = val;
+
+        // 2. 持久走(index 4)の場合は、分・秒の入力欄も連動させる
         if (i === 4) {
             const mEl = document.getElementById("i4_min");
             const sEl = document.getElementById("i4_sec");
-            if (val) {
+            if (val && val !== "") {
                 const totalSec = parseInt(val);
                 if (mEl) mEl.value = Math.floor(totalSec / 60);
                 if (sEl) sEl.value = totalSec % 60;
             } else {
-                if (mEl) mEl.value = ""; if (sEl) sEl.value = "";
+                if (mEl) mEl.value = ""; 
+                if (sEl) sEl.value = "";
             }
         }
     });
 
-    U(true); // 時刻を更新させないために引数 true を渡す
+    // 3. 【重要】全ての値をセットした後に、計算と描画(U)を実行
+    // 引数に true を渡すことで、読み込んだだけで「保存(SI)」が走るのを防ぎます
+    if (typeof U === 'function') {
+        U(true); 
+    }
 
-    // --- 追加：保存されていた時刻を表示エリアに反映 ---
+    // 4. 保存されていた時刻を表示
     const tsArea = document.getElementById("table-timestamp");
     if (tsArea) {
-        if (ts) {
+        if (ts && ts.includes(" ")) {
             const [datePart, timePart] = ts.split(" ");
             tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
         } else {
-            tsArea.innerHTML = ""; // 未入力学年は時刻を出さない
+            tsArea.innerHTML = ""; 
         }
     }
 }
