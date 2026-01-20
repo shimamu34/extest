@@ -245,11 +245,8 @@ function U(isInitial = false) {
     }
 
     if (typeof renderRanking === 'function') {
-        const rankingArea = document.getElementById("ranking");
-        
-        if (rankingArea && rankingArea.style.display !== "none") {
-            renderRanking();
-        }
+        const ra = document.getElementById("ranking");
+        if (ra && ra.style.display !== "none") renderRanking();
     }
 }
 
