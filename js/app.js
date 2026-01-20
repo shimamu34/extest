@@ -535,13 +535,13 @@ function setGoal(goalType) {
     }
     
     html += '</div>'; // 全体コンテナ終了
+
+    // ガイドメッセージ（上のボタンから〜）を非表示にする
+    const guide = document.getElementById("guide");
+    if (guide) guide.style.display = "none";
     
-    const targetArea = document.getElementById("goalSimulator");
-    if (targetArea) {
-        targetArea.innerHTML = html; // ここで「上のボタンから〜」の文字が消え、新しいHTMLに置き換わります
-        targetArea.style.display = "block"; // もし非表示にしていた場合は表示させる
-        targetArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
+    document.getElementById("goalSimulator").innerHTML = html;
+    document.getElementById("goalSimulator").scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function C() {
@@ -558,6 +558,10 @@ function C() {
     }
     const tsElement = document.getElementById("lastSaved");
     if (tsElement) tsElement.innerText = "";
+
+    if (document.getElementById("guide")) document.getElementById("guide").style.display = "block";
+    if (document.getElementById("goalSimulator")) document.getElementById("goalSimulator").innerHTML = "";
+    
     U();
     alert("消去しました。");
 }
