@@ -82,10 +82,32 @@
         </div>
     </div>
 
-    <div id="tracking" style="display:none" class="card">
-        <h3 style="text-align:center; color:#FF5722;">📈 種目別トラッキング</h3>
-        <div id="trackingContent">（ここにトラッキングUI）</div>
+   <div id="tracking" style="display:none" class="card">
+    <h3 style="text-align:center; color:#FF5722;">📈 種目別トラッキング</h3>
+    
+    <div style="background:#fff5f2; padding:20px; border-radius:12px; margin-bottom:20px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center;">
+        <select id="trackingEvent" style="padding:8px; border-radius:5px;">
+            <option value="0">握力</option><option value="1">上体起こし</option><option value="2">長座体前屈</option>
+            <option value="3">反復横とび</option><option value="4">持久走</option><option value="5">シャトルラン</option>
+            <option value="6">50m走</option><option value="7">立ち幅とび</option><option value="8">投てき</option>
+        </select>
+        <input type="number" id="trackingValue" placeholder="記録" style="width:80px; padding:8px;">
+        <input type="hidden" id="trackingUnit" value="">
+        <input type="date" id="trackingDate" style="padding:8px;">
+        <input type="text" id="trackingMemo" placeholder="メモ" style="padding:8px;">
+        <button class="btn" style="background:#FF5722;" onclick="addTrackingRecord()">追加</button>
     </div>
+
+    <div style="text-align:center; margin-bottom:10px;">
+        表示学年：<select id="trackingViewGrade" onchange="updateTrackingView()">
+            <option value="1">中1</option><option value="2" selected>中2</option><option value="3">中3</option>
+        </select>
+    </div>
+
+    <canvas id="trackingGraph" width="800" height="400" style="max-width:100%"></canvas>
+    <div id="trackingStats"></div>
+    <div id="trackingList" style="margin-top:20px;"></div>
+</div>
 
     <div class="card no-print">
         <h2 style="color:#2b6cb0;">⭐ 項目別得点表</h2>
