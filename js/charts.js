@@ -1,52 +1,37 @@
 // charts.js の一番上に追記（二重定義エラーを防ぎつつ初期値を確保）
 var radarVisible = radarVisible || [true, true, true, true, true, true];
 
-
-// --- グラフ表示切り替え（レーダー） ---
+// グラフ表示切り替え
 function toggleRadar() {
-    const c = document.getElementById("radar");
-    if (c.style.display === "none") {
-        c.style.display = "block";
-        RR(document.getElementById("gender").value);
-    } else {
-        c.style.display = "none";
-    }
+    const c = document.getElementById("radar");
+    if (c.style.display === "none") {
+        c.style.display = "block";
+        RR(document.getElementById("gender").value);
+    } else {
+        c.style.display = "none";
+    }
 }
 
-// --- グラフ表示切り替え（分析） ---
+
 function toggleAnalysis() {
-    const c = document.getElementById("correlation");
-    if (c.style.display === "none") {
-        c.style.display = "block";
-        RAnalysis(document.getElementById("gender").value);
-    } else {
-        c.style.display = "none";
-    }
+    const c = document.getElementById("correlation");
+    if (c.style.display === "none") {
+        c.style.display = "block";
+        RAnalysis(document.getElementById("gender").value);
+    } else {
+        c.style.display = "none";
+    }
 }
 
-// --- ★新設：ランキング表示切り替え（独立ボタン用） ---
-function toggleRanking() {
-    const rb = document.getElementById("rankingBox");
-    const g = document.getElementById("gender").value;
-    if (rb.style.display === "none") {
-        rb.style.display = "block";
-        // ランキングの中身を最新にするため計算関数を呼ぶ
-        if (typeof RAnalysis === 'function') RAnalysis(g);
-    } else {
-        rb.style.display = "none";
-    }
-}
-
-// --- グラフ表示切り替え（トラッキング） ---
 function toggleTracking() {
-    const c = document.getElementById("tracking");
-    if (c.style.display === "none") {
-        c.style.display = "block";
-        document.getElementById("trackingDate").valueAsDate = new Date();
-        updateTrackingView();
-    } else {
-        c.style.display = "none";
-    }
+    const c = document.getElementById("tracking");
+    if (c.style.display === "none") {
+        c.style.display = "block";
+        document.getElementById("trackingDate").valueAsDate = new Date();
+        updateTrackingView();
+    } else {
+        c.style.display = "none";
+    }
 }
 
 // レーダーチャート描画（RR関数全体をこの内容で上書きしてください）
@@ -576,29 +561,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 });
-
-// --- app.jsとHTMLを橋渡しする関数 ---
-function updateRadar() {
-    const g = document.getElementById("gender").value;
-    RR(g);
-}
-
-// HTML側の toggleView 関数から呼ばれる更新処理を整理
-const originalToggleView = window.toggleView; // 既存のtoggleViewを退避
-window.toggleView = function(id) {
-    // 1. まず表示を切り替える（HTML側のscriptタグに書いたロジックを実行）
-    const ids = ['radar', 'rankingBox', 'correlation', 'tracking'];
-    ids.forEach(i => {
-        const el = document.getElementById(i);
-        if (el) el.style.display = (i === id) ? 'block' : 'none';
-    });
-
-    // 2. 表示された瞬間に描画関数を呼び出す
-    const g = document.getElementById("gender").value;
-    if (id === 'radar') RR(g);
-    if (id === 'correlation') RAnalysis(g);
-    if (id === 'tracking') {
-        document.getElementById("trackingDate").valueAsDate = new Date();
-        updateTrackingView();
-    }
-};
