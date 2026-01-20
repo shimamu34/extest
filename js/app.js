@@ -522,7 +522,7 @@ function setGoal(goalType) {
             
             html += `
             <div style="background:#f9f9f9; padding:18px 12px; border-radius:8px; border-top:8px solid ${diffColor}; width:calc(33.33% - 10px); min-width:260px; box-sizing:border-box; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
-                <div style="font-weight:bold; font-size:18px; color:#333; margin-bottom:10px; border-left:4px solid ${diffColor}; background:#eee; padding:2px 10px; display:inline-block; border-radius:0 4px 4px 0;">
+                <div style="font-weight:bold; font-size:22px; color:#333; margin-bottom:10px; border-left:4px solid ${diffColor}; background:#eee; padding:2px 12px; display:inline-block; border-radius:0 4px 4px 0;">
                   ${res.name}
                 </div>
                 
