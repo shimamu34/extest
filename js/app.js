@@ -417,10 +417,7 @@ function setGoal(goalType) {
     const h = D[g].h.slice(0, 9);
     const gr = parseInt(document.getElementById("grade").value);
     
-    // 1. 現在の「記録」と「得点」を正確に取得
     let currentData = [];
-    let currentTotal = 0;
-    
     let scoresForTotal = [];
     for (let i = 0; i < 9; i++) {
         const inp = document.getElementById(`i${i}`);
@@ -430,14 +427,12 @@ function setGoal(goalType) {
         scoresForTotal.push(s);
     }
 
-    // 合計点の計算（持久走4 or シャトルラン5 の高い方を使う）
-    currentTotal = scoresForTotal[0] + scoresForTotal[1] + scoresForTotal[2] + scoresForTotal[3] + 
-                   Math.max(scoresForTotal[4], scoresForTotal[5]) + 
-                   scoresForTotal[6] + scoresForTotal[7] + scoresForTotal[8];
+    const currentTotal = scoresForTotal[0] + scoresForTotal[1] + scoresForTotal[2] + scoresForTotal[3] + 
+                       Math.max(scoresForTotal[4], scoresForTotal[5]) + 
+                       scoresForTotal[6] + scoresForTotal[7] + scoresForTotal[8];
 
-    // 2. ターゲットとなるランクの「合格ライン」を特定
     let targetScore = 0;
-    let rankName = goalType.replace('rank', ''); // "A", "B", "C", "D"
+    let rankName = goalType.replace('rank', '');
     const rankEntry = E.find(e => e.s === rankName);
     
     if (rankEntry) {
@@ -447,7 +442,6 @@ function setGoal(goalType) {
     
     const pointsNeeded = targetScore - currentTotal;
     
-    // 表示エリアの初期化
     let html = `<div style="background:white;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1)">
                 <h5 style="margin:0 0 10px 0;font-size:20px;color:#9c27b0">🎯 総合${rankName}評価を目指す</h5>
                 <div style="background:#f5f5f5;padding:15px;border-radius:8px;margin-bottom:20px">
@@ -455,31 +449,32 @@ function setGoal(goalType) {
                     <div style="font-size:22px;font-weight:bold;color:#9c27b0">${pointsNeeded <= 0 ? '🎉 目標達成中！' : 'あと ' + pointsNeeded + ' 点 必要です'}</div>
                 </div>`;
     
-    html += '<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start;">';
+    if (pointsNeeded > 0) {
+        html += `<h6 style="color:#9c27b0;margin-bottom:12px;font-size:16px;">💡 ${rankName}判定までの最短ルート</h6>`;
+        html += '<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start;">';
 
         let simData = JSON.parse(JSON.stringify(currentData)); 
         let simTotal = currentTotal;
         let simulationResults = [];
         let safetyLoop = 0;
 
-        while (simTotal < targetScore && safetyLoop < 50) {
+        while (simTotal < targetScore && safetyLoop < 100) {
             let bestStep = null;
             for (let i = 0; i < 9; i++) {
                 if (simData[i].score >= 10) continue;
                 if (i === 4 && currentData[5].score > currentData[4].score) continue;
                 if (i === 5 && currentData[4].score > currentData[5].score) continue;
 
-                let step = 1; 
+                let step = (simData[i].name.includes("50m") || simData[i].name.includes("持久")) ? -1 : 1;
                 if (simData[i].name.includes("50m")) step = -0.01;
                 else if (simData[i].name.includes("持久")) step = -1;
-                else if (simData[i].name.includes("ハンド") || simData[i].name.includes("幅跳び")) step = 0.1;
-                else if (simData[i].name.includes("握力")) step = 0.1;
+                else if (simData[i].name.includes("ハンド") || simData[i].name.includes("幅跳び") || simData[i].name.includes("握力")) step = 0.1;
 
                 let testVal = simData[i].val;
-                if (testVal === 0) {
+                if (!testVal || testVal === 0) {
                     if (simData[i].name.includes("50m")) testVal = 10.0;
                     else if (simData[i].name.includes("持久")) testVal = 600;
-                    else if (simData[i].name.includes("幅跳び")) testVal = 1.0;
+                    else if (simData[i].name.includes("幅跳び")) testVal = 100; // cm基準
                 }
 
                 let startScore = simData[i].score;
@@ -509,14 +504,10 @@ function setGoal(goalType) {
         simulationResults.forEach(res => { finalHips[res.name] = res; });
 
         Object.values(finalHips).forEach(res => {
-            let unit = res.name.includes("50m") ? "秒" : 
-                       (res.name.includes("ハンド")) ? "m" : 
-                       (res.name.includes("幅跳び") || res.name.includes("長座")) ? "cm" : 
-                       res.name.includes("握力") ? "kg" : "回";
+            let unit = res.name.includes("50m") ? "秒" : (res.name.includes("ハンド")) ? "m" : (res.name.includes("幅跳び") || res.name.includes("長座")) ? "cm" : res.name.includes("握力") ? "kg" : "回";
             if (res.name.includes("持久")) unit = "秒";
 
-            let displayGap = res.totalGap;
-            let displayTarget = "";
+            let displayTarget = res.nextVal;
             let suffixUnit = unit;
 
             if (res.name.includes("持久")) {
@@ -524,30 +515,26 @@ function setGoal(goalType) {
                 const s = res.nextVal % 60;
                 displayTarget = `${m}分${s.toString().padStart(2, '0')}`;
                 suffixUnit = "秒";
-            } else {
-                displayTarget = res.nextVal;
-                suffixUnit = unit;
             }
 
             const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#2196f3';
             
-            // カードの幅を「calc(33.33% - 7px)」にして横3列に並べる
             html += `
-            <div style="background:#f9f9f9; padding:12px; border-radius:8px; border-left:6px solid ${diffColor}; width:calc(33.33% - 7px); min-width:200px; box-sizing:border-box; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+            <div style="background:#f9f9f9; padding:12px; border-radius:8px; border-left:8px solid ${diffColor}; width:calc(33.33% - 10px); min-width:200px; box-sizing:border-box; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-bottom:10px;">
                 <div style="font-weight:bold; font-size:16px; color:#333; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${res.name}</div>
                 <div style="font-size:13px; color:#666; margin-bottom:8px;">現在 ${res.startScore}点 → 目標 ${res.targetScore}点</div>
-                <div style="display:flex; flex-direction:column; gap:2px;">
-                    <div style="font-weight:900; font-size:18px; color:${diffColor};">あと ${displayGap}${unit}</div>
-                    <div style="color:#777; font-size:12px;">(目標: ${displayTarget}${suffixUnit})</div>
-                </div>
+                <div style="font-weight:900; font-size:18px; color:${diffColor};">あと ${res.totalGap}${unit}</div>
+                <div style="color:#777; font-size:12px;">(目標: ${displayTarget}${suffixUnit})</div>
             </div>`;
         });
         
-        html += '</div>'; // コンテナの終了
-        html += `<div style="margin-top:15px;padding:12px;background:#f3e5f5;color:#7b1fa2;border-radius:8px;text-align:center;font-size:14px;font-weight:bold;">✨ これをクリアすれば${rankName}判定です！</div></div>`;
+        html += '</div>'; // Flexコンテナ終了
+        html += `<div style="margin-top:15px;padding:12px;background:#f3e5f5;color:#7b1fa2;border-radius:8px;text-align:center;font-size:14px;font-weight:bold;">✨ これをクリアすれば${rankName}判定です！</div>`;
     } else {
         html += '<div style="padding:20px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:white;border-radius:8px;text-align:center;font-size:18px">🎉 すでに目標達成しています！</div>';
     }
+    
+    html += '</div>'; // 全体コンテナ終了
     
     document.getElementById("goalSimulator").innerHTML = html;
     document.getElementById("goalSimulator").scrollIntoView({ behavior: 'smooth', block: 'nearest' });
