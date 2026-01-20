@@ -522,10 +522,12 @@ function setGoal(goalType) {
             
             html += `
             <div style="background:#f9f9f9; padding:18px 12px; border-radius:8px; border-top:8px solid ${diffColor}; width:calc(33.33% - 10px); min-width:260px; box-sizing:border-box; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
-                <div style="font-weight:bold; font-size:19px; color:#333; margin-bottom:6px;">${res.name}</div>
+                <div style="font-weight:bold; font-size:18px; color:#333; margin-bottom:10px; border-left:4px solid ${diffColor}; background:#eee; padding:2px 10px; display:inline-block; border-radius:0 4px 4px 0;">
+                  ${res.name}
+                </div>
                 
                 <div style="font-size:15px; color:#555; margin-bottom:12px; background:#eee; display:inline-block; padding:2px 10px; border-radius:15px;">
-                    現在 <span style="font-weight:bold;">${res.startScore}点</span> → 目標 <span style="font-weight:bold; color:#d32f2f;">${res.targetScore}点</span>
+                    現在 <span style="font-weight:bold;">${res.startScore}点</span> → 目標 <span style="font-weight:bold; color:#555;">${res.targetScore}点</span>
                 </div>
                 
                 <div style="display:flex; align-items:baseline; justify-content:center; gap:8px;">
