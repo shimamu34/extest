@@ -246,6 +246,7 @@ function U(isInitial = false) {
 
     if (typeof renderRanking === 'function') {
         const rankingArea = document.getElementById("ranking");
+        
         if (rankingArea && rankingArea.style.display !== "none") {
             renderRanking();
         }
