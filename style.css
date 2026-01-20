@@ -489,17 +489,17 @@ input[type="number"] {
     clear: both;
 }
 
-/* --- 種目別ランキングのスタイル（2カラム・フルワイド版） --- */
+/* --- 種目別ランキング（フルワイド2カラム版） --- */
 #ranking.card {
-    padding: 15px 5px !important; /* 横の余白を最小限にして領域を確保 */
+    padding: 15px 8px !important; 
+    background: #f8f9fa !important;
 }
 
 .ranking-container {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 左右2分割 */
-    gap: 8px;
+    grid-template-columns: 1fr 1fr; /* 左右に分割 */
+    gap: 10px;
     width: 100%;
-    margin: 0;
 }
 
 .ranking-column {
@@ -512,59 +512,47 @@ input[type="number"] {
     display: flex;
     align-items: center;
     background: white;
-    padding: 10px 8px;
-    border-radius: 8px;
-    border-left: 5px solid var(--rank-color);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    width: 100%; /* カード内いっぱいに広げる */
+    padding: 10px;
+    border-radius: 10px;
+    border-left: 6px solid var(--rank-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
 
 .rank-badge {
-    width: 28px;
-    font-size: 16px;
+    width: 30px;
+    font-size: 18px;
     font-weight: bold;
     text-align: center;
+    margin-right: 5px;
 }
 
 .rank-info {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-left: 4px;
+    flex: 1;
 }
 
 .rank-name {
     font-weight: bold;
     color: #333;
-    font-size: 13px;
-    line-height: 1.2;
+    font-size: 14px;
+    margin-bottom: 2px;
 }
 
 .rank-actual-value {
     font-size: 11px;
-    color: #777;
+    color: #666;
 }
 
 .rank-score-area {
-    flex: 1;
     text-align: right;
-    line-height: 1;
 }
 
 .rank-score {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 900;
     color: var(--rank-color);
 }
 
 .rank-unit {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--rank-color);
-    margin-left: 1px;
-}
-
-.rank-num {
-    font-size: 12px;
-    color: #999;
 }
