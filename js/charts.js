@@ -490,48 +490,46 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ==========================================
-// 7. 種目別ランキング機能（最終改善版）
+// 7. 種目別ランキング機能（完全版）
 // ==========================================
+
+function toggleRanking() {
+    const c = document.getElementById("ranking");
+    if (!c) return;
+    if (c.style.display === "none") {
+        c.style.display = "block";
+        renderRanking();
+    } else {
+        c.style.display = "none";
+    }
+}
 
 function renderRanking() {
     const g = document.getElementById("gender").value;
     const h = D[g].h.slice(0, 9); 
-    
-    // app.jsで生成される入力欄を取得
-    const inputs = [];
-    for(let i=0; i<9; i++) {
-        inputs.push(document.getElementById(`i${i}`));
-    }
-    
     let scores = [];
 
     h.forEach((name, i) => {
-        const inputEl = inputs[i];
+        const inputEl = document.getElementById(`i${i}`);
         const rawVal = inputEl ? inputEl.value : "";
         const val = parseFloat(rawVal);
         
         let score = 0;
         let displayValue = "-";
 
-        // 【持久走の10点バグ修正】
-        // 数値が0より大きく、かつ空文字でない場合のみ計算する
+        // 持久走の10点固定バグを防ぐ：空文字・0・NaNを除外
         if (rawVal !== "" && !isNaN(val) && val > 0) {
             score = CS(val, name, g);
             
-            // 表示用の単位と数値の整形
+            // 実数値の整形
             if (name.includes("持久走")) {
                 const m = Math.floor(val / 60);
                 const s = Math.floor(val % 60);
                 displayValue = `${m}'${s < 10 ? '0' + s : s}"`;
-            } else if (name.includes("50m")) {
-                displayValue = `${val}秒`;
-            } else if (name.includes("ハンド") || name.includes("幅跳び")) {
-                displayValue = `${val}m`;
-            } else if (name.includes("握力")) {
-                displayValue = `${val}kg`;
-            } else {
-                displayValue = `${val}回`;
-            }
+            } else if (name.includes("50m")) { displayValue = `${val}秒`; }
+            else if (name.includes("ハンド") || name.includes("幅跳び")) { displayValue = `${val}m`; }
+            else if (name.includes("握力")) { displayValue = `${val}kg`; }
+            else { displayValue = `${val}回`; }
         }
 
         scores.push({ name: name, score: score, actual: displayValue });
@@ -540,43 +538,37 @@ function renderRanking() {
     // スコア順にソート
     scores.sort((a, b) => b.score - a.score);
 
+    const leftCol = scores.slice(0, 5);  // 1-5位
+    const rightCol = scores.slice(5, 9); // 6-9位
+
     const container = document.getElementById("rankingListArea");
-    
-    // 1-5位（左列）と 6-9位（右列）に分ける
-    const leftCol = scores.slice(0, 5);
-    const rightCol = scores.slice(5, 9);
+    if (!container) return;
 
     let html = '<div class="ranking-container">';
     
-    // 左列の生成
+    // 左列（1-5位）
     html += '<div class="ranking-column">';
-    leftCol.forEach((item, index) => {
-        html += generateRankItemHTML(item, index);
-    });
+    leftCol.forEach((item, index) => html += generateRankItemHTML(item, index));
     html += '</div>';
 
-    // 右列の生成
+    // 右列（6-9位）
     html += '<div class="ranking-column">';
-    rightCol.forEach((item, index) => {
-        html += generateRankItemHTML(item, index + 5);
-    });
+    rightCol.forEach((item, index) => html += generateRankItemHTML(item, index + 5));
     html += '</div>';
 
     html += '</div>';
     container.innerHTML = html;
 }
 
-// 共通のアイテムHTML生成関数
 function generateRankItemHTML(item, index) {
-    let medal = "";
-    if (item.score === 0) medal = `<span class="rank-num">-</span>`;
-    else if (index === 0) medal = "🥇";
-    else if (index === 1) medal = "🥈";
-    else if (index === 2) medal = "🥉";
-    else medal = `<span class="rank-num">${index + 1}</span>`;
+    let medal = (item.score === 0) ? `<span style="font-size:12px;color:#ccc">${index+1}</span>` : 
+                (index === 0) ? "🥇" : (index === 1) ? "🥈" : (index === 2) ? "🥉" : 
+                `<span style="font-size:14px;color:#888">${index + 1}</span>`;
+
+    const color = item.score >= 9 ? "#FFD700" : item.score >= 7 ? "#4CAF50" : item.score >= 4 ? "#2196F3" : "#9E9E9E";
 
     return `
-        <div class="ranking-item" style="--rank-color: ${getRankColor(item.score)}">
+        <div class="ranking-item" style="--rank-color: ${color}">
             <div class="rank-badge">${medal}</div>
             <div class="rank-info">
                 <div class="rank-name">${item.name}</div>
