@@ -465,16 +465,16 @@ function setGoal(goalType) {
                 if (i === 4 && currentData[5].score > currentData[4].score) continue;
                 if (i === 5 && currentData[4].score > currentData[5].score) continue;
 
-                let step = (simData[i].name.includes("50m") || simData[i].name.includes("持久")) ? -1 : 1;
+                let step = 1; 
                 if (simData[i].name.includes("50m")) step = -0.01;
                 else if (simData[i].name.includes("持久")) step = -1;
-                else if (simData[i].name.includes("ハンド") || simData[i].name.includes("幅跳び") || simData[i].name.includes("握力")) step = 0.1;
+                else if (simData[i].name.includes("ハンド") || simData[i].name.includes("幅跳び") || simData[i].name.includes("握力") || simData[i].name.includes("長座")) step = 0.1;
 
                 let testVal = simData[i].val;
                 if (!testVal || testVal === 0) {
                     if (simData[i].name.includes("50m")) testVal = 10.0;
                     else if (simData[i].name.includes("持久")) testVal = 600;
-                    else if (simData[i].name.includes("幅跳び")) testVal = 100; // cm基準
+                    else if (simData[i].name.includes("幅跳び")) testVal = 100; 
                 }
 
                 let startScore = simData[i].score;
@@ -505,25 +505,27 @@ function setGoal(goalType) {
 
         Object.values(finalHips).forEach(res => {
             let unit = res.name.includes("50m") ? "秒" : (res.name.includes("ハンド")) ? "m" : (res.name.includes("幅跳び") || res.name.includes("長座")) ? "cm" : res.name.includes("握力") ? "kg" : "回";
-            if (res.name.includes("持久")) unit = "秒";
-
+            
+            // ★ここが修正ポイント：変数の定義を追加
+            let displayGap = res.totalGap;
             let displayTarget = res.nextVal;
             let suffixUnit = unit;
 
             if (res.name.includes("持久")) {
                 const m = Math.floor(res.nextVal / 60);
-                const s = res.nextVal % 60;
+                const s = Math.round(res.nextVal % 60);
                 displayTarget = `${m}分${s.toString().padStart(2, '0')}`;
-                suffixUnit = "秒";
+                unit = "秒"; // 持久走の「あと○秒」の単位を固定
+                suffixUnit = ""; // 目標値は「5分30秒」と単位を含むのでsuffixは空に
             }
 
             const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#2196f3';
             
             html += `
-            <div style="background:#f9f9f9; padding:12px; border-radius:8px; border-left:8px solid ${diffColor}; width:calc(33.33% - 10px); min-width:230px; box-sizing:border-box; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-bottom:10px;">
+            <div style="background:#f9f9f9; padding:12px; border-radius:8px; border-left:8px solid ${diffColor}; width:calc(33.33% - 10px); min-width:240px; box-sizing:border-box; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-bottom:10px;">
                 <div style="font-weight:bold; font-size:16px; color:#333; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${res.name}</div>
                 <div style="font-size:13px; color:#666; margin-bottom:8px;">現在 ${res.startScore}点 → 目標 ${res.targetScore}点</div>
-                <div style="display:flex; align-items:baseline; justify-content:flex-start; gap:8px; flex-wrap:nowrap;">
+                <div style="display:flex; align-items:baseline; gap:8px;">
                     <div style="font-weight:900; font-size:19px; color:${diffColor}; white-space:nowrap;">あと ${displayGap}${unit}</div>
                     <div style="color:#555; font-size:15px; font-weight:bold; white-space:nowrap;">（目標: ${displayTarget}${suffixUnit}）</div>
                 </div>
@@ -536,9 +538,9 @@ function setGoal(goalType) {
         html += '<div style="padding:20px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:white;border-radius:8px;text-align:center;font-size:18px">🎉 すでに目標達成しています！</div>';
     }
     
-    html += '</div>'; // 全体コンテナ終了
+    html += '</div>'; // メインカード終了
 
-    // ガイドメッセージ（上のボタンから〜）を非表示にする
+    // --- ガイドを消して描画する処理 ---
     const guide = document.getElementById("guide");
     if (guide) guide.style.display = "none";
     
