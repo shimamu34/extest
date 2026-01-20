@@ -344,18 +344,24 @@ function showSetupGuide() {
 
 // 3. ページ読み込み・切り替え時の処理
 document.addEventListener('DOMContentLoaded', function() {
-    // 初期読み込み
-    if (typeof L === 'function') L(); 
+    // ページが開いた瞬間に実行する「3種の神器」
+    if (typeof RT === 'function') RT(); // 1. テーブルの「枠」を作る
+    if (typeof L === 'function') L();  // 2. 保存されている「データ」を読み込む
+    if (typeof U === 'function') U();  // 3. 読み込んだデータで「計算と表示」を行う
 
     // 性別・学年が変更された時の連動設定
     const updateAll = () => {
-        if (typeof RT === 'function') RT(); // テーブル基準更新
-        if (typeof L === 'function') L();   // データ読み込み
-        if (typeof U === 'function') U();   // 計算と描画
+        // 学年や性別が変わったら、基準表を書き換えて再計算する
+        if (typeof RT === 'function') RT(); 
+        if (typeof L === 'function') L();
+        if (typeof U === 'function') U();
     };
 
-    document.getElementById("gender").addEventListener("change", updateAll);
-    document.getElementById("grade").addEventListener("change", updateAll);
+    // イベントリスナーの登録
+    const genderEl = document.getElementById("gender");
+    const gradeEl = document.getElementById("grade");
+    if (genderEl) genderEl.addEventListener("change", updateAll);
+    if (gradeEl) gradeEl.addEventListener("change", updateAll);
 });
 </script> </body>
 </html>
