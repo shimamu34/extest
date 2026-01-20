@@ -527,20 +527,20 @@ function setGoal(goalType) {
         });
 
         Object.values(finalHips).forEach(res => {
-            let unit = res.name.includes("走") ? "秒" : res.name.includes("m") ? "m" : res.name.includes("握力") ? "kg" : "回";
+            let unit = res.name.includes("走") ? "秒" : (res.name.includes("m") || res.name.includes("ハンド")) ? "m" : res.name.includes("握力") ? "kg" : "回";
             if (res.name.includes("長座")) unit = "cm";
             
             let displayGap = res.totalGap;
             let displayTarget = res.nextVal;
+            let targetUnit = unit; 
             if (res.name.includes("持久")) {
                 const m = Math.floor(res.nextVal / 60);
                 const s = res.nextVal % 60;
                 displayTarget = `${m}分${s.toString().padStart(2, '0')}秒`;
+                targetUnit = "";
             }
 
-            const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#ffeb3b' : '#2196f3';
-            // 黄色の場合は文字が見えにくいため、一部のテキスト色を調整する際に使用
-            const isYellow = res.targetScore >= 5 && res.targetScore < 8;
+            const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#2196f3';
             
             html += `
             <div style="background:#f9f9f9; padding:12px 16px; border-radius:8px; margin-bottom:10px; border-left:6px solid ${diffColor}; display:block; width:300px; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
