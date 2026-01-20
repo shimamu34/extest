@@ -520,11 +520,13 @@ function setGoal(goalType) {
             const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#2196f3';
             
             html += `
-            <div style="background:#f9f9f9; padding:12px; border-radius:8px; border-left:8px solid ${diffColor}; width:calc(33.33% - 10px); min-width:200px; box-sizing:border-box; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-bottom:10px;">
+            <div style="background:#f9f9f9; padding:12px; border-radius:8px; border-left:8px solid ${diffColor}; width:calc(33.33% - 10px); min-width:230px; box-sizing:border-box; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-bottom:10px;">
                 <div style="font-weight:bold; font-size:16px; color:#333; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${res.name}</div>
                 <div style="font-size:13px; color:#666; margin-bottom:8px;">現在 ${res.startScore}点 → 目標 ${res.targetScore}点</div>
-                <div style="font-weight:900; font-size:18px; color:${diffColor};">あと ${res.totalGap}${unit}</div>
-                <div style="color:#777; font-size:12px;">(目標: ${displayTarget}${suffixUnit})</div>
+                <div style="display:flex; align-items:baseline; justify-content:flex-start; gap:8px; flex-wrap:nowrap;">
+                    <div style="font-weight:900; font-size:19px; color:${diffColor}; white-space:nowrap;">あと ${displayGap}${unit}</div>
+                    <div style="color:#555; font-size:15px; font-weight:bold; white-space:nowrap;">（目標: ${displayTarget}${suffixUnit}）</div>
+                </div>
             </div>`;
         });
         
