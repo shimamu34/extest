@@ -3,6 +3,33 @@
 // グローバル変数
 var radarVisible = radarVisible || [true, true, true, true, true, true];
 
+// --- ページ読み込み時の初期化処理 ---
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. 各種テーブルの枠組みを作成
+    RT(); // 記録入力・比較テーブル
+    RS(); // 項目別得点表
+    RE(); // 総合評価基準表
+    
+    // 2. データの読み込み
+    L(); 
+    
+    // 3. 性別変更時のイベント
+    const genderEl = document.getElementById("gender");
+    if (genderEl) {
+        genderEl.addEventListener("change", () => {
+            RT(); RS(); L(); 
+        });
+    }
+    
+    // 4. 学年変更時のイベント
+    const gradeEl = document.getElementById("grade");
+    if (gradeEl) {
+        gradeEl.addEventListener("change", () => {
+            L(); 
+        });
+    }
+});
+
 // --- 1. 宛先URLの読み込みと保存 ---
 (function() {
     const urlParams = new URLSearchParams(window.location.search);
