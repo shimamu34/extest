@@ -488,3 +488,66 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 });
+
+// ==========================================
+// 7. 種目別ランキング機能
+// ==========================================
+
+function toggleRanking() {
+    const c = document.getElementById("ranking");
+    if (c.style.display === "none") {
+        c.style.display = "block";
+        renderRanking();
+    } else {
+        c.style.display = "none";
+    }
+}
+
+function renderRanking() {
+    const g = document.getElementById("gender").value;
+    const h = D[g].h.slice(0, 9); // 全9種目の名前
+    const inputs = document.querySelectorAll(".v-in"); // app.jsで生成される入力欄
+    
+    let scores = [];
+
+    // 現在の入力値から得点を計算して配列に格納
+    h.forEach((name, i) => {
+        const val = parseFloat(inputs[i]?.value);
+        const score = (!isNaN(val) && val !== 0) ? CS(val, name, g) : 0;
+        scores.push({ name: name, score: score, value: inputs[i]?.value || "未入力" });
+    });
+
+    // 得点の高い順にソート（得点が同じなら名前順）
+    scores.sort((a, b) => b.score - a.score);
+
+    const container = document.getElementById("rankingListArea");
+    let html = '<div class="ranking-container">';
+
+    scores.forEach((item, index) => {
+        let medal = "";
+        if (index === 0 && item.score > 0) medal = "🥇 ";
+        else if (index === 1 && item.score > 0) medal = "🥈 ";
+        else if (index === 2 && item.score > 0) medal = "🥉 ";
+        else medal = `<span class="rank-num">${index + 1}</span>`;
+
+        html += `
+            <div class="ranking-item" style="--rank-color: ${getRankColor(item.score)}">
+                <div class="rank-badge">${medal}</div>
+                <div class="rank-name">${item.name}</div>
+                <div class="rank-value">${item.value}</div>
+                <div class="rank-score">${item.score}<span style="font-size:12px">点</span></div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// スコアに応じた色を返す（お好みで調整）
+function getRankColor(score) {
+    if (score >= 9) return "#FFD700"; // 金
+    if (score >= 7) return "#4CAF50"; // 緑
+    if (score >= 4) return "#2196F3"; // 青
+    return "#9E9E9E"; // グレー
+}
