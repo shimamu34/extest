@@ -489,58 +489,79 @@ input[type="number"] {
     clear: both;
 }
 
-/* --- 種目別ランキングのスタイル（2カラム・改善版） --- */
+/* --- 種目別ランキングのスタイル（2カラム・フルワイド版） --- */
+#ranking.card {
+    padding: 15px 5px !important; /* 横の余白を最小限にして領域を確保 */
+}
+
 .ranking-container {
     display: grid;
     grid-template-columns: 1fr 1fr; /* 左右2分割 */
-    gap: 10px;
-    max-width: 800px;
-    margin: 0 auto;
+    gap: 8px;
+    width: 100%;
+    margin: 0;
 }
 
-/* スマホでは1列にしたい場合はここを有効にしますが、
-   左右に並べたい場合はこのままでOKです */
-@media (max-width: 480px) {
-    .ranking-container {
-        grid-template-columns: 1fr 1fr; /* スマホでも2列を維持 */
-        gap: 5px;
-    }
+.ranking-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .ranking-item {
     display: flex;
     align-items: center;
     background: white;
-    padding: 8px 10px;
-    border-radius: 10px;
+    padding: 10px 8px;
+    border-radius: 8px;
     border-left: 5px solid var(--rank-color);
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    width: 100%; /* カード内いっぱいに広げる */
 }
 
 .rank-badge {
-    width: 25px;
+    width: 28px;
     font-size: 16px;
     font-weight: bold;
     text-align: center;
-    margin-right: 5px;
+}
+
+.rank-info {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 4px;
 }
 
 .rank-name {
-    flex: 2;
     font-weight: bold;
     color: #333;
     font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.rank-actual-value {
+    font-size: 11px;
+    color: #777;
+}
+
+.rank-score-area {
+    flex: 1;
+    text-align: right;
+    line-height: 1;
 }
 
 .rank-score {
-    flex: 1;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 900;
     color: var(--rank-color);
-    text-align: right;
+}
+
+.rank-unit {
+    font-size: 10px;
+    color: var(--rank-color);
+    margin-left: 1px;
 }
 
 .rank-num {
