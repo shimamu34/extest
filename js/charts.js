@@ -576,3 +576,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 });
+
+// --- app.jsとHTMLを橋渡しする関数 ---
+function updateRadar() {
+    const g = document.getElementById("gender").value;
+    RR(g);
+}
+
+// HTML側の toggleView 関数から呼ばれる更新処理を整理
+const originalToggleView = window.toggleView; // 既存のtoggleViewを退避
+window.toggleView = function(id) {
+    // 1. まず表示を切り替える（HTML側のscriptタグに書いたロジックを実行）
+    const ids = ['radar', 'rankingBox', 'correlation', 'tracking'];
+    ids.forEach(i => {
+        const el = document.getElementById(i);
+        if (el) el.style.display = (i === id) ? 'block' : 'none';
+    });
+
+    // 2. 表示された瞬間に描画関数を呼び出す
+    const g = document.getElementById("gender").value;
+    if (id === 'radar') RR(g);
+    if (id === 'correlation') RAnalysis(g);
+    if (id === 'tracking') {
+        document.getElementById("trackingDate").valueAsDate = new Date();
+        updateTrackingView();
+    }
+};
