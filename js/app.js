@@ -541,23 +541,12 @@ function setGoal(goalType) {
             const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#4CAF50';
             
             html += `
-            <div style="background:#f9f9f9;padding:12px 15px;border-radius:10px;margin-bottom:10px;border-left:6px solid ${diffColor};box-shadow:0 2px 4px rgba(0,0,0,0.05)">
-                <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
-                    <span style="font-weight:bold; font-size:16px; color:#333; min-width:85px;">${res.name}</span>
-                    <span style="background:${diffColor}; color:white; font-size:11px; padding:2px 8px; border-radius:10px;">目標 ${res.targetScore}点</span>
-                </div>
-                
-                <div style="font-size:13px; color:#666; margin-bottom:8px;">
-                    現在 ${res.startScore}点 → <span style="color:#2b6cb0; font-weight:bold;">目標 ${res.targetScore}点</span>
-                </div>
-                
-                <div style="display:flex; align-items:baseline; gap:12px; padding-top:8px; border-top:1px dashed #ddd;">
-                    <div style="font-weight:900; font-size:16px; color:${diffColor}; white-space:nowrap;">
-                        あと <span style="font-size:20px;">${displayGap}</span>${unit}
-                    </div>
-                    <div style="color:#888; font-size:12px; white-space:nowrap;">
-                        (目標記録: <span style="color:#444; font-weight:bold;">${displayTarget}${unit.includes("分") ? "" : unit}</span>)
-                    </div>
+            <div style="background:#f9f9f9; padding:8px 12px; border-radius:6px; margin-bottom:6px; border-left:5px solid ${diffColor}; display:block; width:fit-content; text-align:left;">
+                <div style="font-weight:bold; font-size:14px; color:#333; margin-bottom:2px;">${res.name}</div>
+                <div style="font-size:12px; color:#666; margin-bottom:4px;">現在 ${res.startScore}点 → 目標 ${res.targetScore}点</div>
+                <div style="display:flex; align-items:baseline; gap:8px;">
+                    <div style="font-weight:900; font-size:16px; color:${diffColor};">あと ${displayGap}${unit}</div>
+                    <div style="color:#777; font-size:11px;">(目標: ${displayTarget}${unit.includes("分") ? "" : unit})</div>
                 </div>
             </div>`;
         });
