@@ -396,7 +396,7 @@ function RAnalysis(g) {
     const types = [
         { name: 'パワー型', emoji: '💪', avg: calcAvg([0, 1, 7, 8]), color: '#f5576c' },
         { name: '持久力型', emoji: '🏃', avg: (Math.max(myScores[4], myScores[5]) + myScores[1]) / 2, color: '#00f2fe' },
-        { name: '敏捷性型', emoji: '⚡', avg: calcAvg([3, 6, 8]), color: '#38f9d7' },
+        { name: '敏捷性型', emoji: '⚡', avg: calcAvg([3, 6, 8]), color: '#a18cd1' }, // カラーを紫系に変更
         { name: '柔軟性型', emoji: '🤸', avg: calcAvg([2, 1]), color: '#fee140' }
     ];
 
@@ -407,25 +407,25 @@ function RAnalysis(g) {
         const mainFontSize = "22px";
 
         pokedexHtml += `
-            <div class="pokedex-card" style="--type-color: ${type.color}; padding: 15px;">
+            <div class="pokedex-card" style="--type-color: ${type.color}; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                     
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <span style="font-size: ${mainFontSize}; line-height: 1;">${type.emoji}</span>
                         
-                        <div style="text-align: left; line-height: 1.1;">
-                            <div style="font-size: ${mainFontSize}; font-weight: bold;">${type.name}</div>
-                            <div style="font-size: ${mainFontSize}; font-weight: bold;">Lv.${level}</div>
+                        <div style="text-align: left; line-height: 1.1; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+                            <div style="font-size: ${mainFontSize}; font-weight: 900;">${type.name}</div>
+                            <div style="font-size: ${mainFontSize}; font-weight: 900; color: ${type.color}; filter: brightness(1.2);">Lv.${level}</div>
                         </div>
                     </div>
 
-                    <div style="font-size: 11px; font-weight: normal; opacity: 0.8; text-align: right; white-space: nowrap; flex-shrink: 0;">
+                    <div style="font-size: 14px; font-weight: bold; color: white; opacity: 0.9; text-align: right; white-space: nowrap; flex-shrink: 0; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 4px;">
                         ${typeDetails[type.name]}
                     </div>
                 </div>
                 
-                <div style="background: rgba(255, 255, 255, 0.2); height: 8px; border-radius: 4px; overflow: hidden;">
-                    <div style="background: ${type.color}; height: 100%; width: ${progress}%;"></div>
+                <div style="background: rgba(255, 255, 255, 0.2); height: 10px; border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);">
+                    <div style="background: ${type.color}; height: 100%; width: ${progress}%; transition: width 0.5s ease;"></div>
                 </div>
             </div>
         `;
