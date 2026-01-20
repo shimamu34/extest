@@ -506,7 +506,6 @@ function setGoal(goalType) {
         Object.values(finalHips).forEach(res => {
             let unit = res.name.includes("50m") ? "秒" : (res.name.includes("ハンド")) ? "m" : (res.name.includes("幅跳び") || res.name.includes("長座")) ? "cm" : res.name.includes("握力") ? "kg" : "回";
             
-            // ★ここが修正ポイント：変数の定義を追加
             let displayGap = res.totalGap;
             let displayTarget = res.nextVal;
             let suffixUnit = unit;
@@ -515,18 +514,18 @@ function setGoal(goalType) {
                 const m = Math.floor(res.nextVal / 60);
                 const s = Math.round(res.nextVal % 60);
                 displayTarget = `${m}分${s.toString().padStart(2, '0')}`;
-                unit = "秒"; // 持久走の「あと○秒」の単位を固定
-                suffixUnit = ""; // 目標値は「5分30秒」と単位を含むのでsuffixは空に
+                unit = "秒";
+                suffixUnit = "";
             }
 
             const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#2196f3';
             
             html += `
-            <div style="background:#f9f9f9; padding:12px; border-radius:8px; border-left:8px solid ${diffColor}; width:calc(33.33% - 10px); min-width:240px; box-sizing:border-box; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-bottom:10px;">
-                <div style="font-weight:bold; font-size:16px; color:#333; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${res.name}</div>
-                <div style="font-size:13px; color:#666; margin-bottom:8px;">現在 ${res.startScore}点 → 目標 ${res.targetScore}点</div>
-                <div style="display:flex; align-items:baseline; gap:8px;">
-                    <div style="font-weight:900; font-size:19px; color:${diffColor}; white-space:nowrap;">あと ${displayGap}${unit}</div>
+            <div style="background:#f9f9f9; padding:15px 12px; border-radius:8px; border-top:6px solid ${diffColor}; width:calc(33.33% - 10px); min-width:240px; box-sizing:border-box; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-bottom:10px;">
+                <div style="font-weight:bold; font-size:16px; color:#333; margin-bottom:4px;">${res.name}</div>
+                <div style="font-size:13px; color:#666; margin-bottom:10px;">現在 ${res.startScore}点 → 目標 ${res.targetScore}点</div>
+                <div style="display:flex; align-items:baseline; justify-content:center; gap:8px;">
+                    <div style="font-weight:900; font-size:20px; color:${diffColor}; white-space:nowrap;">あと ${displayGap}${unit}</div>
                     <div style="color:#555; font-size:15px; font-weight:bold; white-space:nowrap;">（目標: ${displayTarget}${suffixUnit}）</div>
                 </div>
             </div>`;
