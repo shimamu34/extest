@@ -510,49 +510,62 @@ function RAnalysis(g) {
     document.getElementById("totalRank").innerHTML = `<div style="font-size:28px;">総合評価: ${rank} (${totalScore}点)</div>`;
 }
 
-// --- RAnalysis関数の中の最後の方に追加 ---
-
-    // データの収集（ランキング用）
+// 2. 種目別ランキングの生成ロジックを追加
     const h = D[g].h.slice(0, 9);
     let myScores = [];
+    
+    // 入力値から点数を取得して配列に格納
     for (let i = 0; i < 9; i++) {
-        const v = parseFloat(document.getElementById(`i${i}`).value);
-        if (!isNaN(v) && v !== 0) {
-            myScores.push({ name: h[i], score: CS(v, h[i], g) });
+        const inputEl = document.getElementById(`i${i}`);
+        if (inputEl) {
+            const v = parseFloat(inputEl.value);
+            if (!isNaN(v) && v !== 0) {
+                myScores.push({ 
+                    name: h[i], 
+                    score: CS(v, h[i], g) 
+                });
+            }
         }
     }
 
     // 得点が高い順に並び替え
-    const sortedScores = myScores.sort((a, b) => b.score - a.score);
+    myScores.sort((a, b) => b.score - a.score);
 
-    let rankingHtml = `
-        <div style="background: white; padding: 15px; border-radius: 15px; border: 2px solid #2b6cb0; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-            <h4 style="margin: 0 0 15px 0; color: #2b6cb0; font-size: 18px; text-align: center; border-bottom: 2px dashed #eee; pb: 8px;">🏆 種目別ランキング</h4>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-    `;
-
-    sortedScores.forEach((item, index) => {
-        let badgeColor = "#f0f4f8";
-        let icon = "";
-        let textColor = "#333";
-        if (index === 0) { badgeColor = "#FFD700"; icon = "🥇"; }
-        else if (index === 1) { badgeColor = "#C0C0C0"; icon = "🥈"; }
-        else if (index === 2) { badgeColor = "#CD7F32"; icon = "🥉"; }
-
-        rankingHtml += `
-            <div style="background: ${badgeColor}; color: ${textColor}; 
-                        padding: 8px 15px; border-radius: 25px; font-weight: bold; font-size: 14px;
-                        display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <span>${icon}${item.name}</span>
-                <span style="background: rgba(255,255,255,0.5); padding: 2px 8px; border-radius: 10px; font-size: 13px;">${item.score}点</span>
-            </div>
-        `;
-    });
-
-    rankingHtml += `</div></div>`;
-    
     const rb = document.getElementById("rankingBox");
-    if (rb) rb.innerHTML = rankingHtml;
+    if (rb) {
+        if (myScores.length === 0) {
+            rb.innerHTML = `<p style="text-align:center; color:#666; padding:20px;">データを入力するとランキングが表示されます</p>`;
+            return;
+        }
+
+        let html = `
+            <div style="background: white; border-radius: 15px;">
+                <h3 style="text-align:center; color:#ed8936; margin-bottom:20px;">🏆 種目別ランキング（得点順）</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+        `;
+
+        myScores.forEach((item, index) => {
+            let bgColor = "#f7fafc";
+            let borderColor = "#e2e8f0";
+            let icon = "";
+
+            if (index === 0) { bgColor = "#FEF3C7"; borderColor = "#F6E05E"; icon = "🥇"; }
+            else if (index === 1) { bgColor = "#F7FAFC"; borderColor = "#CBD5E0"; icon = "🥈"; }
+            else if (index === 2) { bgColor = "#FFFAF0"; borderColor = "#F6AD55"; icon = "🥉"; }
+
+            html += `
+                <div style="background:${bgColor}; border:2px solid ${borderColor}; padding:10px 20px; border-radius:12px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.05); min-width:140px; text-align:center;">
+                    <div style="font-size:12px; color:#718096; margin-bottom:4px;">${index + 1}位</div>
+                    <div style="font-size:16px;">${icon}${item.name}</div>
+                    <div style="font-size:18px; color:#2d3748;">${item.score}<span style="font-size:12px; margin-left:2px;">点</span></div>
+                </div>
+            `;
+        });
+
+        html += `</div></div>`;
+        rb.innerHTML = html;
+    }
+}
 
 function setGoal(goalType) {
     const g = document.getElementById("gender").value;
