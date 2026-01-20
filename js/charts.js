@@ -561,19 +561,20 @@ function renderRanking() {
 }
 
 function generateRankItemHTML(item, index) {
+    // 順位表示（メダルまたは数字）
     let medal = (item.score === 0) ? `<span style="font-size:12px;color:#ccc">${index+1}</span>` : 
                 (index === 0) ? "🥇" : (index === 1) ? "🥈" : (index === 2) ? "🥉" : 
-                `<span style="font-size:14px;color:#888">${index + 1}</span>`;
+                `<span style="font-size:14px;color:#888;font-weight:bold">${index + 1}</span>`;
 
-    const color = item.score >= 9 ? "#FFD700" : item.score >= 7 ? "#4CAF50" : item.score >= 4 ? "#2196F3" : "#9E9E9E";
+    // 得点に応じた色
+    const color = item.score >= 9 ? "#FFB300" : item.score >= 7 ? "#4CAF50" : item.score >= 4 ? "#2196F3" : "#9E9E9E";
 
+    // HTML構造の組み立て
     return `
         <div class="ranking-item" style="--rank-color: ${color}">
             <div class="rank-badge">${medal}</div>
-            <div class="rank-info">
-                <div class="rank-name">${item.name}</div>
-                <div class="rank-actual-value">${item.actual}</div>
-            </div>
+            <div class="rank-name">${item.name}</div>
+            <div class="rank-actual-value">${item.actual}</div>
             <div class="rank-score-area">
                 <span class="rank-score">${item.score}</span><span class="rank-unit">点</span>
             </div>
