@@ -527,17 +527,20 @@ function setGoal(goalType) {
         });
 
         Object.values(finalHips).forEach(res => {
-            let unit = res.name.includes("走") ? "秒" : (res.name.includes("m") || res.name.includes("ハンド")) ? "m" : res.name.includes("握力") ? "kg" : "回";
-            if (res.name.includes("長座")) unit = "cm";
+            let unit = res.name.includes("50m") ? "秒" : 
+                       (res.name.includes("ハンド") || res.name.includes("幅跳び") && !res.name.includes("立ち")) ? "m" : 
+                       (res.name.includes("立ち幅跳び") || res.name.includes("長座")) ? "cm" : 
+                       res.name.includes("握力") ? "kg" : "回";
+            if (res.name.includes("持久")) unit = "秒";
             
             let displayGap = res.totalGap;
             let displayTarget = res.nextVal;
-            let targetUnit = unit; 
+            let suffixUnit = unit; 
             if (res.name.includes("持久")) {
                 const m = Math.floor(res.nextVal / 60);
                 const s = res.nextVal % 60;
                 displayTarget = `${m}分${s.toString().padStart(2, '0')}秒`;
-                targetUnit = "";
+                suffixUnit = "";
             }
 
             const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#2196f3';
