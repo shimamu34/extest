@@ -416,151 +416,68 @@ function setGoal(goalType) {
     const g = document.getElementById("gender").value;
     const h = D[g].h.slice(0, 9);
     const gr = parseInt(document.getElementById("grade").value);
-    
-    // 1. 現在の「記録」と「得点」を正確に取得
-    let currentData = [];
-    let currentTotal = 0;
-    
-    // 種目ごとに現在の点数を集計（持久走とシャトルランは後で判定）
-    let scoresForTotal = [];
+    let myScores = [];
+    let myValues = [];
     for (let i = 0; i < 9; i++) {
         const inp = document.getElementById(`i${i}`);
-        const v = parseFloat(inp ? inp.value : 0) || 0;
-        const s = CS(v, h[i], g);
-        currentData.push({ val: v, score: s, name: h[i], idx: i });
-        scoresForTotal.push(s);
+        const v = parseFloat(inp.value);
+        myValues.push(!isNaN(v) ? v : 0);
+        myScores.push(!isNaN(v) ? CS(v, h[i], g) : 0);
     }
-
-    // 合計点の計算（持久走4 or シャトルラン5 の高い方を使うルールを適用）
-    currentTotal = scoresForTotal[0] + scoresForTotal[1] + scoresForTotal[2] + scoresForTotal[3] + 
-                   Math.max(scoresForTotal[4], scoresForTotal[5]) + 
-                   scoresForTotal[6] + scoresForTotal[7] + scoresForTotal[8];
-
-    // 2. ターゲットとなるランクの「合格ライン」を特定
+    const scoreEndurance = myScores[4] || 0;
+    const scoreShuttle = myScores[5] || 0;
+    let adjustedScores = [...myScores];
+    if (scoreEndurance >= scoreShuttle) { adjustedScores[5] = 0; } else { adjustedScores[4] = 0; }
+    const validScores = adjustedScores.filter(s => s > 0);
+    const totalScore = validScores.reduce((a, b) => a + b, 0);
     let targetScore = 0;
-    let rankName = goalType.replace('rank', ''); // "A", "B", "C", "D"
-    const rankEntry = E.find(e => e.s === rankName);
-    
-    if (rankEntry) {
-        const criteria = rankEntry[`c${gr}`];
-        // "64以上" や "54～63" から最小数値を抽出
-        targetScore = parseInt(criteria.includes('以上') ? criteria.replace('以上', '') : criteria.split('～')[0]);
-    }
-    
-    const pointsNeeded = targetScore - currentTotal;
-    
-    // 表示エリアの初期化
-    let html = `<div style="background:white;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1)">
-                <h5 style="margin:0 0 20px 0;font-size:20px;color:#9c27b0">🎯 総合${rankName}評価を目指す</h5>
-                <div style="background:#f5f5f5;padding:15px;border-radius:8px;margin-bottom:20px">
-                    <div style="font-size:16px;color:#666;margin-bottom:10px">現在${currentTotal}点 → <strong>目標${targetScore}点</strong></div>
-                    <div style="font-size:24px;font-weight:bold;color:#9c27b0">${pointsNeeded <= 0 ? '目標達成中！' : 'あと ' + pointsNeeded + ' 点'}</div>
-                </div>`;
-    
+    let goalTitle = '';
+    let goalDesc = '';
+    if (goalType === 'rankA') { targetScore = parseInt(E.find(e => e.s === 'A')[`c${gr}`].replace('以上', '')); goalTitle = '🎯 総合A評価を目指す'; }
+    else if (goalType === 'rankB') { targetScore = parseInt(E.find(e => e.s === 'B')[`c${gr}`].split('～')[0]); goalTitle = '🎯 総合B評価を目指す'; }
+    else if (goalType === 'rankC') { targetScore = parseInt(E.find(e => e.s === 'C')[`c${gr}`].split('～')[0]); goalTitle = '🎯 総合C評価を目指す'; }
+    else if (goalType === 'rankD') { targetScore = parseInt(E.find(e => e.s === 'D')[`c${gr}`].split('～')[0]); goalTitle = '🎯 総合D評価を目指す'; }
+    goalDesc = `現在${totalScore}点 → 目標${targetScore}点以上`;
+    const pointsNeeded = Math.max(0, targetScore - totalScore);
+    let html = `<div style="background:white;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1)"><h5 style="margin:0 0 20px 0;font-size:20px;color:#9c27b0">${goalTitle}</h5><div style="background:#f5f5f5;padding:15px;border-radius:8px;margin-bottom:20px"><div style="font-size:16px;color:#666;margin-bottom:10px">${goalDesc}</div><div style="font-size:24px;font-weight:bold;color:#9c27b0">必要な得点: +${pointsNeeded}点</div></div>`;
     if (pointsNeeded > 0) {
-        html += `<h6 style="color:#9c27b0;margin-bottom:15px;font-size:17px;">💡 ${rankName}判定までの最短ルート</h6>`;
-        
-        // --- 3. 【重要】目標点に届くまで「1点ずつ」積み上げるシミュレーション ---
-        let simData = JSON.parse(JSON.stringify(currentData)); // 現在の状態をコピー
-        let simTotal = currentTotal;
-        let simulationResults = [];
-        let safetyLoop = 0;
-
-        // 目標点に届くまで、または最大50回（安全策）繰り返す
-        while (simTotal < targetScore && safetyLoop < 50) {
-            let bestStep = null;
-
-            // 全種目（9種目）の中から「最も少ない努力で1点上がる種目」を総当たりで探す
-            for (let i = 0; i < 9; i++) {
-                if (simData[i].score >= 10) continue;
-                
-                // 持久走・シャトルランの排他制御：現在点数が低い方はシミュレーション対象外にする
-                if (i === 4 && currentData[5].score > currentData[4].score) continue;
-                if (i === 5 && currentData[4].score > currentData[5].score) continue;
-
-                let step = 1; 
-                if (simData[i].name.includes("50m")) step = -0.01;
-                else if (simData[i].name.includes("持久")) step = -1;
-                else if (simData[i].name.includes("ハンド") || simData[i].name.includes("幅跳び")) step = 0.1;
-                else if (simData[i].name.includes("握力")) step = 0.1;
-
-                let testVal = simData[i].val;
-                // 記録0の場合の初期値補正
-                if (testVal === 0) {
-                    if (simData[i].name.includes("50m")) testVal = 10.0;
-                    else if (simData[i].name.includes("持久")) testVal = 600;
-                    else if (simData[i].name.includes("幅跳び")) testVal = 1.0;
-                }
-
-                let startScore = simData[i].score;
-                let currentTestVal = testVal;
-                let innerSafety = 0;
-
-                // 1点上がるまで数値を動かす（総当たり計算）
-                while (CS(currentTestVal, simData[i].name, g) <= startScore && innerSafety < 1000) {
-                    currentTestVal += step;
-                    currentTestVal = Math.round(currentTestVal * 100) / 100;
-                    innerSafety++;
-                }
-
-                // 「今の自分の記録」からどれだけの差（努力量）があるか
-                let gapFromCurrent = Math.abs(Math.round((currentTestVal - currentData[i].val) * 100) / 100);
-                
-                // 最も「gap（努力量）」が小さい種目を今回のベストとする
-                if (!bestStep || gapFromCurrent < bestStep.totalGap) {
-                    bestStep = { 
-                        idx: i, 
-                        name: simData[i].name, 
-                        nextVal: currentTestVal, 
-                        totalGap: gapFromCurrent, 
-                        targetScore: startScore + 1 
-                    };
+        html += '<div style="margin-top:20px"><h6 style="color:#9c27b0;margin-bottom:15px;font-size:18px">💡 おすすめの伸ばし方</h6>';
+        const improvements = [];
+        h.forEach((header, i) => {
+            if (adjustedScores[i] > 0 && adjustedScores[i] < 10) {
+                const potential = 10 - adjustedScores[i];
+                const difficulty = adjustedScores[i] >= 7 ? '難しい' : adjustedScores[i] >= 5 ? '普通' : adjustedScores[i] >= 3 ? '簡単！' : 'とても簡単！';
+                const diffColor = adjustedScores[i] >= 7 ? '#f44336' : adjustedScores[i] >= 5 ? '#FF9800' : adjustedScores[i] >= 3 ? '#4CAF50' : '#2196F3';
+                improvements.push({ name: header, current: adjustedScores[i], potential: potential, difficulty: difficulty, diffColor: diffColor });
+            }
+        });
+        h.forEach((header, i) => {
+            if (myScores[i] === 0) {
+                if (i === 4 && scoreShuttle > 0) return;
+                if (i === 5 && scoreEndurance > 0) return;
+                improvements.push({ name: header, current: 0, potential: 10, difficulty: '未測定', diffColor: '#9E9E9E' });
+            }
+        });
+        improvements.sort((a, b) => (a.current === 0 ? 1 : b.current === 0 ? -1 : b.potential - a.potential));
+        let totalRecommend = 0;
+        let count = 0;
+        improvements.forEach((imp) => {
+            if (count < 5 && totalRecommend < pointsNeeded) {
+                const recommend = imp.current === 0 ? 5 : Math.min(2, imp.potential, pointsNeeded - totalRecommend);
+                if (recommend > 0) {
+                    html += `<div style="background:#f9f9f9;padding:15px;border-radius:8px;margin-bottom:10px;border-left:4px solid ${imp.diffColor}"><div style="display:flex;justify-content:space-between;align-items:center"><div><span style="font-weight:bold;font-size:16px">${imp.name}</span><span style="color:#666;margin-left:10px">${imp.current === 0 ? '未測定 → 平均5点を目指す' : `現在${imp.current}点 → ${imp.current + recommend}点`}</span></div><span style="background:${imp.diffColor};color:white;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:bold">${imp.difficulty}</span></div></div>`;
+                    totalRecommend += recommend;
+                    count++;
                 }
             }
-
-            if (bestStep) {
-                // シミュレーション上のデータを更新して次の1点探しへ
-                simData[bestStep.idx].score += 1;
-                simData[bestStep.idx].val = bestStep.nextVal;
-                simTotal += 1; // 合計点を1増やす
-                simulationResults.push(bestStep);
-            }
-            safetyLoop++;
-        }
-
-        // 4. 結果を表示（同じ種目が複数回出た場合は、最終的な目標値だけを表示してスッキリさせる）
-        let finalHips = {};
-        simulationResults.forEach(res => {
-            finalHips[res.name] = res; // 上書きしていくことで各回ごとの「最終目標」を残す
         });
-
-        Object.values(finalHips).forEach(res => {
-            let unit = res.name.includes("走") ? "秒" : res.name.includes("m") ? "m" : res.name.includes("握力") ? "kg" : "回";
-            if (res.name.includes("長座")) unit = "cm";
-            
-            const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#4CAF50';
-            
-            html += `
-            <div style="background:#f9f9f9;padding:12px 15px;border-radius:10px;margin-bottom:10px;border-left:5px solid ${diffColor};display:flex;justify-content:space-between;align-items:center;">
-                <div>
-                    <span style="font-weight:bold;font-size:16px;">${res.name}</span>
-                    <div style="color:#666;font-size:12px">目標: <span style="color:#2b6cb0;font-weight:bold">${res.targetScore}点</span></div>
-                </div>
-                <div style="text-align:right">
-                    <div style="color:${diffColor};font-weight:900;font-size:17px">あと ${res.totalGap}${unit}</div>
-                    <div style="color:#999;font-size:11px">(目標: ${res.nextVal}${unit})</div>
-                </div>
-            </div>`;
-        });
-        
-        html += `<div style="margin-top:15px;padding:12px;background:#f3e5f5;color:#7b1fa2;border-radius:8px;text-align:center;font-size:14px;font-weight:bold;">✨ これで合計点に届きます！</div></div>`;
+        html += `<div style="margin-top:20px;padding:15px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-radius:8px;text-align:center;font-size:16px">✨ これらを達成すれば目標クリア！頑張りましょう！</div></div>`;
     } else {
-        html += '<div style="padding:20px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:white;border-radius:8px;text-align:center;font-size:18px">🎉 すでに目標達成しています！</div>';
+        html += '<div style="padding:20px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:white;border-radius:8px;text-align:center;font-size:18px">🎉 すでに目標達成しています！素晴らしい！</div>';
     }
     html += '</div>';
-    
     document.getElementById("goalSimulator").innerHTML = html;
-    document.getElementById("goalSimulator").scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    document.querySelector("#correlation p").style.display = "none";
 }
 
 function C() {
