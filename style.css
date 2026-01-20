@@ -489,16 +489,15 @@ input[type="number"] {
     clear: both;
 }
 
-/* --- 種目別ランキング（フルワイド2カラム版） --- */
+/* --- 種目別ランキング（横一列・強調版） --- */
 #ranking.card {
-    padding: 15px 8px !important; 
-    background: #f8f9fa !important;
+    padding: 15px 5px !important;
 }
 
 .ranking-container {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 左右に分割 */
-    gap: 10px;
+    grid-template-columns: 1fr 1fr; /* 左右2分割 */
+    gap: 12px 8px; /* 上下左右の隙間 */
     width: 100%;
 }
 
@@ -512,38 +511,46 @@ input[type="number"] {
     display: flex;
     align-items: center;
     background: white;
-    padding: 10px;
+    padding: 12px 8px;
     border-radius: 10px;
     border-left: 6px solid var(--rank-color);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .rank-badge {
-    width: 30px;
+    width: 25px;
     font-size: 18px;
-    font-weight: bold;
     text-align: center;
     margin-right: 5px;
 }
 
-.rank-info {
-    flex: 1;
-}
-
+/* 種目名のスタイル（大きく太く） */
 .rank-name {
-    font-weight: bold;
-    color: #333;
-    font-size: 14px;
-    margin-bottom: 2px;
+    flex: 2; /* 幅を広めに確保 */
+    font-weight: 800;
+    color: #222;
+    font-size: 15px; /* サイズアップ */
+    white-space: nowrap;
 }
 
+/* 実数値のスタイル（中央に配置） */
 .rank-actual-value {
-    font-size: 11px;
-    color: #666;
+    flex: 1.5;
+    font-size: 13px;
+    color: #555;
+    font-weight: 500;
+    text-align: center; /* 中央寄せ */
+    background: #f0f2f5;
+    border-radius: 4px;
+    margin: 0 5px;
+    padding: 2px 0;
 }
 
+/* 得点エリア */
 .rank-score-area {
+    flex: 1;
     text-align: right;
+    min-width: 45px;
 }
 
 .rank-score {
@@ -553,6 +560,7 @@ input[type="number"] {
 }
 
 .rank-unit {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--rank-color);
+    margin-left: 1px;
 }
