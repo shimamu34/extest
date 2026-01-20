@@ -404,16 +404,24 @@ function RAnalysis(g) {
     types.forEach(type => {
         const level = Math.floor(type.avg);
         const progress = (type.avg / 10) * 100;
+        const mainFontSize = "18px";
+
         pokedexHtml += `
-            <div class="pokedex-card" style="--type-color: ${type.color}">
-                <div style="text-align: center; margin-bottom: 12px;">
-                    <span style="font-size: 48px; display: block; line-height: 1;">${type.emoji}</span>
-                    <div style="font-size: 18px; font-weight: bold;">
-                        ${type.name} <span style="font-size: 11px; font-weight: normal; opacity: 0.8;">${typeDetails[type.name]}</span>
-                        <br>Lv.${level}
+            <div class="pokedex-card" style="--type-color: ${type.color}; padding: 15px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <span style="font-size: ${mainFontSize}; line-height: 1;">${type.emoji}</span>
+                    
+                    <div style="flex: 1; text-align: left; line-height: 1.2;">
+                        <div style="font-size: ${mainFontSize}; font-weight: bold;">${type.name}</div>
+                        <div style="font-size: ${mainFontSize}; font-weight: bold;">Lv.${level}</div>
+                    </div>
+
+                    <div style="font-size: 10px; font-weight: normal; opacity: 0.8; max-width: 90px; text-align: right; line-height: 1.3;">
+                        ${typeDetails[type.name]}
                     </div>
                 </div>
-                <div style="background: rgba(255, 255, 255, 0.2); height: 12px; border-radius: 6px; overflow: hidden;">
+                
+                <div style="background: rgba(255, 255, 255, 0.2); height: 8px; border-radius: 4px; overflow: hidden;">
                     <div style="background: ${type.color}; height: 100%; width: ${progress}%;"></div>
                 </div>
             </div>
