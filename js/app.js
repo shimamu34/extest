@@ -385,17 +385,39 @@ function RAnalysis(g) {
         const validScores = indices.map(i => myScores[i]).filter(s => s > 0);
         return validScores.length > 0 ? validScores.reduce((sum, s) => sum + s, 0) / validScores.length : 0;
     };
+    // 各型の構成種目名を定義
+    const typeDetails = {
+        'パワー型': '(握力・上体・立幅・ハンド)',
+        '持久力型': '(持久走/シ・上体)',
+        '敏捷性型': '(反復・50m・ハンド)',
+        '柔軟性型': '(長座・上体)'
+    };
+
     const types = [
-        {name: 'パワー型', emoji: '💪', avg: calcAvg([0, 1, 7, 8]), color: '#f5576c'},
-        {name: '持久力型', emoji: '🏃', avg: (Math.max(myScores[4], myScores[5]) + myScores[1])/2, color: '#00f2fe'},
-        {name: '敏捷性型', emoji: '⚡', avg: calcAvg([3, 6, 8]), color: '#38f9d7'},
-        {name: '柔軟性型', emoji: '🤸', avg: calcAvg([2, 1]), color: '#fee140'}
+        { name: 'パワー型', emoji: '💪', avg: calcAvg([0, 1, 7, 8]), color: '#f5576c' },
+        { name: '持久力型', emoji: '🏃', avg: (Math.max(myScores[4], myScores[5]) + myScores[1]) / 2, color: '#00f2fe' },
+        { name: '敏捷性型', emoji: '⚡', avg: calcAvg([3, 6, 8]), color: '#38f9d7' },
+        { name: '柔軟性型', emoji: '🤸', avg: calcAvg([2, 1]), color: '#fee140' }
     ];
+
     let pokedexHtml = '';
     types.forEach(type => {
         const level = Math.floor(type.avg);
         const progress = (type.avg / 10) * 100;
-        pokedexHtml += `<div class="pokedex-card" style="--type-color: ${type.color}"><div style="text-align:center; margin-bottom:12px;"><span style="font-size:48px; display:block; line-height:1">${type.emoji}</span><div style="font-size:18px; font-weight:bold;">${type.name} Lv.${level}</div></div><div style="background:rgba(255,255,255,0.2); height:12px; border-radius:6px; overflow:hidden;"><div style="background:${type.color}; height:100%; width:${progress}%;"></div></div></div>`;
+        pokedexHtml += `
+            <div class="pokedex-card" style="--type-color: ${type.color}">
+                <div style="text-align: center; margin-bottom: 12px;">
+                    <span style="font-size: 48px; display: block; line-height: 1;">${type.emoji}</span>
+                    <div style="font-size: 18px; font-weight: bold;">
+                        ${type.name} <span style="font-size: 11px; font-weight: normal; opacity: 0.8;">${typeDetails[type.name]}</span>
+                        <br>Lv.${level}
+                    </div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.2); height: 12px; border-radius: 6px; overflow: hidden;">
+                    <div style="background: ${type.color}; height: 100%; width: ${progress}%;"></div>
+                </div>
+            </div>
+        `;
     });
     document.getElementById("fitnessPokedex").innerHTML = pokedexHtml;
     const totalScore = myScores[0] + myScores[1] + myScores[2] + myScores[3] + Math.max(myScores[4], myScores[5]) + myScores[6] + myScores[7] + myScores[8];
