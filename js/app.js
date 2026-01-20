@@ -530,7 +530,6 @@ function setGoal(goalType) {
             let unit = res.name.includes("走") ? "秒" : res.name.includes("m") ? "m" : res.name.includes("握力") ? "kg" : "回";
             if (res.name.includes("長座")) unit = "cm";
             
-            // 50m走と持久走の秒表示を整形
             let displayGap = res.totalGap;
             let displayTarget = res.nextVal;
             if (res.name.includes("持久")) {
@@ -542,17 +541,23 @@ function setGoal(goalType) {
             const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#4CAF50';
             
             html += `
-            <div style="background:#f9f9f9;padding:15px;border-radius:10px;margin-bottom:10px;border-left:6px solid ${diffColor};box-shadow:0 2px 4px rgba(0,0,0,0.05)">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;">
-                    <span style="font-weight:bold;font-size:16px;color:#333">${res.name}</span>
-                    <span style="background:${diffColor};color:white;font-size:11px;padding:2px 8px;border-radius:10px;">目標 ${res.targetScore}点</span>
+            <div style="background:#f9f9f9;padding:12px 15px;border-radius:10px;margin-bottom:10px;border-left:6px solid ${diffColor};box-shadow:0 2px 4px rgba(0,0,0,0.05)">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
+                    <span style="font-weight:bold; font-size:16px; color:#333; min-width:85px;">${res.name}</span>
+                    <span style="background:${diffColor}; color:white; font-size:11px; padding:2px 8px; border-radius:10px;">目標 ${res.targetScore}点</span>
                 </div>
-                <div style="font-size:14px;color:#444;">
-                    現在${res.startScore}点 → <span style="color:#2b6cb0;font-weight:bold;">目標${res.targetScore}点</span>
+                
+                <div style="font-size:13px; color:#666; margin-bottom:8px;">
+                    現在 ${res.startScore}点 → <span style="color:#2b6cb0; font-weight:bold;">目標 ${res.targetScore}点</span>
                 </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px dashed #ddd;">
-                    <div style="font-weight:900;font-size:16px;color:${diffColor};">達成まであと <span style="font-size:20px;">${displayGap}</span> ${unit}</div>
-                    <div style="color:#888;font-size:12px;">(目標記録: ${displayTarget})</div>
+                
+                <div style="display:flex; align-items:baseline; gap:12px; padding-top:8px; border-top:1px dashed #ddd;">
+                    <div style="font-weight:900; font-size:16px; color:${diffColor}; white-space:nowrap;">
+                        あと <span style="font-size:20px;">${displayGap}</span>${unit}
+                    </div>
+                    <div style="color:#888; font-size:12px; white-space:nowrap;">
+                        (目標記録: <span style="color:#444; font-weight:bold;">${displayTarget}${unit.includes("分") ? "" : unit}</span>)
+                    </div>
                 </div>
             </div>`;
         });
