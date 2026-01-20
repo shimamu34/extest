@@ -521,12 +521,16 @@ function setGoal(goalType) {
             const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#2196f3';
             
             html += `
-            <div style="background:#f9f9f9; padding:15px 12px; border-radius:8px; border-top:6px solid ${diffColor}; width:calc(33.33% - 10px); min-width:240px; box-sizing:border-box; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-bottom:10px;">
-                <div style="font-weight:bold; font-size:16px; color:#333; margin-bottom:4px;">${res.name}</div>
-                <div style="font-size:13px; color:#666; margin-bottom:10px;">現在 ${res.startScore}点 → 目標 ${res.targetScore}点</div>
+            <div style="background:#f9f9f9; padding:18px 12px; border-radius:8px; border-top:8px solid ${diffColor}; width:calc(33.33% - 10px); min-width:260px; box-sizing:border-box; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
+                <div style="font-weight:bold; font-size:19px; color:#333; margin-bottom:6px;">${res.name}</div>
+                
+                <div style="font-size:15px; color:#555; margin-bottom:12px; background:#eee; display:inline-block; padding:2px 10px; border-radius:15px;">
+                    現在 <span style="font-weight:bold;">${res.startScore}点</span> → 目標 <span style="font-weight:bold; color:#d32f2f;">${res.targetScore}点</span>
+                </div>
+                
                 <div style="display:flex; align-items:baseline; justify-content:center; gap:8px;">
-                    <div style="font-weight:900; font-size:20px; color:${diffColor}; white-space:nowrap;">あと ${displayGap}${unit}</div>
-                    <div style="color:#555; font-size:15px; font-weight:bold; white-space:nowrap;">（目標: ${displayTarget}${suffixUnit}）</div>
+                    <div style="font-weight:900; font-size:22px; color:${diffColor}; white-space:nowrap;">あと ${displayGap}${unit}</div>
+                    <div style="color:#444; font-size:17px; font-weight:bold; white-space:nowrap;">（目標: ${displayTarget}${suffixUnit}）</div>
                 </div>
             </div>`;
         });
