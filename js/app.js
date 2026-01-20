@@ -541,12 +541,12 @@ function setGoal(goalType) {
             const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#4CAF50';
             
             html += `
-            <div style="background:#f9f9f9; padding:8px 12px; border-radius:6px; margin-bottom:6px; border-left:5px solid ${diffColor}; display:block; width:fit-content; text-align:left;">
-                <div style="font-weight:bold; font-size:14px; color:#333; margin-bottom:2px;">${res.name}</div>
-                <div style="font-size:12px; color:#666; margin-bottom:4px;">現在 ${res.startScore}点 → 目標 ${res.targetScore}点</div>
-                <div style="display:flex; align-items:baseline; gap:8px;">
-                    <div style="font-weight:900; font-size:16px; color:${diffColor};">あと ${displayGap}${unit}</div>
-                    <div style="color:#777; font-size:11px;">(目標: ${displayTarget}${unit.includes("分") ? "" : unit})</div>
+            <div style="background:#f9f9f9; padding:12px 16px; border-radius:8px; margin-bottom:10px; border-left:6px solid ${diffColor}; display:block; width:300px; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+                <div style="font-weight:bold; font-size:18px; color:#333; margin-bottom:4px;">${res.name}</div>
+                <div style="font-size:14px; color:#666; margin-bottom:8px;">現在 ${res.startScore}点 → 目標 ${res.targetScore}点</div>
+                <div style="display:flex; align-items:baseline; gap:10px;">
+                    <div style="font-weight:900; font-size:20px; color:${diffColor};">あと ${displayGap}${unit}</div>
+                    <div style="color:#777; font-size:13px;">(目標: ${displayTarget}${unit.includes("分") ? "" : unit})</div>
                 </div>
             </div>`;
         });
