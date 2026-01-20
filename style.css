@@ -488,3 +488,62 @@ input[type="number"] {
     box-sizing: border-box !important;
     clear: both;
 }
+
+/* --- 種目別ランキングのスタイル --- */
+.ranking-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 12px 15px;
+    border-radius: 12px;
+    border-left: 6px solid var(--rank-color);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.ranking-item:hover {
+    transform: scale(1.02);
+}
+
+.rank-badge {
+    width: 40px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.rank-num {
+    font-size: 16px;
+    color: #888;
+}
+
+.rank-name {
+    flex: 2;
+    font-weight: bold;
+    color: #333;
+    font-size: 15px;
+}
+
+.rank-value {
+    flex: 1;
+    font-size: 13px;
+    color: #666;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.rank-score {
+    flex: 1;
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--rank-color);
+    text-align: right;
+}
