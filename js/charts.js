@@ -490,70 +490,101 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ==========================================
-// 7. 種目別ランキング機能
+// 7. 種目別ランキング機能（最終改善版）
 // ==========================================
-
-function toggleRanking() {
-    const c = document.getElementById("ranking");
-    if (c.style.display === "none") {
-        c.style.display = "block";
-        renderRanking();
-    } else {
-        c.style.display = "none";
-    }
-}
 
 function renderRanking() {
     const g = document.getElementById("gender").value;
     const h = D[g].h.slice(0, 9); 
-    const inputs = document.querySelectorAll(".v-in"); 
+    
+    // app.jsで生成される入力欄を取得
+    const inputs = [];
+    for(let i=0; i<9; i++) {
+        inputs.push(document.getElementById(`i${i}`));
+    }
     
     let scores = [];
 
     h.forEach((name, i) => {
-        const rawVal = inputs[i]?.value;
+        const inputEl = inputs[i];
+        const rawVal = inputEl ? inputEl.value : "";
         const val = parseFloat(rawVal);
         
         let score = 0;
-        // 持久走などのバグ回避：空文字でない、かつ数値である場合のみ計算
-        if (rawVal !== "" && !isNaN(val) && val !== 0) {
+        let displayValue = "-";
+
+        // 【持久走の10点バグ修正】
+        // 数値が0より大きく、かつ空文字でない場合のみ計算する
+        if (rawVal !== "" && !isNaN(val) && val > 0) {
             score = CS(val, name, g);
+            
+            // 表示用の単位と数値の整形
+            if (name.includes("持久走")) {
+                const m = Math.floor(val / 60);
+                const s = Math.floor(val % 60);
+                displayValue = `${m}'${s < 10 ? '0' + s : s}"`;
+            } else if (name.includes("50m")) {
+                displayValue = `${val}秒`;
+            } else if (name.includes("ハンド") || name.includes("幅跳び")) {
+                displayValue = `${val}m`;
+            } else if (name.includes("握力")) {
+                displayValue = `${val}kg`;
+            } else {
+                displayValue = `${val}回`;
+            }
         }
 
-        scores.push({ name: name, score: score });
+        scores.push({ name: name, score: score, actual: displayValue });
     });
 
-    // スコア順に並び替え
+    // スコア順にソート
     scores.sort((a, b) => b.score - a.score);
 
     const container = document.getElementById("rankingListArea");
+    
+    // 1-5位（左列）と 6-9位（右列）に分ける
+    const leftCol = scores.slice(0, 5);
+    const rightCol = scores.slice(5, 9);
+
     let html = '<div class="ranking-container">';
-
-    scores.forEach((item, index) => {
-        let medal = "";
-        if (item.score === 0) medal = `<span class="rank-num">-</span>`;
-        else if (index === 0) medal = "🥇";
-        else if (index === 1) medal = "🥈";
-        else if (index === 2) medal = "🥉";
-        else medal = `<span class="rank-num">${index + 1}</span>`;
-
-        html += `
-            <div class="ranking-item" style="--rank-color: ${getRankColor(item.score)}">
-                <div class="rank-badge">${medal}</div>
-                <div class="rank-name">${item.name}</div>
-                <div class="rank-score">${item.score}<span style="font-size:10px">点</span></div>
-            </div>
-        `;
+    
+    // 左列の生成
+    html += '<div class="ranking-column">';
+    leftCol.forEach((item, index) => {
+        html += generateRankItemHTML(item, index);
     });
+    html += '</div>';
+
+    // 右列の生成
+    html += '<div class="ranking-column">';
+    rightCol.forEach((item, index) => {
+        html += generateRankItemHTML(item, index + 5);
+    });
+    html += '</div>';
 
     html += '</div>';
     container.innerHTML = html;
 }
 
-// スコアに応じた色を返す（お好みで調整）
-function getRankColor(score) {
-    if (score >= 9) return "#FFD700"; // 金
-    if (score >= 7) return "#4CAF50"; // 緑
-    if (score >= 4) return "#2196F3"; // 青
-    return "#9E9E9E"; // グレー
+// 共通のアイテムHTML生成関数
+function generateRankItemHTML(item, index) {
+    let medal = "";
+    if (item.score === 0) medal = `<span class="rank-num">-</span>`;
+    else if (index === 0) medal = "🥇";
+    else if (index === 1) medal = "🥈";
+    else if (index === 2) medal = "🥉";
+    else medal = `<span class="rank-num">${index + 1}</span>`;
+
+    return `
+        <div class="ranking-item" style="--rank-color: ${getRankColor(item.score)}">
+            <div class="rank-badge">${medal}</div>
+            <div class="rank-info">
+                <div class="rank-name">${item.name}</div>
+                <div class="rank-actual-value">${item.actual}</div>
+            </div>
+            <div class="rank-score-area">
+                <span class="rank-score">${item.score}</span><span class="rank-unit">点</span>
+            </div>
+        </div>
+    `;
 }
