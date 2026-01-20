@@ -536,8 +536,12 @@ function setGoal(goalType) {
     
     html += '</div>'; // 全体コンテナ終了
     
-    document.getElementById("goalSimulator").innerHTML = html;
-    document.getElementById("goalSimulator").scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const targetArea = document.getElementById("goalSimulator");
+    if (targetArea) {
+        targetArea.innerHTML = html; // ここで「上のボタンから〜」の文字が消え、新しいHTMLに置き換わります
+        targetArea.style.display = "block"; // もし非表示にしていた場合は表示させる
+        targetArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
 }
 
 function C() {
