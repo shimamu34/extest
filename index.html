@@ -10,7 +10,7 @@
     <h1 style="letter-spacing: 4px; font-family: 'Helvetica Neue', Arial, sans-serif;">
         📠　体力テスト分析システム
         <span style="display: block; font-size: 0.5em; font-weight: normal; letter-spacing: 1px; opacity: 0.8; margin-top: 5px;">
-            Physical Analysis System 2025
+            Physical Analysis System 2026
         </span>
     </h1>
     
@@ -22,7 +22,7 @@
     </div>
     
     <div class="card no-print" style="text-align:center">
-        性別：<select id="gender" onchange="RR(this.value)">
+        性別：<select id="gender">
             <option value="男">男子</option>
             <option value="女">女子</option>
         </select>
@@ -32,15 +32,10 @@
             <option value="3">中3</option>
         </select>
         組：<select id="class">
-            <option value="A">A組</option>
-            <option value="B">B組</option>
-            <option value="C">C組</option>
-            <option value="D">D組</option>
+            <option value="A">A組</option><option value="B">B組</option><option value="C">C組</option><option value="D">D組</option>
         </select>
         測定回：<select id="session">
-            <option value="1">1回目</option>
-            <option value="2">2回目</option>
-            <option value="3">3回目</option>
+            <option value="1">1回目</option><option value="2">2回目</option><option value="3">3回目</option>
         </select>
     </div>
     
@@ -53,45 +48,67 @@
     </div>
     
     <div class="card no-print" style="text-align:center">
-        <button class="btn" style="background:linear-gradient(135deg,#2c5282,#2b6cb0)" onclick="toggleRadar()">📊 レーダーチャート</button>
-        <button class="btn" style="background:linear-gradient(135deg,#ed8936,#dd6b20)" onclick="toggleRanking()">📖 種目別ランキング</button>
-        <button class="btn" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2)" onclick="toggleAnalysis()">🎮 体力分析</button>
-        <button class="btn" style="background:linear-gradient(135deg,#FF5722,#FF7043)" onclick="toggleTracking()">📈 種目別トラッキング</button>
+        <button class="btn" style="background:linear-gradient(135deg,#2c5282,#2b6cb0)" onclick="toggleView('radar')">📊 レーダーチャート</button>
+        <button class="btn" style="background:linear-gradient(135deg,#ed8936,#dd6b20)" onclick="toggleView('rankingBox')">📖 種目別ランキング</button>
+        <button class="btn" style="background:linear-gradient(135deg,#9c27b0,#7b1fa2)" onclick="toggleView('correlation')">🎮 体力分析</button>
+        <button class="btn" style="background:linear-gradient(135deg,#FF5722,#FF7043)" onclick="toggleView('tracking')">📈 種目別トラッキング</button>
     </div>
     
     <div id="radar" style="display:none" class="card">
         <h3 style="text-align:center;color:#2b6cb0;margin-bottom:20px">📊 レーダーチャート</h3>
-        <div style="display:flex;justify-content:center">
-            <canvas id="rc" width="600" height="600"></canvas>
-        </div>
+        <div style="display:flex;justify-content:center"><canvas id="rc" width="600" height="600"></canvas></div>
     </div>
 
-    <div id="rankingBox" class="card" style="display:none; padding: 20px;"></div>
+    <div id="rankingBox" style="display:none" class="card"></div>
     
     <div id="correlation" style="display:none" class="card">
         <h3 style="text-align:center;color:#9c27b0;margin-bottom:30px">🎮 体力レーダー図鑑 × 目標達成シミュレーター</h3>
-        
-        <div style="background:linear-gradient(135deg,#667eea,#764ba2); padding:15px 10px; border-radius:15px; margin-bottom:15px; color:white">
+        <div style="background:linear-gradient(135deg,#667eea,#764ba2); padding:20px; border-radius:15px; margin-bottom:15px; color:white">
             <h4 id="pokedexTitle">🏆 あなたの体力タイプ図鑑</h4>
             <div id="fitnessPokedex"></div>
-            <div id="totalRank" style="margin-top:10px; padding:15px; background:rgba(255,255,255,0.2); border-radius:12px; text-align:center; font-size:20px; font-weight:bold; min-height: 50px;"></div>
+            <div id="totalRank" style="margin-top:15px; padding:15px; background:rgba(255,255,255,0.2); border-radius:12px; text-align:center; font-size:20px; font-weight:bold;"></div>
         </div>
         
-        <div style="background:#f5f5f5;padding:30px;border-radius:15px">
-            <div style="display: flex !important; flex-wrap: nowrap !important; justify-content: center; max-width: 1000px; margin: 0 auto 25px auto; text-align: center;">
-                <button class="btn" style="flex: 1; margin: 0 5px; background:linear-gradient(135deg,#FFD700,#FFA500); padding: 15px 5px; font-size: 14px;" onclick="setGoal('rankA')">総合Aを目指す</button>
-                <button class="btn" style="flex: 1; margin: 0 5px; background:linear-gradient(135deg,#4CAF50,#66BB6A); padding: 15px 5px; font-size: 14px;" onclick="setGoal('rankB')">総合Bを目指す</button>
-                <button class="btn" style="flex: 1; margin: 0 5px; background:linear-gradient(135deg,#2196F3,#42A5F5); padding: 15px 5px; font-size: 14px;" onclick="setGoal('rankC')">総合Cを目指す</button>
-                <button class="btn" style="flex: 1; margin: 0 5px; background:linear-gradient(135deg,#9C27B0,#BA68C8); padding: 15px 5px; font-size: 14px;" onclick="setGoal('rankD')">総合Dを目指す</button>
+        <div style="background:#f5f5f5;padding:25px;border-radius:15px">
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;">
+                <button class="btn" style="background:#FFD700; color:black;" onclick="setGoal('rankA')">総合Aを目指す</button>
+                <button class="btn" style="background:#4CAF50; color:white;" onclick="setGoal('rankB')">総合Bを目指す</button>
+                <button class="btn" style="background:#2196F3; color:white;" onclick="setGoal('rankC')">総合Cを目指す</button>
+                <button class="btn" style="background:#9C27B0; color:white;" onclick="setGoal('rankD')">総合Dを目指す</button>
             </div>
-
-            <div id="goalSimulator" style="margin-top: 20px;">
-                <p id="guide" style="text-align:center; color: #666; font-size: 16px;">
-                    上のボタンから目標を選んでください
-                </p>
+            <div id="goalSimulator">
+                <p id="guide" style="text-align:center; color: #666;">目標を選んでください</p>
             </div>
         </div>
     </div>
+
+    <div id="tracking" style="display:none" class="card">
+        <h3 style="text-align:center; color:#FF5722;">📈 種目別トラッキング</h3>
+        <div id="trackingContent">（ここにトラッキングUI）</div>
+    </div>
+
+    <div class="card no-print">
+        <h2 style="color:#2b6cb0;">⭐ 項目別得点表</h2>
+        <div id="score"></div>
+    </div>
+    
+    <div class="card no-print">
+        <h2 style="color:#2b6cb0;">🏆 総合評価基準表</h2>
+        <div id="eval"></div>
+    </div>
+
+    <div id="setupModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;overflow-y:auto">
+        <div style="max-width:800px;margin:50px auto;background:white;border-radius:20px;padding:40px;">
+            <div style="text-align:right;"><button onclick="closeSetup()" style="font-size:24px; cursor:pointer;">✕</button></div>
+            <div id="setupContent">
+                <h2>🏫 初回セットアップ</h2>
+                <input type="text" id="gasUrlInput" placeholder="GAS URLを貼り付け">
+                <button onclick="saveGasUrl()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notif" class="notification"></div>
 
     <script src="js/data.js"></script>
     <script src="js/app.js"></script>
@@ -99,40 +116,40 @@
     <script src="js/setup.js"></script>
 
     <script>
+    // 1. パスコードチェックとモーダル表示
     function checkPasscode() {
         const code = prompt("管理者用パスコードを入力してください（4桁）");
         if (code === "9076") {
-            showSetupGuide();
+            document.getElementById('setupModal').style.display = "block";
         } else if (code !== null) {
             alert("パスコードが違います。");
         }
     }
+    function closeSetup() { document.getElementById('setupModal').style.display = "none"; }
 
-    function showSetupGuide() {
-        document.getElementById('setupModal').style.display = "block";
+    // 2. 表示切り替えの一元化
+    function toggleView(id) {
+        const ids = ['radar', 'rankingBox', 'correlation', 'tracking'];
+        ids.forEach(i => {
+            const el = document.getElementById(i);
+            if (el) el.style.display = (i === id && el.style.display === 'none') ? 'block' : 'none';
+        });
+        if (id === 'radar' && typeof updateRadar === 'function') updateRadar();
     }
 
-    // 表示切り替え関数群
-    function toggleRadar() { const e = document.getElementById('radar'); e.style.display = e.style.display === 'none' ? 'block' : 'none'; }
-    function toggleRanking() { const e = document.getElementById('rankingBox'); e.style.display = e.style.display === 'none' ? 'block' : 'none'; }
-    function toggleAnalysis() { const e = document.getElementById('correlation'); e.style.display = e.style.display === 'none' ? 'block' : 'none'; }
-    function toggleTracking() { const e = document.getElementById('tracking'); e.style.display = e.style.display === 'none' ? 'block' : 'none'; }
-
+    // 3. ページ初期化
     document.addEventListener('DOMContentLoaded', function() {
-        if (typeof RT === 'function') RT();
-        if (typeof L === 'function') L();
-        if (typeof U === 'function') U();
-
-        const updateAll = () => {
-            if (typeof RT === 'function') RT(); 
-            if (typeof L === 'function') L();
-            if (typeof U === 'function') U();
+        const init = () => {
+            if (typeof RT === 'function') RT(); // 基準表作成
+            if (typeof L === 'function') L();   // データロード
+            if (typeof U === 'function') U();   // 計算・更新
         };
+        init();
 
-        const genderEl = document.getElementById("gender");
-        const gradeEl = document.getElementById("grade");
-        if (genderEl) genderEl.addEventListener("change", updateAll);
-        if (gradeEl) gradeEl.addEventListener("change", updateAll);
+        // 変更時の自動更新
+        ['gender', 'grade'].forEach(id => {
+            document.getElementById(id).addEventListener('change', init);
+        });
     });
     </script>
 </body>
