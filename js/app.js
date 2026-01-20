@@ -455,10 +455,8 @@ function setGoal(goalType) {
                     <div style="font-size:22px;font-weight:bold;color:#9c27b0">${pointsNeeded <= 0 ? '🎉 目標達成中！' : 'あと ' + pointsNeeded + ' 点 必要です'}</div>
                 </div>`;
     
-    if (pointsNeeded > 0) {
-        html += `<h6 style="color:#9c27b0;margin-bottom:12px;font-size:16px;">💡 ${rankName}判定までの最短ルート</h6>`;
-        
-        // --- 3. 目標点に届くまで「最も効率の良い種目」から積み上げるシミュレーション ---
+    html += '<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start;">';
+
         let simData = JSON.parse(JSON.stringify(currentData)); 
         let simTotal = currentTotal;
         let simulationResults = [];
@@ -466,11 +464,8 @@ function setGoal(goalType) {
 
         while (simTotal < targetScore && safetyLoop < 50) {
             let bestStep = null;
-
             for (let i = 0; i < 9; i++) {
                 if (simData[i].score >= 10) continue;
-                
-                // 持久走・シャトルランの排他制御
                 if (i === 4 && currentData[5].score > currentData[4].score) continue;
                 if (i === 5 && currentData[4].score > currentData[5].score) continue;
 
@@ -490,7 +485,6 @@ function setGoal(goalType) {
                 let startScore = simData[i].score;
                 let currentTestVal = testVal;
                 let innerSafety = 0;
-
                 while (CS(currentTestVal, simData[i].name, g) <= startScore && innerSafety < 1000) {
                     currentTestVal += step;
                     currentTestVal = Math.round(currentTestVal * 100) / 100;
@@ -498,19 +492,10 @@ function setGoal(goalType) {
                 }
 
                 let gapFromCurrent = Math.abs(Math.round((currentTestVal - currentData[i].val) * 100) / 100);
-                
                 if (!bestStep || gapFromCurrent < bestStep.totalGap) {
-                    bestStep = { 
-                        idx: i, 
-                        name: simData[i].name, 
-                        startScore: currentData[i].score, // 元の点数
-                        nextVal: currentTestVal, 
-                        totalGap: gapFromCurrent, 
-                        targetScore: startScore + 1 
-                    };
+                    bestStep = { idx: i, name: simData[i].name, startScore: currentData[i].score, nextVal: currentTestVal, totalGap: gapFromCurrent, targetScore: startScore + 1 };
                 }
             }
-
             if (bestStep) {
                 simData[bestStep.idx].score += 1;
                 simData[bestStep.idx].val = bestStep.nextVal;
@@ -520,32 +505,25 @@ function setGoal(goalType) {
             safetyLoop++;
         }
 
-        // 4. 同じ種目が複数回出た場合、その種目の最終目標に統合して表示
         let finalHips = {};
-        simulationResults.forEach(res => {
-            finalHips[res.name] = res; 
-        });
+        simulationResults.forEach(res => { finalHips[res.name] = res; });
 
         Object.values(finalHips).forEach(res => {
-            // 1. 単位の判定
             let unit = res.name.includes("50m") ? "秒" : 
                        (res.name.includes("ハンド")) ? "m" : 
                        (res.name.includes("幅跳び") || res.name.includes("長座")) ? "cm" : 
                        res.name.includes("握力") ? "kg" : "回";
-            
             if (res.name.includes("持久")) unit = "秒";
 
             let displayGap = res.totalGap;
             let displayTarget = "";
-            let suffixUnit = unit; // カッコ内の単位
+            let suffixUnit = unit;
 
-            // 2. 表示用数値の整形
             if (res.name.includes("持久")) {
                 const m = Math.floor(res.nextVal / 60);
                 const s = res.nextVal % 60;
-                // ここで「秒」を入れず、数値だけにする
                 displayTarget = `${m}分${s.toString().padStart(2, '0')}`;
-                suffixUnit = "秒"; // ここで「秒」を付与する
+                suffixUnit = "秒";
             } else {
                 displayTarget = res.nextVal;
                 suffixUnit = unit;
@@ -553,17 +531,19 @@ function setGoal(goalType) {
 
             const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#2196f3';
             
+            // カードの幅を「calc(33.33% - 7px)」にして横3列に並べる
             html += `
-            <div style="background:#f9f9f9; padding:12px 16px; border-radius:8px; margin-bottom:10px; border-left:8px solid ${diffColor}; display:block; width:300px; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
-                <div style="font-weight:bold; font-size:18px; color:#333; margin-bottom:4px;">${res.name}</div>
-                <div style="font-size:14px; color:#666; margin-bottom:8px;">現在 ${res.startScore}点 → 目標 ${res.targetScore}点</div>
-                <div style="display:flex; align-items:baseline; gap:10px;">
-                    <div style="font-weight:900; font-size:20px; color:${diffColor};">あと ${displayGap}${unit}</div>
-                    <div style="color:#777; font-size:13px;">(目標: ${displayTarget}${suffixUnit})</div>
+            <div style="background:#f9f9f9; padding:12px; border-radius:8px; border-left:6px solid ${diffColor}; width:calc(33.33% - 7px); min-width:200px; box-sizing:border-box; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+                <div style="font-weight:bold; font-size:16px; color:#333; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${res.name}</div>
+                <div style="font-size:13px; color:#666; margin-bottom:8px;">現在 ${res.startScore}点 → 目標 ${res.targetScore}点</div>
+                <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="font-weight:900; font-size:18px; color:${diffColor};">あと ${displayGap}${unit}</div>
+                    <div style="color:#777; font-size:12px;">(目標: ${displayTarget}${suffixUnit})</div>
                 </div>
             </div>`;
         });
         
+        html += '</div>'; // コンテナの終了
         html += `<div style="margin-top:15px;padding:12px;background:#f3e5f5;color:#7b1fa2;border-radius:8px;text-align:center;font-size:14px;font-weight:bold;">✨ これをクリアすれば${rankName}判定です！</div></div>`;
     } else {
         html += '<div style="padding:20px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:white;border-radius:8px;text-align:center;font-size:18px">🎉 すでに目標達成しています！</div>';
