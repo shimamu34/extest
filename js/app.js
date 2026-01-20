@@ -404,19 +404,22 @@ function RAnalysis(g) {
     types.forEach(type => {
         const level = Math.floor(type.avg);
         const progress = (type.avg / 10) * 100;
-        const mainFontSize = "18px";
+        const mainFontSize = "22px";
 
         pokedexHtml += `
             <div class="pokedex-card" style="--type-color: ${type.color}; padding: 15px;">
-                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                    <span style="font-size: ${mainFontSize}; line-height: 1;">${type.emoji}</span>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
                     
-                    <div style="flex: 1; text-align: left; line-height: 1.2;">
-                        <div style="font-size: ${mainFontSize}; font-weight: bold;">${type.name}</div>
-                        <div style="font-size: ${mainFontSize}; font-weight: bold;">Lv.${level}</div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: ${mainFontSize}; line-height: 1;">${type.emoji}</span>
+                        
+                        <div style="text-align: left; line-height: 1.1;">
+                            <div style="font-size: ${mainFontSize}; font-weight: bold;">${type.name}</div>
+                            <div style="font-size: ${mainFontSize}; font-weight: bold;">Lv.${level}</div>
+                        </div>
                     </div>
 
-                    <div style="font-size: 10px; font-weight: normal; opacity: 0.8; max-width: 90px; text-align: right; line-height: 1.3;">
+                    <div style="font-size: 11px; font-weight: normal; opacity: 0.8; text-align: right; white-space: nowrap; flex-shrink: 0;">
                         ${typeDetails[type.name]}
                     </div>
                 </div>
