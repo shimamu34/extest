@@ -489,7 +489,7 @@ input[type="number"] {
     clear: both;
 }
 
-/* --- 種目別ランキング（横一列・強調版） --- */
+/* --- 種目別ランキング（さらに強調・文字拡大版） --- */
 #ranking.card {
     padding: 15px 5px !important;
 }
@@ -497,70 +497,70 @@ input[type="number"] {
 .ranking-container {
     display: grid;
     grid-template-columns: 1fr 1fr; /* 左右2分割 */
-    gap: 12px 8px; /* 上下左右の隙間 */
+    gap: 12px 8px;
     width: 100%;
 }
 
 .ranking-column {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px; /* アイテム間の隙間を少し広げる */
 }
 
 .ranking-item {
     display: flex;
     align-items: center;
     background: white;
-    padding: 12px 8px;
-    border-radius: 10px;
-    border-left: 6px solid var(--rank-color);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 14px 10px; /* 上下パディングを増やしてゆったりさせる */
+    border-radius: 12px;
+    border-left: 8px solid var(--rank-color); /* 左線を太くして強調 */
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
 }
 
 .rank-badge {
-    width: 25px;
-    font-size: 18px;
+    width: 28px;
+    font-size: 20px; /* メダルも少し大きく */
     text-align: center;
     margin-right: 5px;
 }
 
-/* 種目名のスタイル（大きく太く） */
+/* 種目名：さらに大きく・太く */
 .rank-name {
-    flex: 2; /* 幅を広めに確保 */
-    font-weight: 800;
-    color: #222;
-    font-size: 15px; /* サイズアップ */
+    flex: 1.8; 
+    font-weight: 900;
+    color: #1a202c;
+    font-size: 17px; /* 15pxから拡大 */
     white-space: nowrap;
 }
 
-/* 実数値のスタイル（中央に配置） */
+/* 実数値：さらに大きく・目立たせる */
 .rank-actual-value {
-    flex: 1.5;
-    font-size: 13px;
-    color: #555;
-    font-weight: 500;
-    text-align: center; /* 中央寄せ */
-    background: #f0f2f5;
-    border-radius: 4px;
-    margin: 0 5px;
-    padding: 2px 0;
+    flex: 1.6;
+    font-size: 16px; /* 13pxから拡大 */
+    color: #2d3748;
+    font-weight: 700;
+    text-align: center;
+    background: #edf2f7; /* 背景色を少し濃く */
+    border-radius: 6px;
+    margin: 0 6px;
+    padding: 4px 0;
 }
 
 /* 得点エリア */
 .rank-score-area {
     flex: 1;
     text-align: right;
-    min-width: 45px;
+    min-width: 50px;
 }
 
 .rank-score {
-    font-size: 20px;
+    font-size: 24px; /* 得点もさらに大きく */
     font-weight: 900;
     color: var(--rank-color);
 }
 
 .rank-unit {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--rank-color);
-    margin-left: 1px;
+    font-weight: bold;
 }
