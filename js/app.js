@@ -548,7 +548,6 @@ function setGoal(goalType) {
     } else {
         html += '<div style="padding:20px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:white;border-radius:8px;text-align:center;font-size:18px">🎉 すでに目標達成しています！</div>';
     }
-    html += '</div>';
     
     document.getElementById("goalSimulator").innerHTML = html;
     document.getElementById("goalSimulator").scrollIntoView({ behavior: 'smooth', block: 'nearest' });
