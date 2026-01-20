@@ -527,31 +527,39 @@ function setGoal(goalType) {
         });
 
         Object.values(finalHips).forEach(res => {
+            // 1. 単位の判定
             let unit = res.name.includes("50m") ? "秒" : 
-                       (res.name.includes("ハンド") || res.name.includes("幅跳び") && !res.name.includes("立ち")) ? "m" : 
-                       (res.name.includes("立ち幅跳び") || res.name.includes("長座")) ? "cm" : 
+                       (res.name.includes("ハンド")) ? "m" : 
+                       (res.name.includes("幅跳び") || res.name.includes("長座")) ? "cm" : 
                        res.name.includes("握力") ? "kg" : "回";
-            if (res.name.includes("持久")) unit = "秒";
             
+            if (res.name.includes("持久")) unit = "秒";
+
             let displayGap = res.totalGap;
-            let displayTarget = res.nextVal;
-            let suffixUnit = unit; 
+            let displayTarget = "";
+            let suffixUnit = unit; // カッコ内の単位
+
+            // 2. 表示用数値の整形
             if (res.name.includes("持久")) {
                 const m = Math.floor(res.nextVal / 60);
                 const s = res.nextVal % 60;
-                displayTarget = `${m}分${s.toString().padStart(2, '0')}秒`;
-                suffixUnit = "";
+                // ここで「秒」を入れず、数値だけにする
+                displayTarget = `${m}分${s.toString().padStart(2, '0')}`;
+                suffixUnit = "秒"; // ここで「秒」を付与する
+            } else {
+                displayTarget = res.nextVal;
+                suffixUnit = unit;
             }
 
             const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#2196f3';
             
             html += `
-            <div style="background:#f9f9f9; padding:12px 16px; border-radius:8px; margin-bottom:10px; border-left:6px solid ${diffColor}; display:block; width:300px; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+            <div style="background:#f9f9f9; padding:12px 16px; border-radius:8px; margin-bottom:10px; border-left:8px solid ${diffColor}; display:block; width:300px; text-align:left; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
                 <div style="font-weight:bold; font-size:18px; color:#333; margin-bottom:4px;">${res.name}</div>
                 <div style="font-size:14px; color:#666; margin-bottom:8px;">現在 ${res.startScore}点 → 目標 ${res.targetScore}点</div>
                 <div style="display:flex; align-items:baseline; gap:10px;">
                     <div style="font-weight:900; font-size:20px; color:${diffColor};">あと ${displayGap}${unit}</div>
-                    <div style="color:#777; font-size:13px;">(目標: ${displayTarget}${unit.includes("分") ? "" : unit})</div>
+                    <div style="color:#777; font-size:13px;">(目標: ${displayTarget}${suffixUnit})</div>
                 </div>
             </div>`;
         });
