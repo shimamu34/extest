@@ -43,14 +43,3 @@ function copyStudentUrl() {
     document.execCommand('copy');
     alert('配布用URLをコピーしました！');
 }
-
-<div id="setupContent">
-    <h2 style="color:#2b6cb0; border-bottom:2px solid #2b6cb0; padding-bottom:10px;">🏫 システム設定ガイド</h2>
-    <div style="background:#f0f7ff; padding:20px; border-radius:10px; margin-bottom:20px; line-height:1.6;">
-        <p>1. <strong>Googleスプレッドシート</strong>を作成し、GAS（Google Apps Script）をデプロイします。</p>
-        <p>2. 発行された「ウェブアプリURL」を下の欄に貼り付けてください。</p>
-        <p>3. 「保存」を押すと、送信機能が有効になります。</p>
-    </div>
-    <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/..." style="width:100%; padding:12px; border:2px solid #ddd; border-radius:8px; margin-bottom:15px; font-size:16px;">
-    <button onclick="saveGasUrl()" class="btn btn-send" style="width:100%; padding:15px;">設定を保存して閉じる</button>
-</div>
