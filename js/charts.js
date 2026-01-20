@@ -505,19 +505,25 @@ function toggleRanking() {
 
 function renderRanking() {
     const g = document.getElementById("gender").value;
-    const h = D[g].h.slice(0, 9); // 全9種目の名前
-    const inputs = document.querySelectorAll(".v-in"); // app.jsで生成される入力欄
+    const h = D[g].h.slice(0, 9); 
+    const inputs = document.querySelectorAll(".v-in"); 
     
     let scores = [];
 
-    // 現在の入力値から得点を計算して配列に格納
     h.forEach((name, i) => {
-        const val = parseFloat(inputs[i]?.value);
-        const score = (!isNaN(val) && val !== 0) ? CS(val, name, g) : 0;
-        scores.push({ name: name, score: score, value: inputs[i]?.value || "未入力" });
+        const rawVal = inputs[i]?.value;
+        const val = parseFloat(rawVal);
+        
+        let score = 0;
+        // 持久走などのバグ回避：空文字でない、かつ数値である場合のみ計算
+        if (rawVal !== "" && !isNaN(val) && val !== 0) {
+            score = CS(val, name, g);
+        }
+
+        scores.push({ name: name, score: score });
     });
 
-    // 得点の高い順にソート（得点が同じなら名前順）
+    // スコア順に並び替え
     scores.sort((a, b) => b.score - a.score);
 
     const container = document.getElementById("rankingListArea");
@@ -525,17 +531,17 @@ function renderRanking() {
 
     scores.forEach((item, index) => {
         let medal = "";
-        if (index === 0 && item.score > 0) medal = "🥇 ";
-        else if (index === 1 && item.score > 0) medal = "🥈 ";
-        else if (index === 2 && item.score > 0) medal = "🥉 ";
+        if (item.score === 0) medal = `<span class="rank-num">-</span>`;
+        else if (index === 0) medal = "🥇";
+        else if (index === 1) medal = "🥈";
+        else if (index === 2) medal = "🥉";
         else medal = `<span class="rank-num">${index + 1}</span>`;
 
         html += `
             <div class="ranking-item" style="--rank-color: ${getRankColor(item.score)}">
                 <div class="rank-badge">${medal}</div>
                 <div class="rank-name">${item.name}</div>
-                <div class="rank-value">${item.value}</div>
-                <div class="rank-score">${item.score}<span style="font-size:12px">点</span></div>
+                <div class="rank-score">${item.score}<span style="font-size:10px">点</span></div>
             </div>
         `;
     });
