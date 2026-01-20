@@ -396,7 +396,7 @@ function RAnalysis(g) {
     const types = [
         { name: 'パワー型', emoji: '💪', avg: calcAvg([0, 1, 7, 8]), color: '#f5576c' },
         { name: '持久力型', emoji: '🏃', avg: (Math.max(myScores[4], myScores[5]) + myScores[1]) / 2, color: '#00f2fe' },
-        { name: '敏捷性型', emoji: '⚡', avg: calcAvg([3, 6, 8]), color: '#ff9a00' }, // 背景と被らないオレンジに変更
+        { name: '敏捷性型', emoji: '⚡', avg: calcAvg([3, 6, 8]), color: '#ff9a00' }, // 視認性の良いオレンジ
         { name: '柔軟性型', emoji: '🤸', avg: calcAvg([2, 1]), color: '#fee140' }
     ];
 
@@ -404,17 +404,19 @@ function RAnalysis(g) {
     types.forEach(type => {
         const level = Math.floor(type.avg);
         const progress = (type.avg / 10) * 100;
+        const scoreFormatted = type.avg.toFixed(1); // 小数点1桁まで表示
         
-        const mainFontSize = "22px"; // 型名・Lvのサイズ
-        const detailFontSize = "16px"; // 構成種目のサイズ（拡大）
+        const mainFontSize = "22px"; 
+        const detailFontSize = "16px";
 
         pokedexHtml += `
-            <div class="pokedex-card" style="--type-color: ${type.color}; padding: 15px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.2);">
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px;">
+            <div class="pokedex-card" style="--type-color: ${type.color}; padding: 15px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.2); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: ${type.color}; filter: blur(40px); opacity: 0.3; z-index: 0;"></div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; position: relative; z-index: 1;">
                     
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <span style="font-size: 26px; line-height: 1;">${type.emoji}</span>
-                        
                         <div style="text-align: left; line-height: 1.1; text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">
                             <div style="font-size: ${mainFontSize}; font-weight: 900; color: ${type.color};">${type.name}</div>
                             <div style="font-size: ${mainFontSize}; font-weight: 900; color: ${type.color}; filter: brightness(1.1);">Lv.${level}</div>
@@ -426,8 +428,14 @@ function RAnalysis(g) {
                     </div>
                 </div>
                 
-                <div style="background: rgba(255, 255, 255, 0.1); height: 12px; border-radius: 6px; overflow: hidden; box-shadow: inset 0 1px 4px rgba(0,0,0,0.3);">
-                    <div style="background: ${type.color}; height: 100%; width: ${progress}%; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);"></div>
+                <div style="position: relative; z-index: 1;">
+                    <div style="background: rgba(255, 255, 255, 0.1); height: 14px; border-radius: 7px; overflow: hidden; box-shadow: inset 0 1px 4px rgba(0,0,0,0.3); margin-bottom: 4px;">
+                        <div style="background: linear-gradient(90deg, ${type.color} 0%, white 200%); height: 100%; width: ${progress}%; transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);"></div>
+                    </div>
+                    
+                    <div style="text-align: right; font-family: 'Courier New', Courier, monospace; color: white; font-size: 14px; font-weight: bold; letter-spacing: 1px;">
+                        SCORE: <span style="font-size: 18px; color: ${type.color};">${scoreFormatted}</span> <span style="font-size: 12px; opacity: 0.6;">/ 10.0</span>
+                    </div>
                 </div>
             </div>
         `;
