@@ -367,16 +367,12 @@ function sendToTeacher() {
     N('送信処理を開始します...', 'info');
     const toHalfWidth = (str) => str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
     
-    // 1. 氏名の入力（例示：体力太郎 を追加）
     const name = prompt("氏名を入力してください", "体力太郎");
-    
-    // キャンセルされた場合、または「体力太郎」のまま、あるいは空欄の場合にブロック
     if (!name || name === "体力太郎" || name.trim() === "") { 
-        N('氏名を正しく入力してください（送信キャンセル）', 'info'); 
+        N('氏名を正しく入力してください', 'info'); 
         return; 
     }
     
-    // 2. 出席番号の入力（例示：12 を追加）
     let studentIdRaw = prompt("出席番号を入力してください（例：12）", "12");
     if (!studentIdRaw || studentIdRaw.trim() === "") { 
         N('送信をキャンセルしました', 'info'); 
@@ -388,7 +384,6 @@ function sendToTeacher() {
     
     if (!gasUrl) {
         alert("送信先URLが見つかりません。初期設定をやり直してください。");
-        N('送信エラー：URL未設定', 'error');
         return;
     }
 
@@ -403,8 +398,7 @@ function sendToTeacher() {
     }
 
     const data = {
-        name: name, 
-        studentId: studentId,
+        name: name, studentId: studentId,
         gender: document.getElementById('gender').value,
         grade: document.getElementById('grade').value,
         class: document.getElementById('class').value,
@@ -420,17 +414,27 @@ function sendToTeacher() {
         throw: document.getElementById('i8').value || ""
     };
 
-    fetch(gasUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
-    .then(() => {
-        N('送信完了しました！', 'success');
-        alert('先生のスプレッドシートへ送信が完了しました。');
+    // ★修正ポイント：mode: 'no-cors' を削除
+    fetch(gasUrl, {
+        method: 'POST',
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        // response.ok は「ちゃんと通信が成功したか」を判定します
+        if (response.ok || response.type === 'opaque') {
+            N('送信完了しました！', 'success');
+            alert('先生のスプレッドシートへ送信が完了しました。');
+        } else {
+            throw new Error('サーバーからの応答が不正です。');
+        }
     })
     .catch(err => {
         console.error("Fetch error:", err);
         N('送信失敗', 'error');
-        alert('エラー詳細：' + err);
+        alert('【重要】送信に失敗しました。URLが正しいか、GASのデプロイ設定が「全員(Anyone)」になっているか確認してください。');
     });
 }
+
 function RAnalysis(g) {
     const h = D[g].h.slice(0, 9);
     let myScores = [];
