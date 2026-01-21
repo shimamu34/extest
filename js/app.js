@@ -233,7 +233,14 @@ function U(isInitial = false) {
     const highlightEl = document.getElementById(`e${lv}${gr}`);
     if (highlightEl) highlightEl.classList.add("highlight");
 
-    if (!isInitial) SI();
+    if (!isInitial) {
+    // 読み込み中（isInitial=true）ではなく、かつ
+    // 学年・性別選択メニューにフォーカスがない時だけ保存を実行する
+    const activeEl = document.activeElement.id;
+    if (activeEl !== "gender" && activeEl !== "grade") {
+        SI();
+    }
+}
     //updateTimestamp();
     RAnalysis(g);
 
