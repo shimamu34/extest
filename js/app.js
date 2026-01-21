@@ -851,3 +851,37 @@ function closeMemoModal() {
     const m = document.getElementById("memo-modal");
     if(m) m.remove();
 }
+
+// ==========================================
+// 11. スクリーンショット機能（画像保存）
+// ==========================================
+
+/**
+ * 11-1. 記録を1枚の画像として書き出す
+ * 不要なボタンを一時的に隠し、記録カードとグラフをまとめた画像を生成します
+ */
+async function takeScreenshot() {
+    // 1. 準備：一時的に隠したい要素（ボタン類）を指定
+    const noPrintElements = document.querySelectorAll('.no-print');
+    const notification = document.getElementById('notif');
+    
+    // 2. 演出：ボタンなどを隠す
+    noPrintElements.forEach(el => el.style.opacity = '0');
+    if(notification) notification.style.display = 'none';
+    
+    // 3. 実行：ブラウザの印刷機能（PDF保存）を呼び出し、画像として扱う
+    // ※ブラウザ標準の仕組み上、最も確実で高画質な「印刷→PDF/画像」の流れを促します
+    const originalTitle = document.title;
+    const name = document.getElementById('name')?.value || "名前なし";
+    document.title = `体力テスト記録_${name}`;
+    
+    // 通知を表示
+    alert("【画像保存のアドバイス】\n\nこの後の画面で「PDFとして保存」を選ぶか、\n今のきれいな画面をスクリーンショットして保存してね！");
+
+    window.print();
+
+    // 4. 復元：隠した要素を戻す
+    noPrintElements.forEach(el => el.style.opacity = '1');
+    if(notification) notification.style.display = 'block';
+    document.title = originalTitle;
+}
