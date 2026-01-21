@@ -858,43 +858,59 @@ function closeMemoModal() {
 
 /**
  * 11-1. 画面を画像(PNG)として保存
- * ボタンなどを隠した状態で、記録とグラフを1枚の写真にします
+ * グラフとランキングを自動で開いてから撮影します
  */
 async function takeScreenshot() {
-    // 保存ボタンを一時的に無効化（連打防止）
+    // ボタンの状態を変更
     const btn = event.currentTarget;
     const originalText = btn.innerText;
     btn.innerText = "⏳ 作成中...";
     btn.disabled = true;
 
-    // 1. 画像に含めたくない要素（ボタン類）を一時的に隠す
+    // 1. 撮影前の準備：グラフとランキングを強制的に表示させる
+    const radar = document.getElementById('radar');
+    const ranking = document.getElementById('ranking');
+    const wasRadarHidden = (radar.style.display === 'none');
+    const wasRankingHidden = (ranking.style.display === 'none');
+
+    if (wasRadarHidden) radar.style.display = 'block';
+    if (wasRankingHidden) ranking.style.display = 'block';
+
+    // 2. 不要な要素（ボタン類）を一時的に隠す
     const noPrintElements = document.querySelectorAll('.no-print');
     noPrintElements.forEach(el => el.style.visibility = 'hidden');
 
     try {
-        // 2. 画面を画像に変換（html2canvasを使用）
+        // 3. 画面を画像に変換
         const canvas = await html2canvas(document.body, {
-            useCORS: true,      // 外部画像（もしあれば）を許可
-            scale: 2,           // 画質を2倍にする（きれいに保存）
-            backgroundColor: "#f7fafc" // 背景色を指定
+            useCORS: true,
+            scale: 2, // 高画質
+            backgroundColor: "#f7fafc",
+            // 撮影範囲を全コンテンツに広げる
+            windowWidth: document.documentElement.offsetWidth,
+            windowHeight: document.documentElement.scrollHeight
         });
 
-        // 3. ダウンロード用のリンクを作成
-        const name = document.getElementById('name')?.value || "名前なし";
-        const date = new Date().toLocaleDateString('ja-JP', {month:'short', day:'numeric'});
+        // 4. 保存用リンクの作成（ファイル名から「名前」を削除）
+        const now = new Date();
+        const dateStr = `${now.getMonth()+1}月${now.getDate()}日_${now.getHours()}時${now.getMinutes()}分`;
+        
         const link = document.createElement('a');
-        link.download = `体力テスト記録_${name}_${date}.png`;
+        link.download = `体力テスト記録_${dateStr}.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
 
-        alert("画像を保存しました！写真フォルダやダウンロードを確認してね。");
+        alert("画像を保存しました！\n（グラフとランキングも一緒に撮影しました）");
 
     } catch (error) {
         console.error("画像作成エラー:", error);
-        alert("ごめん！画像の作成に失敗しちゃいました。");
+        alert("エラーが発生しました。");
     } finally {
-        // 4. 隠した要素をすべて元に戻す
+        // 5. 元の状態に戻す
+        if (wasRadarHidden) radar.style.display = 'none';
+        if (wasRankingHidden) ranking.style.display = 'none';
         noPrintElements.forEach(el => el.style.visibility = 'visible');
+        
         btn.innerText = originalText;
         btn.disabled = false;
     }
