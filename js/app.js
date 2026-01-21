@@ -137,8 +137,9 @@ function RT() {
                 let v = A[g][r][j];
                 let displayVal = (j === 4) ? formatTime(v) : v;
                 if (j === 9) { 
-                    v = T[g][r];
-                    s += `<td>${v}</td>`; 
+                    let totalScore = T[g][r];   // data.js の T から数値を読み込む
+                    let totalRank = TR[g][r];    // data.js の TR からランクを読み込む
+                    s += `<td><div>${totalScore}</div><div style="font-size:0.8em;color:#666">(${totalRank})</div></td>`; 
                 } else { 
                     const sc = CS(v, x, g);
                     s += `<td><div>${displayVal}</div><div style="font-size:0.8em;color:#666">(${sc}点)</div></td>`; 
