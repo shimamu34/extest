@@ -853,58 +853,57 @@ function closeMemoModal() {
 }
 
 // ==========================================
-// 11. スクリーンショット機能（確実動作版）
+// 11. スクリーンショット機能（charts.js完全対応版）
 // ==========================================
 
-async function takeScreenshot(event) {
-    // 1. ボタンの特定（eventがなくても動くようにガードをかける）
-    const btn = (event && event.currentTarget) ? event.currentTarget : document.querySelector('button[onclick*="takeScreenshot"]');
-    const originalText = btn ? btn.innerText : "画像保存";
-    
-    if (btn) {
-        btn.innerText = "⏳ 描画中...";
-        btn.disabled = true;
+async function takeScreenshot() {
+    const btn = event.currentTarget;
+    const originalText = btn.innerText;
+    btn.innerText = "⏳ 描画中...";
+    btn.disabled = true;
+
+    // 1. 各要素を取得
+    const radar = document.getElementById('radar');
+    const ranking = document.getElementById('ranking');
+    const gender = document.getElementById("gender").value; // 性別を取得
+
+    // 現在の表示状態を保存
+    const wasRadarHidden = (radar.style.display === 'none');
+    const wasRankingHidden = (ranking.style.display === 'none');
+
+    // 2. 撮影用に強制表示（見えない位置へ飛ばす）
+    if (wasRadarHidden) {
+        radar.style.display = 'block';
+        radar.style.position = 'absolute';
+        radar.style.left = '-9999px';
+    }
+    if (wasRankingHidden) {
+        ranking.style.display = 'block';
+        ranking.style.position = 'absolute';
+        ranking.style.left = '-9999px';
     }
 
+    // 3. charts.jsの関数を直接実行して中身を描画させる ★ここを修正しました★
+    if (typeof RR === 'function') {
+        RR(gender); // レーダーチャート描画関数
+    }
+    if (typeof renderRanking === 'function') {
+        renderRanking(); // ランキング描画関数
+    }
+
+    // アニメーションが完了するまで1.2秒待つ
+    await new Promise(resolve => setTimeout(resolve, 1200));
+
+    // 4. 撮影の準備（ボタン類を消す）
+    if (wasRadarHidden) radar.style.position = 'static';
+    if (wasRankingHidden) ranking.style.position = 'static';
+    
+    const noPrintElements = document.querySelectorAll('.no-print');
+    noPrintElements.forEach(el => el.style.display = 'none');
+
+    btn.innerText = "📸 撮影中...";
+
     try {
-        // 2. 各要素と性別の取得
-        const radar = document.getElementById('radar');
-        const ranking = document.getElementById('ranking');
-        const genderEl = document.getElementById("gender");
-        const gender = genderEl ? genderEl.value : "m"; // 取得できない場合のデフォルト
-
-        // 現在の表示状態を保存
-        const wasRadarHidden = (radar.style.display === 'none' || !radar.style.display);
-        const wasRankingHidden = (ranking.style.display === 'none' || !ranking.style.display);
-
-        // 3. 撮影用に強制表示（見えない位置へ飛ばす）
-        if (wasRadarHidden) {
-            radar.style.display = 'block';
-            radar.style.position = 'absolute';
-            radar.style.left = '-9999px';
-        }
-        if (wasRankingHidden) {
-            ranking.style.display = 'block';
-            ranking.style.position = 'absolute';
-            ranking.style.left = '-9999px';
-        }
-
-        // 4. charts.jsの関数を実行して描画
-        if (typeof RR === 'function') RR(gender);
-        if (typeof renderRanking === 'function') renderRanking();
-
-        // 描画完了を待機
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // 5. 撮影直前のレイアウト調整
-        if (wasRadarHidden) radar.style.position = 'static';
-        if (wasRankingHidden) ranking.style.position = 'static';
-        
-        // 保存時に消したい要素を隠す
-        const noPrintElements = document.querySelectorAll('.no-print');
-        noPrintElements.forEach(el => el.style.display = 'none');
-
-        // 6. 撮影実行
         const canvas = await html2canvas(document.body, {
             useCORS: true,
             scale: 2,
@@ -914,7 +913,6 @@ async function takeScreenshot(event) {
             scrollTo: 0
         });
 
-        // 7. ダウンロード処理
         const now = new Date();
         const dateStr = `${now.getMonth()+1}月${now.getDate()}日_${now.getHours()}時${now.getMinutes()}分`;
         const link = document.createElement('a');
@@ -924,31 +922,21 @@ async function takeScreenshot(event) {
 
     } catch (error) {
         console.error("画像作成エラー:", error);
-        alert("エラーが発生しました。詳細はコンソールを確認してください。");
+        alert("エラーが発生しました。");
     } finally {
-        // 8. 完全に元の状態に復元
-        const radar = document.getElementById('radar');
-        const ranking = document.getElementById('ranking');
-        
-        // 保存時のフラグではなく、現在の状態で判断して戻す
-        // HTMLの onclick="toggleRadar()" 等の挙動と合わせるため display をリセット
-        if (radar) {
-            radar.style.position = '';
-            radar.style.left = '';
-        }
-        if (ranking) {
-            ranking.style.position = '';
-            ranking.style.left = '';
-        }
+        // 5. 元の状態に復元（ここが重要です！）
+        if (wasRadarHidden) radar.style.display = 'none';
+        if (wasRankingHidden) ranking.style.display = 'none';
 
+        // 特定のスタイル（inline-blockなど）を指定せず、
+        // 空文字 "" を入れることでCSSで定義された元の状態に戻します
         const noPrintElements = document.querySelectorAll('.no-print');
         noPrintElements.forEach(el => {
-            el.style.display = ""; // CSSの設定に戻す
+            el.style.display = ""; 
+            el.style.visibility = "visible";
         });
         
-        if (btn) {
-            btn.innerText = originalText;
-            btn.disabled = false;
-        }
+        btn.innerText = originalText;
+        btn.disabled = false;
     }
 }
