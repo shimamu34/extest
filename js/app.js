@@ -670,3 +670,110 @@ function preparePrint() {
         radarArea.style.display = originalDisplay;
     }, 300);
 }
+
+// ==========================================
+// 9. バックアップ機能（保存・復元）
+// ==========================================
+
+/**
+ * 9-1. バックアップ画面（モーダル）を表示
+ * 初回設定と同じスタイルで中学生向けの案内を表示します
+ */
+function showBackupModal() {
+    const modal = document.createElement('div');
+    modal.id = "backup-modal";
+    // 背景を暗くするオーバーレイ
+    modal.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:3000;display:flex;align-items:center;justify-content:center;";
+    
+    modal.innerHTML = `
+        <div style="max-width:450px; width:90%; background:white; border-radius:20px; padding:30px; box-shadow:0 20px 60px rgba(0,0,0,0.3); position:relative;">
+            <h2 style="color: #2b6cb0; text-align: center; margin-top:0;">📲 データ保存と復元</h2>
+            
+            <div style="text-align:left; font-size:14px; background:#f0f7ff; padding:15px; border-radius:12px; margin-bottom:20px; line-height:1.6; border-left:5px solid #2b6cb0;">
+                <strong>【つかいかた】</strong><br>
+                ① <strong>保存</strong>：今の全ての学年の記録を「ファイル」にしてスマホの中に守ります。<br>
+                ② <strong>復元</strong>：保存したファイルを選んで、記録を元通りに直します。<br>
+                <span style="font-size:12px; color:#666;">※機種変した時や、データが消えた時に便利だよ！</span>
+            </div>
+
+            <div style="display:flex; justify-content:center; gap:15px; margin-bottom:20px;">
+                <button onclick="downloadBackupFile()" style="flex:1; padding:20px 10px; border-radius:15px; border:2px solid #e2e8f0; background:#fff; cursor:pointer; transition:0.2s;" onmouseover="this.style.background='#f7fafc'" onmouseout="this.style.background='#fff'">
+                    <div style="font-size:30px; margin-bottom:8px;">💾</div>
+                    <strong style="color:#2d3748;">ファイルに<br>保存する</strong>
+                </button>
+                
+                <button onclick="document.getElementById('backupFileInput').click()" style="flex:1; padding:20px 10px; border-radius:15px; border:2px solid #e2e8f0; background:#fff; cursor:pointer; transition:0.2s;" onmouseover="this.style.background='#f7fafc'" onmouseout="this.style.background='#fff'">
+                    <div style="font-size:30px; margin-bottom:8px;">📤</div>
+                    <strong style="color:#2d3748;">ファイルから<br>復元する</strong>
+                </button>
+            </div>
+            
+            <input type="file" id="backupFileInput" style="display:none" onchange="uploadBackupFile(event)" accept=".txt">
+            
+            <div style="text-align:center;">
+                <button onclick="closeBackupModal()" style="background:none; border:none; color:#666; cursor:pointer; text-decoration:underline; font-size:14px;">とじる</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+/**
+ * 9-2. モーダルを閉じる
+ */
+function closeBackupModal() {
+    const m = document.getElementById("backup-modal");
+    if(m) m.remove();
+}
+
+/**
+ * 9-3. ファイルのダウンロード（書き出し）
+ * localStorageの全データを1つのテキストファイルにまとめます
+ */
+function downloadBackupFile() {
+    const allData = JSON.stringify(localStorage);
+    const blob = new Blob([allData], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    
+    // 日付をファイル名に含める
+    const now = new Date();
+    const dateStr = `${now.getMonth()+1}月${now.getDate()}日_${now.getHours()}時${now.getMinutes()}分`;
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `体力テストバックアップ_${dateStr}.txt`;
+    a.click();
+    
+    URL.revokeObjectURL(url);
+    alert("ファイルを保存しました！\n「ダウンロード」フォルダを確認してね。");
+}
+
+/**
+ * 9-4. ファイルの読み込み（復元）
+ * 選択されたファイルからデータを読み込み、localStorageを更新します
+ */
+function uploadBackupFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            
+            // 安全のための確認
+            if(!confirm("今入力されているデータはすべて消えて、ファイルの内容に置き換わります。いいですか？")) return;
+
+            localStorage.clear();
+            for (let key in importedData) {
+                localStorage.setItem(key, importedData[key]);
+            }
+            
+            alert("復元が完了しました！ページを新しくします。");
+            location.reload(); 
+        } catch (err) {
+            alert("エラー：選んだファイルが正しくないようです。");
+        }
+    };
+    reader.readAsText(file);
+}
