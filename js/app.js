@@ -116,7 +116,11 @@ function RT() {
     h.forEach(x => s += `<th>${x}</th>`);
     s += '</tr>';
     ["記録", "帯広市", "北海道", "全国"].forEach(r => {
-        s += '<tr><td>' + r + '</td>';
+        let label = r;
+        if (r === "北海道" || r === "全国") {
+            label = `<div>${r}</div><div style="font-size:0.8em; color:#666; font-weight:normal;">(R7)</div>`;
+        }
+        s += '<tr><td>' + label + '</td>';
         h.forEach((x, j) => {
             if (r === "記録") {
                 if (j === 4) { 
