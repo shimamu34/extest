@@ -234,7 +234,7 @@ function U(isInitial = false) {
     if (highlightEl) highlightEl.classList.add("highlight");
 
     if (!isInitial) SI();
-    updateTimestamp();
+    //updateTimestamp();
     RAnalysis(g);
 
     if (typeof RR === 'function') {
@@ -248,6 +248,24 @@ function U(isInitial = false) {
         const ra = document.getElementById("ranking");
         if (ra && ra.style.display !== "none") renderRanking();
     }
+}
+
+function renderTimestampToArea(tsString) {
+    const tsArea = document.getElementById("table-timestamp");
+    if (!tsArea) return;
+    
+    if (!tsString) {
+        tsArea.innerHTML = "";
+        return;
+    }
+
+    // "2024.05.20 12:30:15" 形式を分割して表示
+    const parts = tsString.split(" ");
+    const datePart = parts[0];
+    const timePart = parts[1];
+
+    tsArea.style = `position: absolute; right: 0; bottom: 100%; margin-bottom: 4px; text-align: right; font-size: 13px; color: #2b6cb0; background: transparent; padding: 0px 2px; font-family: monospace; line-height: 1.2; font-weight: bold; white-space: nowrap; z-index: 10;`;
+    tsArea.innerHTML = `<div>${datePart}</div><div>${timePart}</div>`;
 }
 
 // ==========================================
@@ -264,11 +282,17 @@ function SI() {
     const now = new Date();
     const f = (n) => n.toString().padStart(2, '0');
     const ts = `${now.getFullYear()}.${f(now.getMonth() + 1)}.${f(now.getDate())} ${f(now.getHours())}:${f(now.getMinutes())}:${f(now.getSeconds())}`;
+    
     let allData = JSON.parse(localStorage.getItem(key) || "{}");
-    allData[gr] = { v: v, ts: ts };
+    allData[gr] = { v: v, ts: ts }; // 時刻(ts)をデータに含めて保存
     localStorage.setItem(key, JSON.stringify(allData));
+
+    // 保存した瞬間の時刻を「最終保存」と「カード右端(updateTimestampの場所)」の両方に反映
     const tsElement = document.getElementById("lastSaved");
     if (tsElement) tsElement.innerText = "最終保存: " + ts;
+    
+    // カード右端の青い時刻表示も保存した時刻で更新する
+    renderTimestampToArea(ts); 
 }
 
 function L() {
@@ -276,13 +300,19 @@ function L() {
     const gr = document.getElementById("grade").value;
     const allData = JSON.parse(localStorage.getItem("y-" + g) || '{}');
     const data = allData[gr];
+
+    // 入力欄を一度すべてリセット
     document.querySelectorAll(".v-in").forEach(input => { input.value = ""; });
     if (document.getElementById("i4")) document.getElementById("i4").value = "";
     if (document.getElementById("i4_min")) document.getElementById("i4_min").value = "";
     if (document.getElementById("i4_sec")) document.getElementById("i4_sec").value = "";
+
+    const tsElement = document.getElementById("lastSaved");
+
     if (data) {
         let values = Array.isArray(data) ? data : (data.v || []);
-        let timestamp = data.ts || "";
+        let timestamp = data.ts || ""; // ★保存されていた「時刻文字列」を取得
+
         values.forEach((val, i) => {
             const input = document.getElementById(`i${i}`);
             if (input) input.value = val;
@@ -293,12 +323,16 @@ function L() {
                 if (document.getElementById("i4_sec")) document.getElementById("i4_sec").value = s;
             }
         });
-        const tsElement = document.getElementById("lastSaved");
+
         if (tsElement) tsElement.innerText = timestamp ? "最終保存: " + timestamp : "";
+        
+        renderTimestampToArea(timestamp); 
+
     } else {
-        const tsElement = document.getElementById("lastSaved");
         if (tsElement) tsElement.innerText = "";
+        renderTimestampToArea(""); 
     }
+
     U(true);
 }
 
