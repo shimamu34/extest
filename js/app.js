@@ -381,30 +381,34 @@ function RAnalysis(g) {
         document.getElementById("totalRank").innerHTML = '';
         return;
     }
+
+    // 種目インデックス：0握力, 1上体, 2長座, 3反復, 4持久走, 5シャトル, 6:50m, 7立幅, 8ハンド
     const calcAvg = (indices) => {
         const validScores = indices.map(i => myScores[i]).filter(s => s > 0);
         return validScores.length > 0 ? validScores.reduce((sum, s) => sum + s, 0) / validScores.length : 0;
     };
-    // 各型の構成種目名を定義
+
+    // 型の名称と構成種目テキスト（最新版）
     const typeDetails = {
-        'パワー型': '(握力・上体・立幅・ハンド)',
-        '持久力型': '(持久走/シ・上体)',
-        '敏捷性型': '(反復・50m・ハンド)',
-        '柔軟性型': '(長座・上体)'
+        'パワー型': '(50m・立幅・ハンド・握力)',
+        'テクニック型': '(50m・反復・ハンド)',
+        'スタミナ型': '(持久走/シ・上体)',
+        'コンディション型': '(長座体屈・上体・反復)'
     };
 
+    // 構成種目のインデックス連動
     const types = [
-        { name: 'パワー型', emoji: '💪', avg: calcAvg([0, 1, 7, 8]), color: '#f5576c' },
-        { name: '持久力型', emoji: '🏃', avg: (Math.max(myScores[4], myScores[5]) + myScores[1]) / 2, color: '#00f2fe' },
-        { name: '敏捷性型', emoji: '⚡', avg: calcAvg([3, 6, 8]), color: '#ff9a00' }, // 視認性の良いオレンジ
-        { name: '柔軟性型', emoji: '🤸', avg: calcAvg([2, 1]), color: '#fee140' }
+        { name: 'パワー型', emoji: '💪', avg: calcAvg([6, 7, 8, 0]), color: '#f5576c' }, // 50m, 立幅, ハンド, 握力
+        { name: 'テクニック型', emoji: '⚡', avg: calcAvg([6, 3, 8]), color: '#ff9a00' }, // 50m, 反復, ハンド
+        { name: 'スタミナ型', emoji: '🔋', avg: (Math.max(myScores[4], myScores[5]) + myScores[1]) / 2, color: '#00f2fe' }, // 持久/シ, 上体
+        { name: 'コンディション型', emoji: '🧘', avg: calcAvg([2, 1, 3]), color: '#fee140' } // 長座, 上体, 反復
     ];
 
     let pokedexHtml = '';
     types.forEach(type => {
         const level = Math.floor(type.avg);
         const progress = (type.avg / 10) * 100;
-        const scoreFormatted = type.avg.toFixed(1); // 小数点1桁まで表示
+        const scoreFormatted = type.avg.toFixed(1);
         
         const mainFontSize = "22px"; 
         const detailFontSize = "16px";
@@ -414,7 +418,6 @@ function RAnalysis(g) {
                 <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: ${type.color}; filter: blur(40px); opacity: 0.3; z-index: 0;"></div>
 
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; position: relative; z-index: 1;">
-                    
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <span style="font-size: 26px; line-height: 1;">${type.emoji}</span>
                         <div style="text-align: left; line-height: 1.1; text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">
