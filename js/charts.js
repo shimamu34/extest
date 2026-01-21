@@ -527,7 +527,7 @@ function renderRanking() {
                 const s = Math.floor(val % 60);
                 displayValue = `${m}'${s < 10 ? '0' + s : s}"`;
             } else if (name.includes("50m")) { displayValue = `${val}秒`; }
-            else if (name.includes("ハンド") || name.includes("幅跳び")) { displayValue = `${val}m`; }
+            else if (name.includes("ハンド") || name.includes("幅跳び")) { displayValue = `${val}cm`; }
             else if (name.includes("握力")) { displayValue = `${val}kg`; }
             else { displayValue = `${val}回`; }
         }
