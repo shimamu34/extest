@@ -474,8 +474,8 @@ function setGoal(goalType) {
     }
 
     const currentTotal = scoresForTotal[0] + scoresForTotal[1] + scoresForTotal[2] + scoresForTotal[3] + 
-                       Math.max(scoresForTotal[4], scoresForTotal[5]) + 
-                       scoresForTotal[6] + scoresForTotal[7] + scoresForTotal[8];
+                         Math.max(scoresForTotal[4], scoresForTotal[5]) + 
+                         scoresForTotal[6] + scoresForTotal[7] + scoresForTotal[8];
 
     let targetScore = 0;
     let rankName = goalType.replace('rank', '');
@@ -501,57 +501,56 @@ function setGoal(goalType) {
 
         let simData = JSON.parse(JSON.stringify(currentData)); 
         let simTotal = currentTotal;
-        let simulationResults = [];
-        let safetyLoop = 0;
+        let finalResults = {}; // 種目ごとの最終目標を保持
+        let tempNeeded = pointsNeeded;
 
-        while (simTotal < targetScore && safetyLoop < 100) {
-            let bestStep = null;
-            for (let i = 0; i < 9; i++) {
-                if (simData[i].score >= 10) continue;
-                if (i === 4 && currentData[5].score > currentData[4].score) continue;
-                if (i === 5 && currentData[4].score > currentData[5].score) continue;
+        // 【修正ポイント】スコアの低い順にソートして、複数種目に1〜2点ずつ分散させる
+        let sortedIndices = simData
+            .map((d, i) => ({ idx: i, score: d.score }))
+            .sort((a, b) => a.score - b.score);
 
-                let step = 1; 
-                if (simData[i].name.includes("50m")) step = -0.01;
-                else if (simData[i].name.includes("持久")) step = -1;
-                else if (simData[i].name.includes("ハンド") || simData[i].name.includes("幅跳び") || simData[i].name.includes("握力") || simData[i].name.includes("長座")) step = 0.1;
+        // 最大2周（各項目最大+2点まで）分散させて配分
+        for (let round = 0; round < 2; round++) {
+            for (let item of sortedIndices) {
+                if (tempNeeded <= 0) break;
+                let i = item.idx;
+                
+                // 満点未満、かつ持久走/シャトルの排他制御を考慮
+                if (simData[i].score < 10) {
+                    if (i === 4 && simData[5].score > simData[4].score) continue;
+                    if (i === 5 && simData[4].score > simData[5].score) continue;
 
-                let testVal = simData[i].val;
-                if (!testVal || testVal === 0) {
-                    if (simData[i].name.includes("50m")) testVal = 10.0;
-                    else if (simData[i].name.includes("持久")) testVal = 600;
-                    else if (simData[i].name.includes("幅跳び")) testVal = 100; 
-                }
+                    // 1点アップさせるための数値を計算
+                    let step = (simData[i].name.includes("50m") || simData[i].name.includes("持久")) ? -0.01 : 0.01;
+                    if (simData[i].name.includes("持久")) step = -1;
+                    
+                    let testVal = simData[i].val || (simData[i].name.includes("50m") ? 10.0 : simData[i].name.includes("持久") ? 600 : 0);
+                    let nextVal = testVal;
+                    let startScore = simData[i].score;
+                    
+                    while (CS(nextVal, simData[i].name, g) <= startScore && nextVal > 0 && nextVal < 2000) {
+                        nextVal = Math.round((nextVal + step) * 100) / 100;
+                    }
 
-                let startScore = simData[i].score;
-                let currentTestVal = testVal;
-                let innerSafety = 0;
-                while (CS(currentTestVal, simData[i].name, g) <= startScore && innerSafety < 1000) {
-                    currentTestVal += step;
-                    currentTestVal = Math.round(currentTestVal * 100) / 100;
-                    innerSafety++;
-                }
+                    simData[i].score += 1;
+                    simData[i].val = nextVal;
+                    tempNeeded -= 1;
 
-                let gapFromCurrent = Math.abs(Math.round((currentTestVal - currentData[i].val) * 100) / 100);
-                if (!bestStep || gapFromCurrent < bestStep.totalGap) {
-                    bestStep = { idx: i, name: simData[i].name, startScore: currentData[i].score, nextVal: currentTestVal, totalGap: gapFromCurrent, targetScore: startScore + 1 };
+                    // 結果を保存（上書きしていくことで最終的な目標値を保持）
+                    finalResults[simData[i].name] = {
+                        name: simData[i].name,
+                        startScore: currentData[i].score,
+                        targetScore: simData[i].score,
+                        nextVal: nextVal,
+                        totalGap: Math.abs(Math.round((nextVal - currentData[i].val) * 100) / 100)
+                    };
                 }
             }
-            if (bestStep) {
-                simData[bestStep.idx].score += 1;
-                simData[bestStep.idx].val = bestStep.nextVal;
-                simTotal += 1; 
-                simulationResults.push(bestStep);
-            }
-            safetyLoop++;
         }
 
-        let finalHips = {};
-        simulationResults.forEach(res => { finalHips[res.name] = res; });
-
-        Object.values(finalHips).forEach(res => {
+        // 表示処理（ロジックは上記で確定、あとは表示のみ）
+        Object.values(finalResults).forEach(res => {
             let unit = res.name.includes("50m") ? "秒" : (res.name.includes("ハンド")) ? "m" : (res.name.includes("幅跳び") || res.name.includes("長座")) ? "cm" : res.name.includes("握力") ? "kg" : "回";
-            
             let displayGap = res.totalGap;
             let displayTarget = res.nextVal;
             let suffixUnit = unit;
@@ -560,22 +559,17 @@ function setGoal(goalType) {
                 const m = Math.floor(res.nextVal / 60);
                 const s = Math.round(res.nextVal % 60);
                 displayTarget = `${m}分${s.toString().padStart(2, '0')}`;
-                unit = "秒";
-                suffixUnit = "";
+                unit = "秒"; suffixUnit = "";
             }
 
             const diffColor = res.targetScore >= 8 ? '#f44336' : res.targetScore >= 5 ? '#FF9800' : '#2196f3';
             
             html += `
             <div style="background:#f9f9f9; padding:18px 12px; border-radius:8px; border-top:8px solid ${diffColor}; width:calc(33.33% - 10px); min-width:260px; box-sizing:border-box; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:10px;">
-                <div style="font-weight:bold; font-size:22px; color:#333; margin-bottom:10px; border-left:4px solid ${diffColor}; background:#eee; padding:2px 12px; display:inline-block; border-radius:0 4px 4px 0;">
-                  ${res.name}
-                </div>
-                
+                <div style="font-weight:bold; font-size:22px; color:#333; margin-bottom:10px; border-left:4px solid ${diffColor}; background:#eee; padding:2px 12px; display:inline-block; border-radius:0 4px 4px 0;">${res.name}</div>
                 <div style="font-size:15px; color:#555; margin-bottom:12px; background:#eee; display:inline-block; padding:2px 10px; border-radius:15px;">
                     現在 <span style="font-weight:bold;">${res.startScore}点</span> → 目標 <span style="font-weight:bold; color:#555;">${res.targetScore}点</span>
                 </div>
-                
                 <div style="display:flex; align-items:baseline; justify-content:center; gap:8px;">
                     <div style="font-weight:900; font-size:22px; color:${diffColor}; white-space:nowrap;">あと ${displayGap}${unit}</div>
                     <div style="color:#444; font-size:17px; font-weight:bold; white-space:nowrap;">（目標: ${displayTarget}${suffixUnit}）</div>
@@ -583,18 +577,15 @@ function setGoal(goalType) {
             </div>`;
         });
         
-        html += '</div>'; // Flexコンテナ終了
+        html += '</div>';
         html += `<div style="margin-top: 20px;padding: 18px;background: #f3e5f5;color: #7b1fa2;border-radius: 8px;text-align: center;font-size: 20px; font-weight: 900;box-shadow: 0 2px 10px rgba(123, 31, 162, 0.1);">✨ これをクリアすれば${rankName}判定です！</div>`;
     } else {
         html += '<div style="padding:20px;background:linear-gradient(135deg,#4CAF50,#66BB6A);color:white;border-radius:8px;text-align:center;font-size:18px">🎉 すでに目標達成しています！</div>';
     }
     
-    html += '</div>'; // メインカード終了
-
-    // --- ガイドを消して描画する処理 ---
+    html += '</div>';
     const guide = document.getElementById("guide");
     if (guide) guide.style.display = "none";
-    
     document.getElementById("goalSimulator").innerHTML = html;
     document.getElementById("goalSimulator").scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
