@@ -853,21 +853,16 @@ function closeMemoModal() {
 }
 
 // ==========================================
-// 11. スクリーンショット機能（画像保存）
+// 11. スクリーンショット機能（画像保存）修正版
 // ==========================================
 
-/**
- * 11-1. 画面を画像(PNG)として保存
- * グラフとランキングを自動で開いてから撮影します
- */
 async function takeScreenshot() {
-    // ボタンの状態を変更
     const btn = event.currentTarget;
     const originalText = btn.innerText;
-    btn.innerText = "⏳ 作成中...";
+    btn.innerText = "⏳ 描画中...";
     btn.disabled = true;
 
-    // 1. 撮影前の準備：グラフとランキングを強制的に表示させる
+    // 1. グラフとランキングを強制表示
     const radar = document.getElementById('radar');
     const ranking = document.getElementById('ranking');
     const wasRadarHidden = (radar.style.display === 'none');
@@ -876,37 +871,47 @@ async function takeScreenshot() {
     if (wasRadarHidden) radar.style.display = 'block';
     if (wasRankingHidden) ranking.style.display = 'block';
 
-    // 2. 不要な要素（ボタン類）を一時的に隠す
+    // 🔴 重要：描画を待つ（500ミリ秒）
+    // これを入れないと、グラフが真っ白のまま撮影されてしまいます
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // 2. 不要な要素を隠す
     const noPrintElements = document.querySelectorAll('.no-print');
     noPrintElements.forEach(el => el.style.visibility = 'hidden');
 
+    btn.innerText = "📸 撮影中...";
+
     try {
-        // 3. 画面を画像に変換
         const canvas = await html2canvas(document.body, {
             useCORS: true,
-            scale: 2, // 高画質
+            scale: 2,
             backgroundColor: "#f7fafc",
-            // 撮影範囲を全コンテンツに広げる
             windowWidth: document.documentElement.offsetWidth,
-            windowHeight: document.documentElement.scrollHeight
+            windowHeight: document.documentElement.scrollHeight,
+            // グラフの描画を待つための設定を念のため追加
+            logging: false,
+            onclone: (clonedDoc) => {
+                // 複製された画面でもボタン類が消えていることを確実にする
+                const clonedNoPrints = clonedDoc.querySelectorAll('.no-print');
+                clonedNoPrints.forEach(el => el.style.display = 'none');
+            }
         });
 
-        // 4. 保存用リンクの作成（ファイル名から「名前」を削除）
+        // 3. 保存
         const now = new Date();
         const dateStr = `${now.getMonth()+1}月${now.getDate()}日_${now.getHours()}時${now.getMinutes()}分`;
-        
         const link = document.createElement('a');
         link.download = `体力テスト記録_${dateStr}.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
 
-        alert("画像を保存しました！\n（グラフとランキングも一緒に撮影しました）");
+        alert("画像を保存しました！");
 
     } catch (error) {
         console.error("画像作成エラー:", error);
         alert("エラーが発生しました。");
     } finally {
-        // 5. 元の状態に戻す
+        // 4. 元の状態に戻す
         if (wasRadarHidden) radar.style.display = 'none';
         if (wasRankingHidden) ranking.style.display = 'none';
         noPrintElements.forEach(el => el.style.visibility = 'visible');
