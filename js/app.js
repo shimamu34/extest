@@ -853,32 +853,102 @@ function closeMemoModal() {
 }
 
 // ==========================================
-// 11. スクリーンショット機能（レイアウト崩れ防止版）
+// 11. スクリーンショット機能（確実動作版）
 // ==========================================
 
-async function takeScreenshot() {
-    // ... (前段の処理は同じ) ...
+async function takeScreenshot(event) {
+    // 1. ボタンの特定（eventがなくても動くようにガードをかける）
+    const btn = (event && event.currentTarget) ? event.currentTarget : document.querySelector('button[onclick*="takeScreenshot"]');
+    const originalText = btn ? btn.innerText : "画像保存";
+    
+    if (btn) {
+        btn.innerText = "⏳ 描画中...";
+        btn.disabled = true;
+    }
 
     try {
-        // ... (html2canvasの撮影処理は同じ) ...
+        // 2. 各要素と性別の取得
+        const radar = document.getElementById('radar');
+        const ranking = document.getElementById('ranking');
+        const genderEl = document.getElementById("gender");
+        const gender = genderEl ? genderEl.value : "m"; // 取得できない場合のデフォルト
+
+        // 現在の表示状態を保存
+        const wasRadarHidden = (radar.style.display === 'none' || !radar.style.display);
+        const wasRankingHidden = (ranking.style.display === 'none' || !ranking.style.display);
+
+        // 3. 撮影用に強制表示（見えない位置へ飛ばす）
+        if (wasRadarHidden) {
+            radar.style.display = 'block';
+            radar.style.position = 'absolute';
+            radar.style.left = '-9999px';
+        }
+        if (wasRankingHidden) {
+            ranking.style.display = 'block';
+            ranking.style.position = 'absolute';
+            ranking.style.left = '-9999px';
+        }
+
+        // 4. charts.jsの関数を実行して描画
+        if (typeof RR === 'function') RR(gender);
+        if (typeof renderRanking === 'function') renderRanking();
+
+        // 描画完了を待機
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // 5. 撮影直前のレイアウト調整
+        if (wasRadarHidden) radar.style.position = 'static';
+        if (wasRankingHidden) ranking.style.position = 'static';
+        
+        // 保存時に消したい要素を隠す
+        const noPrintElements = document.querySelectorAll('.no-print');
+        noPrintElements.forEach(el => el.style.display = 'none');
+
+        // 6. 撮影実行
+        const canvas = await html2canvas(document.body, {
+            useCORS: true,
+            scale: 2,
+            backgroundColor: "#f7fafc",
+            height: document.documentElement.scrollHeight,
+            windowHeight: document.documentElement.scrollHeight,
+            scrollTo: 0
+        });
+
+        // 7. ダウンロード処理
+        const now = new Date();
+        const dateStr = `${now.getMonth()+1}月${now.getDate()}日_${now.getHours()}時${now.getMinutes()}分`;
+        const link = document.createElement('a');
+        link.download = `体力テスト記録_${dateStr}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
 
     } catch (error) {
         console.error("画像作成エラー:", error);
-        alert("エラーが発生しました。");
+        alert("エラーが発生しました。詳細はコンソールを確認してください。");
     } finally {
-        // 5. 元の状態に復元（ここが重要です！）
-        if (wasRadarHidden) radar.style.display = 'none';
-        if (wasRankingHidden) ranking.style.display = 'none';
+        // 8. 完全に元の状態に復元
+        const radar = document.getElementById('radar');
+        const ranking = document.getElementById('ranking');
+        
+        // 保存時のフラグではなく、現在の状態で判断して戻す
+        // HTMLの onclick="toggleRadar()" 等の挙動と合わせるため display をリセット
+        if (radar) {
+            radar.style.position = '';
+            radar.style.left = '';
+        }
+        if (ranking) {
+            ranking.style.position = '';
+            ranking.style.left = '';
+        }
 
-        // 特定のスタイル（inline-blockなど）を指定せず、
-        // 空文字 "" を入れることでCSSで定義された元の状態に戻します
         const noPrintElements = document.querySelectorAll('.no-print');
         noPrintElements.forEach(el => {
-            el.style.display = ""; 
-            el.style.visibility = "visible";
+            el.style.display = ""; // CSSの設定に戻す
         });
         
-        btn.innerText = originalText;
-        btn.disabled = false;
+        if (btn) {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
     }
 }
