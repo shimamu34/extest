@@ -772,3 +772,82 @@ function uploadBackupFile(event) {
     };
     reader.readAsText(file);
 }
+
+// ==========================================
+// 10. 種目別メモ機能
+// ==========================================
+
+/**
+ * 10-1. 種目別メモ画面（モーダル）を表示
+ */
+function showMemoModal() {
+    const grade = document.getElementById("grade").value;
+    const gender = document.getElementById("gender").value;
+    const storageKey = `memo_v2_${gender}_${grade}`;
+    
+    // 保存されているデータを取得（なければ空のオブジェクト）
+    const savedMemos = JSON.parse(localStorage.getItem(storageKey) || "{}");
+
+    // 種目リスト（data.jsの定義に合わせる）
+    const events = ["握力", "上体起こし", "長座体前屈", "反復横とび", "持久走", "20mシャトルラン", "50m走", "立ち幅跳び", "ハンドボール投げ"];
+
+    const modal = document.createElement('div');
+    modal.id = "memo-modal";
+    modal.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:3000;display:flex;align-items:center;justify-content:center;";
+    
+    // 種目ごとの入力欄を作成
+    let memoRows = "";
+    events.forEach((event, index) => {
+        const val = savedMemos[index] || "";
+        memoRows += `
+            <div style="margin-bottom:12px; display:flex; align-items:center; gap:10px;">
+                <label style="width:120px; font-weight:bold; font-size:14px; color:#2d3748;">${event}</label>
+                <input type="text" id="memo_input_${index}" value="${val}" placeholder="一言メモ（例：体調、気づいたこと）" 
+                    style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #e2e8f0; font-size:14px;">
+            </div>
+        `;
+    });
+
+    modal.innerHTML = `
+        <div style="max-width:550px; width:95%; background:white; border-radius:20px; padding:30px; box-shadow:0 20px 60px rgba(0,0,0,0.3); max-height:85vh; overflow-y:auto;">
+            <h2 style="color: #2b6cb0; text-align: center; margin-top:0; font-size:22px;">📝 中${grade} 種目別メモ (${gender})</h2>
+            
+            <div style="margin: 20px 0;">
+                ${memoRows}
+                <div style="margin-top:20px;">
+                    <label style="display:block; font-weight:bold; margin-bottom:5px; font-size:14px;">🌟 全体の振り返り・目標</label>
+                    <textarea id="memo_input_total" style="width:100%; height:80px; padding:10px; border-radius:8px; border:1px solid #e2e8f0; resize:none; box-sizing:border-box;">${savedMemos['total'] || ""}</textarea>
+                </div>
+            </div>
+            
+            <div style="display:flex; gap:15px; position:sticky; bottom:0; background:white; padding-top:10px;">
+                <button onclick="saveEventMemos('${storageKey}')" style="flex:1; padding:15px; background:#2b6cb0; color:white; border:none; border-radius:12px; font-weight:bold; cursor:pointer; font-size:16px;">保存する</button>
+                <button onclick="closeMemoModal()" style="flex:1; padding:15px; background:#edf2f7; color:#4a5568; border:none; border-radius:12px; font-weight:bold; cursor:pointer; font-size:16px;">とじる</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+/**
+ * 10-2. 種目別メモを保存
+ */
+function saveEventMemos(key) {
+    const data = {};
+    for (let i = 0; i < 9; i++) {
+        data[i] = document.getElementById(`memo_input_${i}`).value;
+    }
+    data['total'] = document.getElementById('memo_input_total').value;
+
+    localStorage.setItem(key, JSON.stringify(data));
+    alert("メモを保存しました。");
+    closeMemoModal();
+}
+
+/**
+ * 10-3. モーダルを閉じる
+ */
+function closeMemoModal() {
+    const m = document.getElementById("memo-modal");
+    if(m) m.remove();
+}
