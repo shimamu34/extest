@@ -366,18 +366,34 @@ function updateTimestamp() {
 function sendToTeacher() {
     N('送信処理を開始します...', 'info');
     const toHalfWidth = (str) => str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
-    const name = prompt("氏名を入力してください");
-    if (!name) { N('送信をキャンセルしました', 'info'); return; }
-    let studentIdRaw = prompt("出席番号を入力してください（例：12）");
-    if (!studentIdRaw) { N('送信をキャンセルしました', 'info'); return; }
+    
+    // 1. 氏名の入力（例示：体力太郎 を追加）
+    const name = prompt("氏名を入力してください", "体力太郎");
+    
+    // キャンセルされた場合、または「体力太郎」のまま、あるいは空欄の場合にブロック
+    if (!name || name === "体力太郎" || name.trim() === "") { 
+        N('氏名を正しく入力してください（送信キャンセル）', 'info'); 
+        return; 
+    }
+    
+    // 2. 出席番号の入力（例示：12 を追加）
+    let studentIdRaw = prompt("出席番号を入力してください（例：12）", "12");
+    if (!studentIdRaw || studentIdRaw.trim() === "") { 
+        N('送信をキャンセルしました', 'info'); 
+        return; 
+    }
+    
     const studentId = toHalfWidth(studentIdRaw);
     const gasUrl = localStorage.getItem('gasUrl') || localStorage.getItem('teacherScriptUrl');
+    
     if (!gasUrl) {
         alert("送信先URLが見つかりません。初期設定をやり直してください。");
         N('送信エラー：URL未設定', 'error');
         return;
     }
+
     N('送信中...', 'info');
+    
     let enduranceVal = document.getElementById('i4').value || "";
     if (enduranceVal !== "") {
         const totalSec = parseInt(enduranceVal);
@@ -385,8 +401,10 @@ function sendToTeacher() {
         const s = totalSec % 60;
         enduranceVal = `${m}:${s.toString().padStart(2, '0')}`;
     }
+
     const data = {
-        name: name, studentId: studentId,
+        name: name, 
+        studentId: studentId,
         gender: document.getElementById('gender').value,
         grade: document.getElementById('grade').value,
         class: document.getElementById('class').value,
@@ -401,6 +419,7 @@ function sendToTeacher() {
         jump: document.getElementById('i7').value || "",
         throw: document.getElementById('i8').value || ""
     };
+
     fetch(gasUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
     .then(() => {
         N('送信完了しました！', 'success');
@@ -412,7 +431,6 @@ function sendToTeacher() {
         alert('エラー詳細：' + err);
     });
 }
-
 function RAnalysis(g) {
     const h = D[g].h.slice(0, 9);
     let myScores = [];
