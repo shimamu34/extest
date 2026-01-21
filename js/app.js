@@ -853,7 +853,7 @@ function closeMemoModal() {
 }
 
 // ==========================================
-// 11. スクリーンショット機能（画像保存）修正版
+// 11. スクリーンショット機能（完全版）
 // ==========================================
 
 async function takeScreenshot() {
@@ -862,20 +862,27 @@ async function takeScreenshot() {
     btn.innerText = "⏳ 描画中...";
     btn.disabled = true;
 
-    // 1. グラフとランキングを強制表示
+    // 1. 各要素を取得
     const radar = document.getElementById('radar');
     const ranking = document.getElementById('ranking');
+    
+    // 現在の表示状態を記録
     const wasRadarHidden = (radar.style.display === 'none');
     const wasRankingHidden = (ranking.style.display === 'none');
 
-    if (wasRadarHidden) radar.style.display = 'block';
-    if (wasRankingHidden) ranking.style.display = 'block';
+    // 2. 強制的に表示し、中身を描画させる
+    radar.style.display = 'block';
+    ranking.style.display = 'block';
 
-    // 🔴 重要：描画を待つ（500ミリ秒）
-    // これを入れないと、グラフが真っ白のまま撮影されてしまいます
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // ★重要：既存の描画関数を呼び出す（関数名は実際のjsに合わせて適宜調整してください）
+    if (typeof updateRadar === 'function') updateRadar(); // レーダーチャート描画
+    if (typeof updateRanking === 'function') updateRanking(); // ランキング生成
+    // もし関数名が違う場合は、charts.js等で定義した「描画用関数」をここで呼びます
 
-    // 2. 不要な要素を隠す
+    // 🔴 描画が完了するまで十分に待つ（1秒）
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // 3. 不要な要素を隠す
     const noPrintElements = document.querySelectorAll('.no-print');
     noPrintElements.forEach(el => el.style.visibility = 'hidden');
 
@@ -888,16 +895,11 @@ async function takeScreenshot() {
             backgroundColor: "#f7fafc",
             windowWidth: document.documentElement.offsetWidth,
             windowHeight: document.documentElement.scrollHeight,
-            // グラフの描画を待つための設定を念のため追加
-            logging: false,
-            onclone: (clonedDoc) => {
-                // 複製された画面でもボタン類が消えていることを確実にする
-                const clonedNoPrints = clonedDoc.querySelectorAll('.no-print');
-                clonedNoPrints.forEach(el => el.style.display = 'none');
-            }
+            // 撮影の瞬間、スクロール位置をトップに固定してズレを防ぐ
+            scrollY: -window.scrollY
         });
 
-        // 3. 保存
+        // 4. 保存
         const now = new Date();
         const dateStr = `${now.getMonth()+1}月${now.getDate()}日_${now.getHours()}時${now.getMinutes()}分`;
         const link = document.createElement('a');
@@ -911,7 +913,7 @@ async function takeScreenshot() {
         console.error("画像作成エラー:", error);
         alert("エラーが発生しました。");
     } finally {
-        // 4. 元の状態に戻す
+        // 5. 元の状態に戻す
         if (wasRadarHidden) radar.style.display = 'none';
         if (wasRankingHidden) ranking.style.display = 'none';
         noPrintElements.forEach(el => el.style.visibility = 'visible');
