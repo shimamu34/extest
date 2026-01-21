@@ -687,12 +687,12 @@ function showBackupModal() {
     
     modal.innerHTML = `
         <div style="max-width:600px; width:95%; background:white; border-radius:20px; padding:40px; box-shadow:0 20px 60px rgba(0,0,0,0.3); position:relative;">
-            <h2 style="color: #2b6cb0; text-align: center; margin-top:0; font-size:24px;">📲 データ保存と復元</h2>
+            <h2 style="color: #2b6cb0; text-align: center; margin-top:0; font-size:24px;">📲 データの保存と復元</h2>
             
             <div style="text-align:left; font-size:15px; background:#f0f7ff; padding:20px; border-radius:12px; margin-bottom:30px; line-height:1.8; border-left:6px solid #2b6cb0;">
                 <strong style="font-size:17px;">【使用方法】</strong><br>
-                ① <strong>「ファイルに保存する」</strong>：現在記録されている全学年の記録がダウンロードに保存されます。<br>
-                ② <strong>「ファイルから復元する」</strong>：保存したファイルを選択し、消えてしまった記録を復元します。
+                ① <strong>「ファイルに保存する」</strong>：現在記録されている全学年の記録が端末の保存先に保存されます。<br>
+                ② <strong>「ファイルから復元する」</strong>：保存したファイルを選択し、消えた記録を復元します。
             </div>
 
             <div style="display:flex; justify-content:center; gap:25px; margin-bottom:30px;">
