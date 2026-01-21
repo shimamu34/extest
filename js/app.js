@@ -857,31 +857,45 @@ function closeMemoModal() {
 // ==========================================
 
 /**
- * 11-1. 記録を1枚の画像として書き出す
- * 不要なボタンを一時的に隠し、記録カードとグラフをまとめた画像を生成します
+ * 11-1. 画面を画像(PNG)として保存
+ * ボタンなどを隠した状態で、記録とグラフを1枚の写真にします
  */
 async function takeScreenshot() {
-    // 1. 準備：一時的に隠したい要素（ボタン類）を指定
+    // 保存ボタンを一時的に無効化（連打防止）
+    const btn = event.currentTarget;
+    const originalText = btn.innerText;
+    btn.innerText = "⏳ 作成中...";
+    btn.disabled = true;
+
+    // 1. 画像に含めたくない要素（ボタン類）を一時的に隠す
     const noPrintElements = document.querySelectorAll('.no-print');
-    const notification = document.getElementById('notif');
-    
-    // 2. 演出：ボタンなどを隠す
-    noPrintElements.forEach(el => el.style.opacity = '0');
-    if(notification) notification.style.display = 'none';
-    
-    // 3. 実行：ブラウザの印刷機能（PDF保存）を呼び出し、画像として扱う
-    // ※ブラウザ標準の仕組み上、最も確実で高画質な「印刷→PDF/画像」の流れを促します
-    const originalTitle = document.title;
-    const name = document.getElementById('name')?.value || "名前なし";
-    document.title = `体力テスト記録_${name}`;
-    
-    // 通知を表示
-    alert("【画像保存のアドバイス】\n\nこの後の画面で「PDFとして保存」を選ぶか、\n今のきれいな画面をスクリーンショットして保存してね！");
+    noPrintElements.forEach(el => el.style.visibility = 'hidden');
 
-    window.print();
+    try {
+        // 2. 画面を画像に変換（html2canvasを使用）
+        const canvas = await html2canvas(document.body, {
+            useCORS: true,      // 外部画像（もしあれば）を許可
+            scale: 2,           // 画質を2倍にする（きれいに保存）
+            backgroundColor: "#f7fafc" // 背景色を指定
+        });
 
-    // 4. 復元：隠した要素を戻す
-    noPrintElements.forEach(el => el.style.opacity = '1');
-    if(notification) notification.style.display = 'block';
-    document.title = originalTitle;
+        // 3. ダウンロード用のリンクを作成
+        const name = document.getElementById('name')?.value || "名前なし";
+        const date = new Date().toLocaleDateString('ja-JP', {month:'short', day:'numeric'});
+        const link = document.createElement('a');
+        link.download = `体力テスト記録_${name}_${date}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+
+        alert("画像を保存しました！写真フォルダやダウンロードを確認してね。");
+
+    } catch (error) {
+        console.error("画像作成エラー:", error);
+        alert("ごめん！画像の作成に失敗しちゃいました。");
+    } finally {
+        // 4. 隠した要素をすべて元に戻す
+        noPrintElements.forEach(el => el.style.visibility = 'visible');
+        btn.innerText = originalText;
+        btn.disabled = false;
+    }
 }
