@@ -853,7 +853,7 @@ function closeMemoModal() {
 }
 
 // ==========================================
-// 11. スクリーンショット機能（完全版）
+// 11. スクリーンショット機能（charts.js完全対応版）
 // ==========================================
 
 async function takeScreenshot() {
@@ -865,26 +865,41 @@ async function takeScreenshot() {
     // 1. 各要素を取得
     const radar = document.getElementById('radar');
     const ranking = document.getElementById('ranking');
-    
-    // 現在の表示状態を記録
+    const gender = document.getElementById("gender").value; // 性別を取得
+
+    // 現在の表示状態を保存
     const wasRadarHidden = (radar.style.display === 'none');
     const wasRankingHidden = (ranking.style.display === 'none');
 
-    // 2. 強制的に表示し、中身を描画させる
-    radar.style.display = 'block';
-    ranking.style.display = 'block';
+    // 2. 撮影用に強制表示（見えない位置へ飛ばす）
+    if (wasRadarHidden) {
+        radar.style.display = 'block';
+        radar.style.position = 'absolute';
+        radar.style.left = '-9999px';
+    }
+    if (wasRankingHidden) {
+        ranking.style.display = 'block';
+        ranking.style.position = 'absolute';
+        ranking.style.left = '-9999px';
+    }
 
-    // ★重要：既存の描画関数を呼び出す（関数名は実際のjsに合わせて適宜調整してください）
-    if (typeof updateRadar === 'function') updateRadar(); // レーダーチャート描画
-    if (typeof updateRanking === 'function') updateRanking(); // ランキング生成
-    // もし関数名が違う場合は、charts.js等で定義した「描画用関数」をここで呼びます
+    // 3. charts.jsの関数を直接実行して中身を描画させる ★ここを修正しました★
+    if (typeof RR === 'function') {
+        RR(gender); // レーダーチャート描画関数
+    }
+    if (typeof renderRanking === 'function') {
+        renderRanking(); // ランキング描画関数
+    }
 
-    // 🔴 描画が完了するまで十分に待つ（1秒）
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // アニメーションが完了するまで1.2秒待つ
+    await new Promise(resolve => setTimeout(resolve, 1200));
 
-    // 3. 不要な要素を隠す
+    // 4. 撮影の準備（ボタン類を消す）
+    if (wasRadarHidden) radar.style.position = 'static';
+    if (wasRankingHidden) ranking.style.position = 'static';
+    
     const noPrintElements = document.querySelectorAll('.no-print');
-    noPrintElements.forEach(el => el.style.visibility = 'hidden');
+    noPrintElements.forEach(el => el.style.display = 'none');
 
     btn.innerText = "📸 撮影中...";
 
@@ -893,13 +908,11 @@ async function takeScreenshot() {
             useCORS: true,
             scale: 2,
             backgroundColor: "#f7fafc",
-            windowWidth: document.documentElement.offsetWidth,
+            height: document.documentElement.scrollHeight,
             windowHeight: document.documentElement.scrollHeight,
-            // 撮影の瞬間、スクロール位置をトップに固定してズレを防ぐ
-            scrollY: -window.scrollY
+            scrollTo: 0
         });
 
-        // 4. 保存
         const now = new Date();
         const dateStr = `${now.getMonth()+1}月${now.getDate()}日_${now.getHours()}時${now.getMinutes()}分`;
         const link = document.createElement('a');
@@ -907,16 +920,14 @@ async function takeScreenshot() {
         link.href = canvas.toDataURL("image/png");
         link.click();
 
-        alert("画像を保存しました！");
-
     } catch (error) {
         console.error("画像作成エラー:", error);
         alert("エラーが発生しました。");
     } finally {
-        // 5. 元の状態に戻す
+        // 5. 復元
         if (wasRadarHidden) radar.style.display = 'none';
         if (wasRankingHidden) ranking.style.display = 'none';
-        noPrintElements.forEach(el => el.style.visibility = 'visible');
+        noPrintElements.forEach(el => el.style.display = 'inline-block'); // 元に戻す
         
         btn.innerText = originalText;
         btn.disabled = false;
