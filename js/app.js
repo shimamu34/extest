@@ -437,7 +437,7 @@ function RAnalysis(g) {
                     </div>
                     
                     <div style="text-align: right; font-family: 'Courier New', Courier, monospace; color: white; font-size: 14px; font-weight: bold; letter-spacing: 1px;">
-                        SCORE: <span style="font-size: 18px; color: ${type.color}; text-shadow: 0 0 2px rgba(255,255,255,0.7); filter: contrast(1.5) brightness(1.2);">${scoreFormatted}</span> <span style="font-size: 12px; opacity: 0.6;">/ 10.0</span>
+                        SCORE: <span style="font-size: 18px; color: ${type.color}; font-weight: bold;">${scoreFormatted}</span>
                     </div>
                 </div>
             </div>
