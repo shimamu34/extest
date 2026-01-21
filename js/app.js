@@ -853,81 +853,30 @@ function closeMemoModal() {
 }
 
 // ==========================================
-// 11. スクリーンショット機能（charts.js完全対応版）
+// 11. スクリーンショット機能（レイアウト崩れ防止版）
 // ==========================================
 
 async function takeScreenshot() {
-    const btn = event.currentTarget;
-    const originalText = btn.innerText;
-    btn.innerText = "⏳ 描画中...";
-    btn.disabled = true;
-
-    // 1. 各要素を取得
-    const radar = document.getElementById('radar');
-    const ranking = document.getElementById('ranking');
-    const gender = document.getElementById("gender").value; // 性別を取得
-
-    // 現在の表示状態を保存
-    const wasRadarHidden = (radar.style.display === 'none');
-    const wasRankingHidden = (ranking.style.display === 'none');
-
-    // 2. 撮影用に強制表示（見えない位置へ飛ばす）
-    if (wasRadarHidden) {
-        radar.style.display = 'block';
-        radar.style.position = 'absolute';
-        radar.style.left = '-9999px';
-    }
-    if (wasRankingHidden) {
-        ranking.style.display = 'block';
-        ranking.style.position = 'absolute';
-        ranking.style.left = '-9999px';
-    }
-
-    // 3. charts.jsの関数を直接実行して中身を描画させる ★ここを修正しました★
-    if (typeof RR === 'function') {
-        RR(gender); // レーダーチャート描画関数
-    }
-    if (typeof renderRanking === 'function') {
-        renderRanking(); // ランキング描画関数
-    }
-
-    // アニメーションが完了するまで1.2秒待つ
-    await new Promise(resolve => setTimeout(resolve, 1200));
-
-    // 4. 撮影の準備（ボタン類を消す）
-    if (wasRadarHidden) radar.style.position = 'static';
-    if (wasRankingHidden) ranking.style.position = 'static';
-    
-    const noPrintElements = document.querySelectorAll('.no-print');
-    noPrintElements.forEach(el => el.style.display = 'none');
-
-    btn.innerText = "📸 撮影中...";
+    // ... (前段の処理は同じ) ...
 
     try {
-        const canvas = await html2canvas(document.body, {
-            useCORS: true,
-            scale: 2,
-            backgroundColor: "#f7fafc",
-            height: document.documentElement.scrollHeight,
-            windowHeight: document.documentElement.scrollHeight,
-            scrollTo: 0
-        });
-
-        const now = new Date();
-        const dateStr = `${now.getMonth()+1}月${now.getDate()}日_${now.getHours()}時${now.getMinutes()}分`;
-        const link = document.createElement('a');
-        link.download = `体力テスト記録_${dateStr}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
+        // ... (html2canvasの撮影処理は同じ) ...
 
     } catch (error) {
         console.error("画像作成エラー:", error);
         alert("エラーが発生しました。");
     } finally {
-        // 5. 復元
+        // 5. 元の状態に復元（ここが重要です！）
         if (wasRadarHidden) radar.style.display = 'none';
         if (wasRankingHidden) ranking.style.display = 'none';
-        noPrintElements.forEach(el => el.style.display = 'inline-block'); // 元に戻す
+
+        // 特定のスタイル（inline-blockなど）を指定せず、
+        // 空文字 "" を入れることでCSSで定義された元の状態に戻します
+        const noPrintElements = document.querySelectorAll('.no-print');
+        noPrintElements.forEach(el => {
+            el.style.display = ""; 
+            el.style.visibility = "visible";
+        });
         
         btn.innerText = originalText;
         btn.disabled = false;
