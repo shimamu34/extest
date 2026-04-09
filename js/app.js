@@ -363,33 +363,41 @@ function updateTimestamp() {
     }
 }
 
+/**
+ * 先生に送信するメイン関数 (GET通信版)
+ */
 function sendToTeacher() {
-    N('送信準備中...', 'info');
+    // 通知関数の呼び出し（N関数が定義されている前提）
+    if (typeof N === 'function') N('送信準備中...', 'info');
+
+    // 全角数字を半角に変換する補助関数
     const toHalfWidth = (str) => str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
-    
+
+    // 1. 氏名の入力とチェック
     const name = prompt("氏名を入力してください", "体力太郎");
-    if (!name || name === "体力太郎" || name.trim() === "") { 
-        N('氏名を正しく入力してください', 'info'); 
-        return; 
-    }
-    
-    let studentIdRaw = prompt("出席番号を入力してください（例：12）", "12");
-    if (!studentIdRaw || studentIdRaw.trim() === "") { 
-        N('送信をキャンセルしました', 'info'); 
-        return; 
-    }
-    
-    const studentId = toHalfWidth(studentIdRaw);
-    const gasUrl = localStorage.getItem('gasUrl') || localStorage.getItem('teacherScriptUrl');
-    
-    if (!gasUrl) {
-        alert("送信先URLが設定されていません。");
+    if (!name || name === "体力太郎" || name.trim() === "") {
+        if (typeof N === 'function') N('氏名を正しく入力してください', 'info');
         return;
     }
 
-    N('送信中...', 'info');
-    
-    // 持久走の整形
+    // 2. 出席番号の入力とチェック
+    let studentIdRaw = prompt("出席番号を入力してください（例：12）", "12");
+    if (!studentIdRaw || studentIdRaw.trim() === "") {
+        if (typeof N === 'function') N('送信をキャンセルしました', 'info');
+        return;
+    }
+    const studentId = toHalfWidth(studentIdRaw);
+
+    // 3. 送信先URLの取得
+    const gasUrl = localStorage.getItem('gasUrl') || localStorage.getItem('teacherScriptUrl');
+    if (!gasUrl) {
+        alert("送信先URLが設定されていません。初期設定を行ってください。");
+        return;
+    }
+
+    if (typeof N === 'function') N('送信中...', 'info');
+
+    // 4. 持久走データの整形（秒を 分:秒 に）
     let enduranceVal = document.getElementById('i4').value || "";
     if (enduranceVal !== "") {
         const totalSec = parseInt(enduranceVal);
@@ -398,8 +406,9 @@ function sendToTeacher() {
         enduranceVal = `${m}:${s.toString().padStart(2, '0')}`;
     }
 
-    // 送信データをクエリパラメータに変換
-    const params = new URLSearchParams({
+    // 5. 送信データのオブジェクト作成
+    // HTML側の id属性 (grade, class, session 等) と一致している必要があります
+    const payload = {
         name: name,
         studentId: studentId,
         gender: document.getElementById('gender').value,
@@ -415,21 +424,24 @@ function sendToTeacher() {
         sprint50: document.getElementById('i6').value || "",
         jump: document.getElementById('i7').value || "",
         throw: document.getElementById('i8').value || ""
-    });
+    };
 
-    // GETで送信（URLの末尾にパラメータを付与）
+    // 6. GET通信用にURLパラメータに変換
+    const params = new URLSearchParams(payload);
+
+    // 7. 送信実行（GET方式）
     fetch(`${gasUrl}?${params.toString()}`, {
         method: 'GET',
-        mode: 'no-cors'
+        mode: 'no-cors' // 学校制限回避のため
     })
     .then(() => {
-        N('送信完了！', 'success');
-        alert('先生のスプレッドシートへ送信が完了しました。');
+        if (typeof N === 'function') N('送信完了しました！', 'success');
+        alert('先生のスプレッドシートへ送信が完了しました。\n反映されない場合はブラウザで開き直してください。');
     })
     .catch(err => {
         console.error("Fetch error:", err);
-        N('送信失敗', 'error');
-        alert('エラーが発生しました。ブラウザで開き直してください。');
+        if (typeof N === 'function') N('送信失敗', 'error');
+        alert('エラーが発生しました：' + err);
     });
 }
 
