@@ -364,41 +364,46 @@ function updateTimestamp() {
 }
 
 /**
- * 先生に送信するメイン関数 (GET通信版)
+ * 先生に送信するメイン関数
  */
 function sendToTeacher() {
-    // 通知関数の呼び出し（N関数が定義されている前提）
-    if (typeof N === 'function') N('送信準備中...', 'info');
+    // 通知関数(N)がエラーを起こさないようにガード
+    const safeNotify = (msg, type) => {
+        if (typeof N === 'function') N(msg, type);
+    };
 
-    // 全角数字を半角に変換する補助関数
-    const toHalfWidth = (str) => str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+    safeNotify('送信準備中...', 'info');
 
-    // 1. 氏名の入力とチェック
+    // 1. 氏名と出席番号の入力
     const name = prompt("氏名を入力してください", "体力太郎");
     if (!name || name === "体力太郎" || name.trim() === "") {
-        if (typeof N === 'function') N('氏名を正しく入力してください', 'info');
+        safeNotify('氏名を正しく入力してください', 'info');
         return;
     }
 
-    // 2. 出席番号の入力とチェック
     let studentIdRaw = prompt("出席番号を入力してください（例：12）", "12");
-    if (!studentIdRaw || studentIdRaw.trim() === "") {
-        if (typeof N === 'function') N('送信をキャンセルしました', 'info');
+    if (!studentIdRaw) {
+        safeNotify('送信をキャンセルしました', 'info');
         return;
     }
-    const studentId = toHalfWidth(studentIdRaw);
+    // 全角→半角変換
+    const studentId = studentIdRaw.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0)).trim();
 
-    // 3. 送信先URLの取得
+    // 2. 送信先URLの取得
     const gasUrl = localStorage.getItem('gasUrl') || localStorage.getItem('teacherScriptUrl');
     if (!gasUrl) {
-        alert("送信先URLが設定されていません。初期設定を行ってください。");
+        alert("送信先URLが設定されていません。");
         return;
     }
 
-    if (typeof N === 'function') N('送信中...', 'info');
+    // 3. 値を取得するための強力な関数（undefined対策）
+    const findVal = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.value : "";
+    };
 
-    // 4. 持久走データの整形（秒を 分:秒 に）
-    let enduranceVal = document.getElementById('i4').value || "";
+    // 4. 持久走データの整形
+    let enduranceVal = findVal('i4'); 
     if (enduranceVal !== "") {
         const totalSec = parseInt(enduranceVal);
         const m = Math.floor(totalSec / 60);
@@ -406,41 +411,36 @@ function sendToTeacher() {
         enduranceVal = `${m}:${s.toString().padStart(2, '0')}`;
     }
 
-    // 5. 送信データのオブジェクト作成
-    // HTML側の id属性 (grade, class, session 等) と一致している必要があります
+    // 5. 送信データの作成
+    // IDが 'grade' ではなく 'g' や 'grade_select' の可能性も考慮
     const payload = {
         name: name,
         studentId: studentId,
-        gender: document.getElementById('gender').value,
-        grade: document.getElementById('grade').value,
-        class: document.getElementById('class').value,
-        session: document.getElementById('session').value,
-        grip: document.getElementById('i0').value || "",
-        situp: document.getElementById('i1').value || "",
-        forward: document.getElementById('i2').value || "",
-        sidestep: document.getElementById('i3').value || "",
-        endurance: enduranceVal,
-        shuttle: document.getElementById('i5').value || "",
-        sprint50: document.getElementById('i6').value || "",
-        jump: document.getElementById('i7').value || "",
-        throw: document.getElementById('i8').value || ""
+        gender: findVal('gender') || findVal('i_gender') || "不明",
+        grade: findVal('grade') || findVal('i_grade') || findVal('g') || "1",
+        class: findVal('class') || findVal('i_class') || findVal('c') || "1",
+        session: findVal('session') || findVal('i_session') || findVal('s') || "1",
+        grip: findVal('i0'), situp: findVal('i1'), forward: findVal('i2'),
+        sidestep: findVal('i3'), endurance: enduranceVal, shuttle: findVal('i5'),
+        sprint50: findVal('i6'), jump: findVal('i7'), throw: findVal('i8')
     };
 
-    // 6. GET通信用にURLパラメータに変換
-    const params = new URLSearchParams(payload);
+    safeNotify('送信中...', 'info');
 
-    // 7. 送信実行（GET方式）
+    // 6. 送信実行
+    const params = new URLSearchParams(payload);
     fetch(`${gasUrl}?${params.toString()}`, {
         method: 'GET',
-        mode: 'no-cors' // 学校制限回避のため
+        mode: 'no-cors'
     })
     .then(() => {
-        if (typeof N === 'function') N('送信完了しました！', 'success');
-        alert('先生のスプレッドシートへ送信が完了しました。\n反映されない場合はブラウザで開き直してください。');
+        // 送信完了のポップアップを確実に出す
+        safeNotify('送信完了しました！', 'success');
+        alert('先生のスプレッドシートへ送信が完了しました！');
     })
     .catch(err => {
         console.error("Fetch error:", err);
-        if (typeof N === 'function') N('送信失敗', 'error');
+        safeNotify('送信失敗', 'error');
         alert('エラーが発生しました：' + err);
     });
 }
