@@ -210,77 +210,56 @@
                             <button onclick="copyGsCode()" style="width:100%; padding:15px; background:#2b6cb0; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px; transition: 0.3s;">📋 プログラムをコピー</button>
 
                             <textarea id="gsCodeSource" style="display:none;">
-function doPost(e) {
+function doGet(e) {
   try {
-    // 1. 届いたデータを解析
-    var data = JSON.parse(e.postData.contents);
+    // GET通信の場合、データは e.parameter に入って届きます
+    var data = e.parameter;
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     
-    // 2. シート名を決定（例：1年-1組-1回目）
-    // 組や回が違えば自動的に別のシートが作られるため、データは混ざりません
     var sheetName = data.grade + "年-" + data.class + "組-" + data.session + "回目";
     var sheet = ss.getSheetByName(sheetName);
 
     if (!sheet) {
       sheet = ss.insertSheet(sheetName);
-      // 見出しを作成（初期状態）
       sheet.appendRow(['出席番号', '氏名', '性別', '学年', '組', '回', '握力', '上体', '長座', '反復', '持久', 'シャトル', '50m', '立ち幅', '投', '日時']);
     }
 
-    // 3. 出席番号を半角数字に変換（全角入力対策）
     var sId = data.studentId ? String(data.studentId).replace(/[０-９]/g, function(s) {
       return String.fromCharCode(s.charCodeAt(0) - 65248);
-    }) : "";
+    }).trim() : "";
 
-    // 4. 上書き判定ロジック
-    // 「出席番号(0番目)」と「学年(3番目)」が一致するかだけで判定
-    // これにより、氏名の漢字ミスやスペースの有無に左右されず上書きされます
     var rows = sheet.getDataRange().getValues();
     var rowIndex = -1;
     for (var i = 1; i < rows.length; i++) {
-      if (rows[i][0] == sId && rows[i][3] == data.grade) {
+      if (String(rows[i][0]) === sId && String(rows[i][3]) === String(data.grade)) {
         rowIndex = i + 1;
         break;
       }
     }
 
-    // 5. 保存するデータの配列
     var rowData = [
-      sId,
-      data.name || "",
+      sId, data.name || "",
       (data.gender === 'male' || data.gender === '男' || data.gender === '男子') ? '男子' : '女子',
-      data.grade || "",
-      data.class || "",
-      data.session || "",
-      data.grip || "",
-      data.situp || "",
-      data.forward || "",
-      data.sidestep || "",
-      data.endurance || "", // 持久走（左から11番目：K列）
-      data.shuttle || "",
-      data.sprint50 || "",
-      data.jump || "",
-      data.throw || "",
-      new Date() // 送信日時
+      data.grade || "", data.class || "", data.session || "",
+      data.grip || "", data.situp || "", data.forward || "", data.sidestep || "",
+      data.endurance || "", data.shuttle || "", data.sprint50 || "", data.jump || "", data.throw || "",
+      new Date()
     ];
 
-    // 6. 保存の実行
     if (rowIndex > 0) {
-      // 既存の行を最新データで更新（名前も最新の内容に書き換わります）
       sheet.getRange(rowIndex, 1, 1, rowData.length).setValues([rowData]);
     } else {
-      // 新しい出席番号なら最後尾に追加
       sheet.appendRow(rowData);
     }
 
-    // 7. 持久走（K列/11番目）を「経過時間」書式に自動設定
-    // 毎回実行することで、新しい行が増えても常に「分:秒」として計算可能になります
+    // 書式設定
     var enduranceCol = 11;
     var lastRow = sheet.getLastRow();
     if (lastRow >= 2) {
       sheet.getRange(2, enduranceCol, lastRow - 1).setNumberFormat("[m]:ss");
     }
 
+    // 成功の返答（GETの場合はJSONP風に返すのが最も安全です）
     return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
   } catch (f) {
     return ContentService.createTextOutput("Error: " + f.toString()).setMimeType(ContentService.MimeType.TEXT);
