@@ -364,7 +364,7 @@ function updateTimestamp() {
 }
 
 function sendToTeacher() {
-    N('送信処理を開始します...', 'info');
+    N('送信準備中...', 'info');
     const toHalfWidth = (str) => str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
     
     const name = prompt("氏名を入力してください", "体力太郎");
@@ -383,12 +383,13 @@ function sendToTeacher() {
     const gasUrl = localStorage.getItem('gasUrl') || localStorage.getItem('teacherScriptUrl');
     
     if (!gasUrl) {
-        alert("送信先URLが見つかりません。初期設定をやり直してください。");
+        alert("送信先URLが設定されていません。");
         return;
     }
 
     N('送信中...', 'info');
     
+    // 持久走の整形
     let enduranceVal = document.getElementById('i4').value || "";
     if (enduranceVal !== "") {
         const totalSec = parseInt(enduranceVal);
@@ -397,8 +398,10 @@ function sendToTeacher() {
         enduranceVal = `${m}:${s.toString().padStart(2, '0')}`;
     }
 
-    const data = {
-        name: name, studentId: studentId,
+    // 送信データをクエリパラメータに変換
+    const params = new URLSearchParams({
+        name: name,
+        studentId: studentId,
         gender: document.getElementById('gender').value,
         grade: document.getElementById('grade').value,
         class: document.getElementById('class').value,
@@ -412,26 +415,21 @@ function sendToTeacher() {
         sprint50: document.getElementById('i6').value || "",
         jump: document.getElementById('i7').value || "",
         throw: document.getElementById('i8').value || ""
-    };
+    });
 
-    // ★修正ポイント：mode: 'no-cors' を削除
-    fetch(gasUrl, {
-        method: 'POST',
-        body: JSON.stringify(data)
+    // GETで送信（URLの末尾にパラメータを付与）
+    fetch(`${gasUrl}?${params.toString()}`, {
+        method: 'GET',
+        mode: 'no-cors'
     })
-    .then(response => {
-        // response.ok は「ちゃんと通信が成功したか」を判定します
-        if (response.ok || response.type === 'opaque') {
-            N('送信完了しました！', 'success');
-            alert('先生のスプレッドシートへ送信が完了しました。');
-        } else {
-            throw new Error('サーバーからの応答が不正です。');
-        }
+    .then(() => {
+        N('送信完了！', 'success');
+        alert('先生のスプレッドシートへ送信が完了しました。');
     })
     .catch(err => {
         console.error("Fetch error:", err);
         N('送信失敗', 'error');
-        alert('【重要】送信に失敗しました。URLが正しいか、GASのデプロイ設定が「全員(Anyone)」になっているか確認してください。');
+        alert('エラーが発生しました。ブラウザで開き直してください。');
     });
 }
 
